@@ -16,6 +16,12 @@ module RDF::LDP
     end
 
     ##
+    # @return [Boolean] whether this is an ldp:Container
+    def container?
+      false
+    end
+
+    ##
     # @return [Boolean] whether this is an ldp:NonRDFSource
     def non_rdf_source?
       false

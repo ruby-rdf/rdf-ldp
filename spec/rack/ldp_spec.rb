@@ -7,119 +7,154 @@ describe Rack::LDP do
   end
 end
 
-describe Rack::LDP::Headers do
+describe 'middleware' do
   include ::Rack::Test::Methods
 
-  subject { described_class.new(base_app) }
-
-  let(:headers) do
-    { 'Link' => '<http://example.org/ns/moomin>;rel="derivedfrom"' }
+  before do
+    class ToResponseHandler
+      def initialize(app); @app = app; end
+      
+      def call(env)
+        status, headers, response = @app.call(env)
+        response = response.to_response if response.respond_to? :to_response
+        [status, headers, response]
+      end
+    end
   end
 
+  after { Object.send(:remove_const, 'ToResponseHandler') }
+
   let(:results) { ['A Response'] }
+  let(:headers) { {} }
 
   let(:base_app) do
     double("Target Rack Application", 
            :call => [200, headers, results])
   end
 
-  let(:app) { subject }
+  let(:app) { ToResponseHandler.new(subject) }
 
-  it 'retains existing Link headers' do
-    get '/'
-    expect(last_response.header['Link']).to include headers['Link']
-  end
+  describe Rack::LDP::Responses do
+    subject { described_class.new(base_app) }
 
-  context 'when response responds to #to_response' do
-    before { allow(results).to receive(:to_response).and_return([body]) }
-    let(:body) { 'new body' }
-    
-    it 'closes response' do
-      expect(results).to receive(:close)
-      get '/'
-    end
+    context 'when response responds to #to_response' do
+      before { allow(results).to receive(:to_response).and_return([body]) }
+      let(:body) { 'new body' }
+      
+      it 'closes response' do
+        expect(results).to receive(:close)
+        get '/'
+      end
 
-    it 'returns the new response' do
-      get '/'
-      expect(last_response.body).to eq body
-    end
-  end
-
-  context 'when response responds to #etag' do
-    it 'adds an Etag header' do
-      etag = double('etag')
-      allow(results).to receive(:etag).and_return(etag)
-
-      get '/'
-      expect(last_response.header['Etag']).to eq etag
-    end
-
-    it 'has no Etag header if #etag is `nil`' do
-      allow(results).to receive(:etag).and_return(nil)
-
-      get '/'
-      expect(last_response.header).not_to include 'Etag'
+      it 'returns the new response' do
+        get '/'
+        expect(last_response.body).to eq body
+      end
     end
   end
 
-  context 'when response is a Resource' do
-    before { allow(results).to receive(:to_response).and_return([]) }
-
-    let(:resource) { RDF::LDP::Resource.new }
-    let(:results) { resource }
+  describe Rack::LDP::Headers do
+    subject { described_class.new(base_app) }
+  
+    let(:headers) do
+      { 'Link' => '<http://example.org/ns/moomin>;rel="derivedfrom"' }
+    end
 
     it 'retains existing Link headers' do
       get '/'
       expect(last_response.header['Link']).to include headers['Link']
     end
 
-    it 'adds LDPR Link header' do
-      get '/'
-      expect(last_response.header['Link'])
-        .to include Rack::LDP::Headers::LINK_LDPR
-    end
+    context 'when response responds to #etag' do
+      it 'adds an Etag header' do
+        etag = double('etag')
+        allow(results).to receive(:etag).and_return(etag)
 
-    context 'and an RDFSource' do
-      let(:resource) { RDF::LDP::RDFSource.new }
-
-      it 'adds LDPRS Link header' do
         get '/'
-        expect(last_response.header['Link'])
-          .to include Rack::LDP::Headers::LINK_LDPR
-        expect(last_response.header['Link'])
-          .to include Rack::LDP::Headers::LINK_LDPRS
+        expect(last_response.header['Etag']).to eq etag
+      end
+
+      it 'has no Etag header if #etag is `nil`' do
+        allow(results).to receive(:etag).and_return(nil)
+
+        get '/'
+        expect(last_response.header).not_to include 'Etag'
       end
     end
 
-    context 'and an RDFSource' do
-      let(:resource) { RDF::LDP::NonRDFSource.new }
+    context 'when response is a Resource' do
+      before { allow(results).to receive(:to_response).and_return([]) }
 
-      it 'adds LDPNR Link header' do
+      let(:resource) { RDF::LDP::Resource.new }
+      let(:results) { resource }
+
+      it 'retains existing Link headers' do
+        get '/'
+        expect(last_response.header['Link']).to include headers['Link']
+      end
+
+      it 'adds LDPR Link header' do
         get '/'
         expect(last_response.header['Link'])
           .to include Rack::LDP::Headers::LINK_LDPR
-        expect(last_response.header['Link'])
-          .to include Rack::LDP::Headers::LINK_LDPNR
+      end
+
+      context 'and an RDFSource' do
+        let(:resource) { RDF::LDP::RDFSource.new }
+
+        it 'adds LDPRS Link header' do
+          get '/'
+          expect(last_response.header['Link'])
+            .to include Rack::LDP::Headers::LINK_LDPR
+          expect(last_response.header['Link'])
+            .to include Rack::LDP::Headers::LINK_LDPRS
+        end
+      end
+
+      context 'and a Container' do
+        let(:resource) { RDF::LDP::Container.new }
+
+        it 'adds LDPC Link header' do
+          get '/'
+          expect(last_response.header['Link'])
+            .to include Rack::LDP::Headers::LINK_LDPR
+          expect(last_response.header['Link'])
+            .to include Rack::LDP::Headers::LINK_LDPRS
+          expect(last_response.header['Link'])
+            .to include "<#{resource.container_class}>;rel=\"type\""
+        end
+      end
+
+      context 'and a NonRDFSource' do
+        let(:resource) { RDF::LDP::NonRDFSource.new }
+
+        it 'adds LDPNR Link header' do
+          get '/'
+          expect(last_response.header['Link'])
+            .to include Rack::LDP::Headers::LINK_LDPR
+          expect(last_response.header['Link'])
+            .to include Rack::LDP::Headers::LINK_LDPNR
+        end
       end
     end
   end
-end
 
-describe Rack::LDP::ContentNegotiation do
-  subject { described_class.new(app) }
-  let(:app) { double('rack application') }
+  describe Rack::LDP::ContentNegotiation do
+    subject { described_class.new(app) }
+    let(:app) { double('rack application') }
 
-  it { is_expected.to be_a Rack::LinkedData::ContentNegotiation }
+    it { is_expected.to be_a Rack::LinkedData::ContentNegotiation }
 
-  describe '.new' do
-    it 'sets default content-type to text/turtle' do
-      expect(subject.options[:default]).to eq 'text/turtle'
-    end
+    describe '.new' do
+      it 'sets default content-type to text/turtle' do
+        expect(subject.options[:default]).to eq 'text/turtle'
+      end
 
-    it 'accepts overrides to default content type' do
-      ctype = 'text/plain'
-      conneg = described_class.new(app, default: ctype)
-      expect(conneg.options[:default]).to eq ctype
+      it 'accepts overrides to default content type' do
+        ctype = 'text/plain'
+        conneg = described_class.new(app, default: ctype)
+        expect(conneg.options[:default]).to eq ctype
+      end
     end
   end
 end

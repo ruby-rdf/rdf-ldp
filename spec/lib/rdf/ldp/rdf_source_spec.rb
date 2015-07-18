@@ -9,6 +9,10 @@ describe RDF::LDP::RDFSource do
     it { is_expected.to be_ldp_resource }
   end
 
+  describe '#container?' do
+    it { is_expected.not_to be_container }
+  end
+
   describe '#rdf_source?' do
     it { is_expected.to be_rdf_source }
   end
