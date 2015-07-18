@@ -30,22 +30,23 @@ module Rack
       end
 
       ##
-      # Converts 
+      # @todo handle If-Match
       def call(env)
         status, headers, response = @app.call(env)
 
-        if response.respond_to? :to_response
-          new_response = response.to_response
+        if response.is_a? RDF::LDP::Resource
+          new_response = response.to_response(env['REQUEST_METHOD'].to_sym)
           response.close if response.respond_to? :close
           response = new_response
         end
-        
+
         [status, headers, response]
       end
     end
 
     ##
     # Rack middleware for LDP responses
+    #
     # @todo handle adding `constrainedBy` headers on errored requests.
     class Headers
       CONSTRAINED_BY = RDF::URI('http://www.w3.org/ns/ldp#constrainedBy').freeze
@@ -67,6 +68,8 @@ module Rack
       # @return [Array]  a rack env array with added headers
       def call(env)
         status, headers, response = @app.call(env)
+        return [status, headers, response] unless 
+          response.is_a? RDF::LDP::Resource
 
         headers['Link'] = 
           ([headers['Link']] + link_headers(response)).compact.join("\n")

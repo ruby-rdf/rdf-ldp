@@ -11,6 +11,8 @@ describe 'middleware' do
   include ::Rack::Test::Methods
 
   before do
+    ##
+    # Dummy response handler middleware
     class ToResponseHandler
       def initialize(app); @app = app; end
       
@@ -20,6 +22,8 @@ describe 'middleware' do
         [status, headers, response]
       end
     end
+    
+    allow(results).to receive(:to_response).and_return([])
   end
 
   after { Object.send(:remove_const, 'ToResponseHandler') }
@@ -35,21 +39,60 @@ describe 'middleware' do
   let(:app) { ToResponseHandler.new(subject) }
 
   describe Rack::LDP::Responses do
+    before do
+      allow(results).to receive(:to_response).with(method).and_return([body])
+    end
+
     subject { described_class.new(base_app) }
+    let(:app) { subject }
 
-    context 'when response responds to #to_response' do
-      before { allow(results).to receive(:to_response).and_return([body]) }
-      let(:body) { 'new body' }
-      
-      it 'closes response' do
-        expect(results).to receive(:close)
-        get '/'
+    let(:body) { 'new body' }
+    
+    describe 'GET' do
+      let(:method) { :GET }
+
+      context 'when response is not an LDP::Resource' do
+        it 'echo it back unaltered' do
+          get '/'
+          expect(last_response.body).to eq results.first
+        end
       end
 
-      it 'returns the new response' do
-        get '/'
-        expect(last_response.body).to eq body
+      context 'when response responds to #to_response' do
+        let(:resource) { RDF::LDP::Resource.new }
+        let(:results) { resource }
+
+        it 'closes response' do
+          expect(results).to receive(:close)
+          get '/'
+        end
+
+        it 'returns the new response' do
+          get '/'
+          expect(last_response.body).to eq body
+        end
       end
+    end
+
+    describe 'POST' do
+      let(:method) { :POST }
+    end
+
+    describe 'PUT' do
+      let(:method) { :PUT }
+    end
+
+    describe 'DELETE' do
+      let(:method) { :DELETE }
+    end
+
+    describe 'PATCH' do
+      let(:method) { :PATCH }
+    end
+
+    describe 'OPTIONS' do
+      let(:method) { :OPTIONS }
+      it 'gives correct Allow headers for the resource'
     end
   end
 
@@ -66,6 +109,9 @@ describe 'middleware' do
     end
 
     context 'when response responds to #etag' do
+      let(:resource) { RDF::LDP::Resource.new }
+      let(:results) { resource }
+
       it 'adds an Etag header' do
         etag = double('etag')
         allow(results).to receive(:etag).and_return(etag)
@@ -83,8 +129,6 @@ describe 'middleware' do
     end
 
     context 'when response is a Resource' do
-      before { allow(results).to receive(:to_response).and_return([]) }
-
       let(:resource) { RDF::LDP::Resource.new }
       let(:results) { resource }
 

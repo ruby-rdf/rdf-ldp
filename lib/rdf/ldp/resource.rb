@@ -37,9 +37,12 @@ module RDF::LDP
     # @abstract Returns the object's desired HTTP response body, conforming to 
     # the Rack interfare.
     #
+    # @param [Symbol] method  a symbol representing the request method to get
+    #   a response for. (default: :GET)
+    #
     # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body 
     #   for Rack body documentation
-    def to_response
+    def to_response(method = :GET)
       raise NotImplementedError
     end
   end
