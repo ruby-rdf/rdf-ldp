@@ -1,0 +1,12 @@
+.DS_Store
+.tmp
+.yardoc
+pkg
+tmp
+/*.gem
+/.rbx/
+/doc/
+Gemfile.lock
+.bundle/
+*.sw?
+benchmark/
