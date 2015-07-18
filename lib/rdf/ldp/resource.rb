@@ -35,7 +35,7 @@ module RDF::LDP
 
     ##
     # @abstract Returns the object's desired HTTP response body, conforming to 
-    # the Rack interfare.
+    # the Rack interfare. Implementations MUST NOT alter the state of the object
     #
     # @param [Symbol] method  a symbol representing the request method to get
     #   a response for. (default: :GET)

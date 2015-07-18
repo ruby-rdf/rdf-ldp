@@ -1,31 +1,19 @@
 require 'spec_helper'
 
 describe RDF::LDP::Container do
-  it { is_expected.to be_a RDF::LDP::RDFSource }
-
-  describe '.to_uri' do
-    it { expect(described_class.to_uri).to be_a RDF::URI }
+  it_behaves_like 'a Container'
+  
+  describe 'CONTAINER_CLASSES' do
+    it 'has basic, direct, and indirect' do
+      expect(described_class::CONTAINER_CLASSES.keys)
+        .to contain_exactly(:basic, :direct, :indirect)
+    end
   end
 
-  describe '#ldp_resource?' do
-    it { is_expected.to be_ldp_resource }
-  end
-
-  describe '#container?' do
-    it { is_expected.to be_container }
-  end
-
-  describe '#rdf_source?' do
-    it { is_expected.to be_rdf_source }
-  end
-
-  describe '#non_rdf_source?' do
-    it { is_expected.not_to be_non_rdf_source }
-  end
-
-  describe 'container_class' do
-    it 'returns a uri' do
-      expect(subject.container_class).to be_a RDF::URI
+  describe '#container_class' do
+    it 'is a basic container' do
+      expect(subject.container_class)
+        .to eq RDF::URI('http://www.w3.org/ns/ldp#BasicContainer')
     end
   end
 end

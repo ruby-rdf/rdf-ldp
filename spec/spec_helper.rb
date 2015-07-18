@@ -3,6 +3,8 @@ require 'rdf/ldp'
 require 'rdf/spec'
 require 'rdf/spec/matchers'
 
+Dir['./spec/support/**/*.rb'].each { |f| require f }
+
 RSpec.configure do |config|
   config.include(RDF::Spec::Matchers)
   config.filter_run :focus => true

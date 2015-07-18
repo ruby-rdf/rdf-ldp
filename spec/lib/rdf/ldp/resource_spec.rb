@@ -1,18 +1,12 @@
 require 'spec_helper'
 
 describe RDF::LDP::Resource do
-  describe '.to_uri' do
-    it { expect(described_class.to_uri).to be_a RDF::URI }
-  end
+  it_behaves_like 'a Resource' 
 
   describe '#to_response' do
     it 'raises not implemented' do
       expect { subject.to_response }.to raise_error NotImplementedError
     end
-  end
-
-  describe '#ldp_resource?' do
-    it { is_expected.to be_ldp_resource }
   end
 
   describe '#container?' do
