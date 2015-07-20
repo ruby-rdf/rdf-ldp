@@ -2,10 +2,21 @@ require 'digest/md5'
 
 module RDF::LDP
   class RDFSource < Resource
-    attr_accessor :graph
+    attr_accessor :graph, :subject_uri
 
-    def initialize(graph = RDF::Graph.new)
-      @graph = graph
+    ##
+    # @param [IO, File, String] graph  an input stream to parse
+    # @param [#to_s] content_type  the content type for the reader
+    #
+    # @return [RDF::Graph]
+    def self.parse_graph(graph, content_type)
+      reader = RDF::Reader.for(content_type: content_type.to_s)
+      raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
+      begin
+        RDF::Graph.new << reader.new(graph)
+      rescue RDF::ReaderError => e
+        raise RDF::LDP::BadRequest, e.message
+      end  
     end
 
     ##
@@ -15,6 +26,14 @@ module RDF::LDP
     # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
     def self.to_uri 
       RDF::URI 'http://www.w3.org/ns/ldp#RDFSource'
+    end
+
+    def initialize(subject_uri = nil, graph = RDF::Graph.new, &block)
+      @subject_uri = subject_uri
+      @graph = graph
+
+      yield self if block_given?
+      self
     end
 
     ##
@@ -56,17 +75,12 @@ module RDF::LDP
     end
 
     ##
-    # @param [Symbol] method  a symbol representing the request method to get
-    #   a response for. (default: :GET)
-    def to_response(method = :GET)
-      send(method.downcase.to_sym)
+    # @return [RDF::URI] the subject URI for this resource
+    def to_uri
+      subject_uri
     end
-    
-    private
 
-    # response methods
-
-    def get
+    def to_response
       graph
     end
   end

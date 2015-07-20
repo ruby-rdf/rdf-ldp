@@ -16,4 +16,21 @@ describe RDF::LDP::Container do
         .to eq RDF::URI('http://www.w3.org/ns/ldp#BasicContainer')
     end
   end
+
+  describe '#membership_predicate' do
+    it 'gives default membership predicate' do
+      expect(subject.membership_predicate)
+        .to eq RDF::URI('http://www.w3.org/ns/ldp#contains')
+    end
+  end
+
+  describe '#make_membership_triple' do
+    before { subject.subject_uri = RDF::URI('http://ex.org/moomin') }
+    let(:resource) { RDF::URI('http://ex.org/mymble') }
+
+    it 'statement subject is #subject_uri' do
+      expect(subject.make_membership_triple(resource).subject)
+        .to eq subject.subject_uri
+    end
+  end
 end

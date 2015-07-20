@@ -18,10 +18,52 @@ module Rack
   # without alteration, allowing server implementers to mix LDP interaction
   # patterns with others on the same server.
   #
+  # The suite can be mix-and-matched as needed. This allows easy swap in of 
+  # custom handlers for parts of the behavior. It is recommended that you use
+  # {Rack::LDP::ContentNegotiation}, {Rack::LDP::Errors}, and 
+  # {Rack::LDP::Responses} as the outer three services. With these in place,
+  # you can handle requests as needed in your application, giving responses
+  # conforming to the core {RDF::LDP::Resource} interface.
+  #
+  # @example
+  #   run Rack:;Builder.new do
+  #     use Rack::LDP::ContentNegotiation
+  #     use Rack::LDP::Errors
+  #     use Rack::LDP::Responses
+  #     # ...
+  #   end
+  # 
   # @see http://www.w3.org/TR/ldp/ the LDP specification
   module LDP
+
     ##
-    #
+    # Catches and handles RequestErrors thrown by RDF::LDP
+    class Errors
+      ##
+      # @param  [#call] app
+      def initialize(app)
+        @app = app
+      end
+
+      ##
+      # Catches {RDF::LDP::RequestError} and its various subclasses, building an 
+      # appropriate response 
+      #
+      # @param [Array] env  a rack env array
+      # @return [Array]  a rack env array with added headers
+      #
+      # @todo handle adding `constrainedBy` headers on errored requests.
+      def call(env)
+        begin
+          @app.call(env)
+        rescue RDF::LDP::RequestError => err
+          return [err.status, err.headers, [err.message]]
+        end
+      end
+    end
+
+    ##
+    # Converts RDF::LDP::Resource} into appropriate responses
     class Responses
       ##
       # @param  [#call] app
@@ -30,12 +72,12 @@ module Rack
       end
 
       ##
-      # @todo handle If-Match
+      # Converts the response body from {RDF::LDP::Resource} form to a Graph
       def call(env)
         status, headers, response = @app.call(env)
 
         if response.is_a? RDF::LDP::Resource
-          new_response = response.to_response(env['REQUEST_METHOD'].to_sym)
+          new_response = response.to_response
           response.close if response.respond_to? :close
           response = new_response
         end
@@ -45,12 +87,33 @@ module Rack
     end
 
     ##
-    # Rack middleware for LDP responses
     #
-    # @todo handle adding `constrainedBy` headers on errored requests.
-    class Headers
-      CONSTRAINED_BY = RDF::URI('http://www.w3.org/ns/ldp#constrainedBy').freeze
+    class Requests
+      ##
+      # @param  [#call] app
+      def initialize(app)
+        @app = app
+      end
 
+      ##
+      # Handles a Rack protocol request. Sends appropriate request to the 
+      # object, alters response accordingly.
+      #
+      # @param [Array] env  a rack env array
+      # @return [Array]  a rack env array with added headers
+      def call(env)
+        status, headers, response = @app.call(env)
+        return [status, headers, response] unless
+          response.is_a? RDF::LDP::Resource
+
+        response
+          .send(:request, env['REQUEST_METHOD'].to_sym, status, headers, env)
+      end
+    end
+
+    ##
+    # Rack middleware for LDP responses
+    class Headers
       LINK_LDPR =  "<#{RDF::LDP::Resource.to_uri}>;rel=\"type\"".freeze
       LINK_LDPRS = "<#{RDF::LDP::RDFSource.to_uri}>;rel=\"type\"".freeze
       LINK_LDPNR = "<#{RDF::LDP::NonRDFSource.to_uri}>;rel=\"type\"".freeze
@@ -130,4 +193,3 @@ module Rack
     end
   end
 end
-

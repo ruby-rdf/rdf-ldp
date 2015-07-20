@@ -16,8 +16,7 @@ Gem::Specification.new do |gem|
 
   gem.platform           = Gem::Platform::RUBY
   gem.files              = %w(AUTHORS CREDITS README.md CHANGELOG.md UNLICENSE VERSION) + Dir.glob('lib/**/*.rb')
-  gem.executables        = %w(rdf)
-  gem.require_paths      = %w(lib)
+  gem.require_paths      = %w(lib, app)
   gem.has_rdoc           = false
 
   gem.required_ruby_version      = '>= 1.9.2'
@@ -28,6 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency     'rdf', '~> 1.1'
   gem.add_runtime_dependency     'rdf-turtle', '~> 1.1'
   gem.add_runtime_dependency     'json-ld'
+  gem.add_runtime_dependency     'sinatra'
 
   gem.add_development_dependency 'rdf-spec',    '~> 1.1', '>= 1.1.13'
   gem.add_development_dependency 'rdf-rdfxml',  '~> 1.1'
