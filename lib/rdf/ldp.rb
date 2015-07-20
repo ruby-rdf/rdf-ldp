@@ -22,7 +22,8 @@ module RDF
       end
 
       def headers
-        {}
+        { 'Link' => 
+          "<http://example.org/placeholder_uri>;rel=#{CONSTRAINED_BY}" }
       end
     end
 

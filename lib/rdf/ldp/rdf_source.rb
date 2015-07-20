@@ -5,10 +5,16 @@ module RDF::LDP
     attr_accessor :graph, :subject_uri
 
     ##
+    # Finds an {RDF::Reader} appropriate for the given content_type and attempts
+    # to parse the graph string.
+    #
     # @param [IO, File, String] graph  an input stream to parse
     # @param [#to_s] content_type  the content type for the reader
     #
-    # @return [RDF::Graph]
+    # @return [RDF::Graph] the resulting graph
+    #
+    # @todo handle cases where no content type is given? Does RDF::Reader have 
+    #   tools to help us here?
     def self.parse_graph(graph, content_type)
       reader = RDF::Reader.for(content_type: content_type.to_s)
       raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
