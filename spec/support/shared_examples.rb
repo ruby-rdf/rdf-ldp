@@ -232,6 +232,28 @@ shared_examples 'a Container' do
           end
         end
       end
+
+      context 'with a Slug' do
+        it 'creates resource with Slug' do
+          env['Slug'] = 'snork'
+          expect(subject.request(:POST, 200, {}, env).last.subject_uri)
+            .to eq (subject.subject_uri / env['Slug'])
+        end
+
+        xit 'raises a 409 Conflict when slug is already taken' do
+          env['Slug'] = 'snork'
+          subject.request(:POST, 200, {}, env)
+
+          expect { subject.request(:POST, 200, {}, env) }
+            .to raise_error RDF::LDP::Conflict
+        end
+
+        it 'url-encodes Slug' do
+          env['Slug'] = 'snork maiden'
+          expect(subject.request(:POST, 200, {}, env).last.subject_uri)
+            .to eq (subject.subject_uri / 'snork%20maiden')
+        end
+      end
       
       context 'with graph content' do
         before do
@@ -248,28 +270,6 @@ shared_examples 'a Container' do
         it 'adds a Location header' do
           expect(subject.request(:POST, 200, {}, env)[1]['Location'])
             .to start_with subject.subject_uri.to_s
-        end
-
-        context 'with a Slug' do
-          it 'creates resource with Slug' do
-            env['Slug'] = 'snork'
-            expect(subject.request(:POST, 200, {}, env).last.subject_uri)
-              .to eq (subject.subject_uri / env['Slug'])
-          end
-
-          xit 'raises a 409 Conflict when slug is already taken' do
-            env['Slug'] = 'snork'
-            subject.request(:POST, 200, {}, env)
-
-            expect { subject.request(:POST, 200, {}, env) }
-              .to raise_error RDF::LDP::Conflict
-          end
-
-          it 'url-encodes Slug' do
-            env['Slug'] = 'snork maiden'
-            expect(subject.request(:POST, 200, {}, env).last.subject_uri)
-              .to eq (subject.subject_uri / 'snork%20maiden')
-          end
         end
 
         context 'with quads' do
