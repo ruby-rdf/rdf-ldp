@@ -27,36 +27,42 @@ module RDF::LDP
   class RDFSource < Resource
     attr_accessor :graph, :subject_uri
 
-    ##
-    # Finds an {RDF::Reader} appropriate for the given content_type and attempts
-    # to parse the graph string.
-    #
-    # @param [IO, File, String] graph  an input stream to parse
-    # @param [#to_s] content_type  the content type for the reader
-    #
-    # @return [RDF::Graph] the resulting graph
-    #
-    # @todo handle cases where no content type is given? Does RDF::Reader have 
-    #   tools to help us here?
-    def self.parse_graph(graph, content_type)
-      reader = RDF::Reader.for(content_type: content_type.to_s)
-      raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
-      begin
-        RDF::Graph.new << reader.new(graph)
-      rescue RDF::ReaderError => e
-        raise RDF::LDP::BadRequest, e.message
-      end  
-    end
+    class << self
+      ##
+      # @return [RDF::URI] uri with lexical representation 
+      #   'http://www.w3.org/ns/ldp#RDFSource'
+      #
+      # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
+      def to_uri 
+        RDF::URI 'http://www.w3.org/ns/ldp#RDFSource'
+      end
 
-    ##
-    # @return [RDF::URI] uri with lexical representation 
-    #   'http://www.w3.org/ns/ldp#RDFSource'
-    #
-    # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
-    def self.to_uri 
-      RDF::URI 'http://www.w3.org/ns/ldp#RDFSource'
+      ##
+      # Finds an {RDF::Reader} appropriate for the given content_type and attempts
+      # to parse the graph string.
+      #
+      # @param [IO, File, String] graph  an input stream to parse
+      # @param [#to_s] content_type  the content type for the reader
+      #
+      # @return [RDF::Graph] the resulting graph
+      #
+      # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
+      # @raise [RDF::LDP::BadRequest] if the identified reader can't parse the 
+      #   graph
+      #
+      # @todo handle cases where no content type is given? Does RDF::Reader have 
+      #   tools to help us here?
+      def parse_graph(graph, content_type)
+        reader = RDF::Reader.for(content_type: content_type.to_s)
+        raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
+        begin
+          RDF::Graph.new << reader.new(graph)
+        rescue RDF::ReaderError => e
+          raise RDF::LDP::BadRequest, e.message
+        end  
+      end
     end
-
+    
     def initialize(subject_uri = nil, graph = RDF::Graph.new, &block)
       @subject_uri = subject_uri
       @graph = graph

@@ -4,12 +4,12 @@ describe RDF::LDP::RDFSource do
   it_behaves_like 'an RDFSource'
 
   describe '.parse_graph' do
-    it 'throws UnsupportedMediaType if no reader found' do
+    it 'raises UnsupportedMediaType if no reader found' do
       expect { described_class.parse_graph('graph', 'text/fake') }
         .to raise_error RDF::LDP::UnsupportedMediaType
     end
 
-    it 'throws BadRequest if graph cannot be parsed' do
+    it 'raises BadRequest if graph cannot be parsed' do
       expect { described_class.parse_graph('graph', 'text/plain') }
         .to raise_error RDF::LDP::BadRequest
     end
