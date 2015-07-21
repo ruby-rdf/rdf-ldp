@@ -19,8 +19,9 @@ module RDF::LDP
 
     CONTAINER_CLASSES = { 
       basic:    RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'),
-      direct:   RDF::URI('http://www.w3.org/ns/ldp#DirectContainer'),
-      indirect: RDF::URI('http://www.w3.org/ns/ldp#IndirectContainer') }
+      direct:   RDF::LDP::DirectContainer.to_uri,
+      indirect: RDF::LDP::IndirectContainer.to_uri
+    }
                           
     class << self
       ##
@@ -53,11 +54,12 @@ module RDF::LDP
         return RDFSource if models.empty?
         match = INTERACTION_MODELS.keys.reverse.find { |u| models.include? u }
         
-        if match == RDF::URI('http://www.w3.org/ns/ldp#NonRDFSource')
+        if match == RDF::LDP::NonRDFSource.to_uri
           raise NotAcceptable if 
-            models.include?(RDF::URI('http://www.w3.org/ns/ldp#RDFSource')) ||
-            models.include?(RDF::URI('http://www.w3.org/ns/ldp#DirectContainer')) ||
-            models.include?(RDF::URI('http://www.w3.org/ns/ldp#IndirectContainer')) ||
+            models.include?(RDF::LDP::RDFSource.to_uri) ||
+            models.include?(RDF::LDP::Container.to_uri) ||
+            models.include?(RDF::LDP::DirectContainer.to_uri) ||
+            models.include?(RDF::LDP::IndirectContainer.to_uri) ||
             models.include?(RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'))
         end
 
