@@ -208,15 +208,28 @@ shared_examples 'a Container' do
         end
 
         context 'BasicContainer' do
-          it 'creates a basic container' 
+          it 'creates a basic container' do
+            env['Link'] = 
+              "<http://www.w3.org/ns/ldp#BasicContainer>;rel=\"type\""
+            expect(subject.request(:POST, 200, {}, env).last)
+              .to be_a RDF::LDP::Container
+          end
         end
 
         context 'DirectContainer' do
-          it 'creates a direct container' 
+          it 'creates a direct container' do
+            env['Link'] = "<#{RDF::LDP::DirectContainer.to_uri}>;rel=\"type\""
+            expect(subject.request(:POST, 200, {}, env).last)
+              .to be_a RDF::LDP::DirectContainer
+          end
         end
 
         context 'IndirectContainer' do
-          it 'creates an indirect container' 
+          it 'creates a indirect container' do
+            env['Link'] = "<#{RDF::LDP::IndirectContainer.to_uri}>;rel=\"type\""
+            expect(subject.request(:POST, 200, {}, env).last)
+              .to be_a RDF::LDP::IndirectContainer
+          end
         end
       end
       

@@ -72,7 +72,6 @@ module RDF::LDP
     # @raise [RDF::LDP::Conflict] if the selected slug is already used
     def post(status, headers, env)
       klass = self.class.interaction_model(env.fetch('Link', ''))
-
       id = (subject_uri / env.fetch('Slug') { klass.gen_id }).canonicalize
 
       statements = klass.parse_graph(env['rack.input'], env['CONTENT_TYPE'])

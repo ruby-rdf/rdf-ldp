@@ -63,7 +63,7 @@ module RDF::LDP
             models.include?(RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'))
         end
 
-        INTERACTION_MODELS[match]
+        INTERACTION_MODELS[match] || RDFSource
       end
     end
 

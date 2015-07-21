@@ -68,12 +68,6 @@ describe 'lamprey' do
         expect(last_response.header['Location'])
           .to start_with 'http://example.org/'
       end
-
-      context 'posting Containers' do
-        it 'negotiates LDP interaction models' do
-          
-        end
-      end
     end
   end
 end
