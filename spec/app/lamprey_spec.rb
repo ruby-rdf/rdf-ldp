@@ -18,6 +18,25 @@ describe 'lamprey' do
         get '/'
         expect(last_response.header['Etag']).to be_a String
       end
+      
+      context 'when resource exists' do
+        it 'can get the resource'
+        
+        xit 'can get the resource created with POST' do
+          graph_str = graph.dump(:ntriples)
+
+          post '/', graph_str, 'CONTENT_TYPE' => 'text/plain'
+          uri = last_response.header['Location']
+
+          get uri
+          
+          returned = RDF::Reader.for(:ttl).new(last_response.body).statements.to_a
+
+          graph.statements.each do |s|
+            expect(returned).to include s
+          end
+        end
+      end
     end
 
     describe 'POST' do
@@ -50,23 +69,10 @@ describe 'lamprey' do
           .to start_with 'http://example.org/'
       end
 
-      xit 'can get the created resource' do
-        graph_str = graph.dump(:ntriples)
-
-        post '/', graph_str, 'CONTENT_TYPE' => 'text/plain'
-        uri = last_response.header['Location']
-
-        get uri
-
-        returned = RDF::Reader.for(:ttl).new(last_response.body).statements.to_a
-
-        graph.statements.each do |s|
-          expect(returned).to include s
-        end
-      end
-      
       context 'posting Containers' do
-        it 'negotiates LDP interaction models'
+        it 'negotiates LDP interaction models' do
+          
+        end
       end
     end
   end

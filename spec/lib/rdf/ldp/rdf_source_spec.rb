@@ -26,7 +26,7 @@ describe RDF::LDP::RDFSource do
                                 RDF::DC.creator, 
                                 RDF::Node.new)
       end
-
+      
       expect(described_class.parse_graph(graph.dump(:ttl), 'text/turtle'))
         .to be_isomorphic_with graph
     end

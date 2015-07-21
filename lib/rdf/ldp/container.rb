@@ -1,10 +1,5 @@
 module RDF::LDP
   class Container < RDFSource
-    CONTAINER_CLASSES = { 
-      basic:    RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'),
-      direct:   RDF::URI('http://www.w3.org/ns/ldp#DirectContainer'),
-      indirect: RDF::URI('http://www.w3.org/ns/ldp#IndirectContainer') }
-                          
     ##
     # @return [RDF::URI] uri with lexical representation 
     #   'http://www.w3.org/ns/ldp#Container'
@@ -65,17 +60,27 @@ module RDF::LDP
     end
 
     private
-    
+
+    ##
+    # Handles a POST request. Parses a graph in the body of `env` and treats all
+    # statements in that graph (irrespective of any graph names) as constituting
+    # the initial state of the created source.
+    #
+    # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
+    # @raise [RDF::LDP::BadRequest] if the identified reader can't parse the 
+    #   graph
+    # @raise [RDF::LDP::Conflict] if the selected slug is already used
     def post(status, headers, env)
-      id = subject_uri / SecureRandom.uuid
-      
-      created = RDFSource.new(id) do |resource|
-        resource.graph << RDFSource.parse_graph(env['rack.input'], 
-                                                env['CONTENT_TYPE'])
+      klass = self.class.interaction_model(env.fetch('Link', ''))
+
+      id = (subject_uri / env.fetch('Slug') { klass.gen_id }).canonicalize
+
+      statements = klass.parse_graph(env['rack.input'], env['CONTENT_TYPE'])
+      created = klass.new(id) do |resource|
+        resource.graph << statements
       end
       
       add_membership_triple(created)
-
       headers['Location'] = created.subject_uri.to_s
       [201, headers, created]
     end

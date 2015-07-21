@@ -44,11 +44,9 @@ module RDF::LDP
       # @param [IO, File, String] graph  an input stream to parse
       # @param [#to_s] content_type  the content type for the reader
       #
-      # @return [RDF::Graph] the resulting graph
+      # @return [RDF::Enumerable] the statements in the resulting graph
       #
       # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
-      # @raise [RDF::LDP::BadRequest] if the identified reader can't parse the 
-      #   graph
       #
       # @todo handle cases where no content type is given? Does RDF::Reader have 
       #   tools to help us here?
@@ -60,6 +58,16 @@ module RDF::LDP
         rescue RDF::ReaderError => e
           raise RDF::LDP::BadRequest, e.message
         end  
+      end
+      
+      ##
+      # Creates an unique id (URI Slug) for a resource.
+      #
+      # @note the current implementation uses {SecureRandom#uuid}.
+      #
+      # @return [String] a unique ID
+      def gen_id
+        SecureRandom.uuid
       end
     end
     

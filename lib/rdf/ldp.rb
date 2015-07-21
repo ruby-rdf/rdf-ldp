@@ -2,10 +2,12 @@ require 'rdf'
 
 module RDF
   module LDP
-    autoload :Resource,     'rdf/ldp/resource'
-    autoload :RDFSource,    'rdf/ldp/rdf_source'
-    autoload :NonRDFSource, 'rdf/ldp/non_rdf_source'
-    autoload :Container,    'rdf/ldp/container'
+    autoload :Resource,             'rdf/ldp/resource'
+    autoload :RDFSource,            'rdf/ldp/rdf_source'
+    autoload :NonRDFSource,         'rdf/ldp/non_rdf_source'
+    autoload :Container,            'rdf/ldp/container'
+    autoload :DirectContainer,      'rdf/ldp/direct_container'
+    autoload :IndirectContainer,    'rdf/ldp/indirect_container'
 
     CONSTRAINED_BY = 
       RDF::URI.new('http://www.w3.org/ns/ldp#constrainedBy').freeze
@@ -33,6 +35,14 @@ module RDF
 
     class MethodNotAllowed < RequestError
       STATUS = 405
+    end
+
+    class NotAcceptable < RequestError
+      STATUS = 406
+    end
+
+    class Conflict < RequestError
+      STATUS = 409
     end
 
     class UnsupportedMediaType < RequestError

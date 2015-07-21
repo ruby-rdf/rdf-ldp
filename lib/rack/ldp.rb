@@ -135,7 +135,7 @@ module Rack
           response.is_a? RDF::LDP::Resource
 
         headers['Link'] = 
-          ([headers['Link']] + link_headers(response)).compact.join("\n")
+          ([headers['Link']] + link_headers(response)).compact.join(",")
 
         etag = etag(response)
         headers['Etag'] ||= etag if etag

@@ -202,6 +202,9 @@ shared_examples 'a Container' do
 
       context 'with Container interaction model' do
         it 'creates a basic container' do
+          env['Link'] = "<#{RDF::LDP::Container.to_uri}>;rel=\"type\""
+          expect(subject.request(:POST, 200, {}, env).last)
+            .to be_a RDF::LDP::Container
         end
 
         context 'BasicContainer' do
@@ -232,6 +235,47 @@ shared_examples 'a Container' do
         it 'adds a Location header' do
           expect(subject.request(:POST, 200, {}, env)[1]['Location'])
             .to start_with subject.subject_uri.to_s
+        end
+
+        context 'with a Slug' do
+          it 'creates resource with Slug' do
+            env['Slug'] = 'snork'
+            expect(subject.request(:POST, 200, {}, env).last.subject_uri)
+              .to eq (subject.subject_uri / env['Slug'])
+          end
+
+          xit 'raises a 409 Conflict when slug is already taken' do
+            env['Slug'] = 'snork'
+            subject.request(:POST, 200, {}, env)
+
+            expect { subject.request(:POST, 200, {}, env) }
+              .to raise_error RDF::LDP::Conflict
+          end
+
+          it 'url-encodes Slug' do
+            env['Slug'] = 'snork maiden'
+            expect(subject.request(:POST, 200, {}, env).last.subject_uri)
+              .to eq (subject.subject_uri / 'snork%20maiden')
+          end
+        end
+
+        context 'with quads' do
+          let(:graph) do
+            RDF::Graph.new(subject.subject_uri, data: RDF::Repository.new)
+          end
+
+          let(:env) do
+            { 'rack.input' => graph.dump(:nquads),
+              'CONTENT_TYPE' => 'application/n-quads' }
+          end
+
+          it 'parses graph into created resource without regard for context' do
+            context_free_graph = RDF::Graph.new
+            context_free_graph << graph.statements
+
+            expect(subject.request(:POST, 200, {}, env).last.graph)
+              .to be_isomorphic_with context_free_graph
+          end
         end
       end
     end

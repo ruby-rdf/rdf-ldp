@@ -29,6 +29,9 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency     'json-ld'
   gem.add_runtime_dependency     'sinatra'
 
+  gem.add_runtime_dependency     'link_header'
+
+
   gem.add_development_dependency 'rdf-spec',    '~> 1.1', '>= 1.1.13'
   gem.add_development_dependency 'rdf-rdfxml',  '~> 1.1'
   gem.add_development_dependency 'rdf-rdfa',    '~> 1.1'
