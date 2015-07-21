@@ -228,6 +228,11 @@ shared_examples 'a Container' do
           expect(subject.request(:POST, 200, {}, env).last.graph)
             .to be_isomorphic_with graph
         end
+
+        it 'adds a Location header' do
+          expect(subject.request(:POST, 200, {}, env)[1]['Location'])
+            .to start_with subject.subject_uri.to_s
+        end
       end
     end
   end

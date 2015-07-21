@@ -68,13 +68,15 @@ module RDF::LDP
     
     def post(status, headers, env)
       id = subject_uri / SecureRandom.uuid
-
+      
       created = RDFSource.new(id) do |resource|
         resource.graph << RDFSource.parse_graph(env['rack.input'], 
                                                 env['CONTENT_TYPE'])
       end
-
+      
       add_membership_triple(created)
+
+      headers['Location'] = created.subject_uri.to_s
       [201, headers, created]
     end
   end
