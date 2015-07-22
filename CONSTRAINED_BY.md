@@ -5,6 +5,13 @@ The RDF::LDP library, middleware, and the Lamprey server are all works in progre
 
 In the meanwhile: buyer beware.
 
+RDF Types
+---------
+
+The `RDF::LDP` core does not set types for resources. Complying with [LDP 4.3.1.2](http://www.w3.org/TR/ldp/#h-ldprs-gen-atleast1rdftype) is left to the client (or the server implementer). Interaction models are expressed as Link headers, and the client may infer rdf:types in accordance with the specification.
+
+Similarly, we do not enforce the recommendation of [LDP 5.2.1.3](http://www.w3.org/TR/ldp/#h-ldpc-nordfcontainertypes) for containers not to have type ` rdf:Bag`, `rdf:Seq` or `rdf:List`. This is left to the client (or server implementer) to manage.
+
 POST/PUT Requests
 ------------------
 
