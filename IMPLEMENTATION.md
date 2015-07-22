@@ -16,8 +16,8 @@ LDP Implementation Overview
  progress.
  - __4.2.1.4__: Link headers for the resquested resource are added by
  `Rack::LDP::Headers` middleware.
- - __4.2.1.5__: [NON-COMPLIANT] Relative URI resolution in RDF graphs is
- unimplemented. [TODO]
+ - __4.2.1.5__: Relative URI resolution in RDF graphs is handled with
+ `RDF::Reader#base_uri`. This is tested for Turtle input.
  - __4.2.1.6__: Constraints are published in the {CONSTRAINED_BY.md} file in
  this repository. Additional, implementation specific constraints should be
  published by the server implementer and added to the headers for the server.

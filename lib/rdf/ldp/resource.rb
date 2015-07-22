@@ -68,6 +68,50 @@ module RDF::LDP
     end
 
     ##
+    # @abstract creates the resource
+    #
+    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    #   `rack.input` key) used to determine the Resource's initial state.
+    # @param [#to_s] content_type  a MIME content_type used to interpret the
+    #   input. This MAY be used as a content type for the created Resource 
+    #   (especially for `LDP::NonRDFSource`s).
+    #
+    # @raise [RDF::LDP::RequestError] when creation fails. May raise various 
+    #   subclasses for the appropriate response codes.
+    #
+    # @return [RDF::LDP::Resource] self
+    def create(input, content_type)
+      raise NotImplementedError
+    end
+
+    ##
+    # @abstract update the resource
+    #
+    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    #   `rack.input` key) used to determine the Resource's new state.
+    # @param [#to_s] content_type  a MIME content_type used to interpret the
+    #   input.
+    #
+    # @raise [RDF::LDP::RequestError] when update fails. May raise various 
+    #   subclasses for the appropriate response codes.
+    #
+    # @return [RDF::LDP::Resource] self
+    def update(input, content_type)
+      raise NotImplementedError
+    end
+
+    ##
+    # @abstract mark the resource as deleted
+    #
+    # @raise [RDF::LDP::RequestError] when delete fails. May raise various 
+    #   subclasses for the appropriate response codes.
+    #
+    # @return [RDF::LDP::Resource] self
+    def delete
+      raise NotImplementedError
+    end
+
+    ##
     # @return [Array<Symbol>] a list of HTTP methods allowed by this resource.
     def allowed_methods
       [:GET, :POST, :PUT, :DELETE, :PATCH, :OPTIONS, :HEAD].select do |m| 

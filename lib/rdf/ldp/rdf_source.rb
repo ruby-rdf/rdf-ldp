@@ -38,29 +38,6 @@ module RDF::LDP
       end
 
       ##
-      # Finds an {RDF::Reader} appropriate for the given content_type and attempts
-      # to parse the graph string.
-      #
-      # @param [IO, File, String] graph  an input stream to parse
-      # @param [#to_s] content_type  the content type for the reader
-      #
-      # @return [RDF::Enumerable] the statements in the resulting graph
-      #
-      # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
-      #
-      # @todo handle cases where no content type is given? Does RDF::Reader have 
-      #   tools to help us here?
-      def parse_graph(graph, content_type)
-        reader = RDF::Reader.for(content_type: content_type.to_s)
-        raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
-        begin
-          RDF::Graph.new << reader.new(graph)
-        rescue RDF::ReaderError => e
-          raise RDF::LDP::BadRequest, e.message
-        end  
-      end
-      
-      ##
       # Creates an unique id (URI Slug) for a resource.
       #
       # @note the current implementation uses {SecureRandom#uuid}.
@@ -76,6 +53,27 @@ module RDF::LDP
       @graph = graph
 
       yield self if block_given?
+      self
+    end
+
+    ##
+    # Creates the RDFSource, populating its graph from the input given
+    #
+    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    #   `rack.input` key) used to determine the Resource's initial state.
+    # @param [#to_s] content_type  a MIME content_type used to read the graph.
+    #
+    # @raise [RDF::LDP::RequestError] 
+    # @raise [RDF::LDP::UnsupportedMediaType] if no reader can be found for the 
+    #   graph
+    # @raise [RDF::LDP::BadRequest] if the identified reader can't parse the 
+    #   graph
+    # @raise [RDF::LDP::Conflict] if the RDFSource already exists
+    #
+    # @return [RDF::LDP::Resource] self
+    def create(input, content_type)
+      statements = parse_graph(input, content_type)
+      graph << statements
       self
     end
 
@@ -125,6 +123,31 @@ module RDF::LDP
 
     def to_response
       graph
+    end
+
+    private
+
+    ##
+    # Finds an {RDF::Reader} appropriate for the given content_type and attempts
+    # to parse the graph string.
+    #
+    # @param [IO, File, String] graph  an input stream to parse
+    # @param [#to_s] content_type  the content type for the reader
+    #
+    # @return [RDF::Enumerable] the statements in the resulting graph
+    #
+    # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
+    #
+    # @todo handle cases where no content type is given? Does RDF::Reader have 
+    #   tools to help us here?
+    def parse_graph(graph, content_type)
+      reader = RDF::Reader.for(content_type: content_type.to_s)
+      raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
+      begin
+        RDF::Graph.new << reader.new(graph, base_uri: subject_uri)
+      rescue RDF::ReaderError => e
+        raise RDF::LDP::BadRequest, e.message
+      end  
     end
   end
 end

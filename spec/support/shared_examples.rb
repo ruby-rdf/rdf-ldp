@@ -21,6 +21,24 @@ shared_examples 'a Resource' do
     end
   end
 
+  describe '#create' do
+    it 'accepts two args' do
+      expect(described_class.instance_method(:create).arity).to eq 2
+    end
+  end
+
+  describe '#update' do
+    it 'accepts two args' do
+      expect(described_class.instance_method(:update).arity).to eq 2
+    end
+  end
+
+  describe '#delete' do
+    it 'accepts no args' do
+      expect(described_class.instance_method(:delete).arity).to eq 0
+    end
+  end
+
   describe '#to_response' do
     it 'returns an object that responds to #each' do
       expect(subject.to_response).to respond_to :each
@@ -58,6 +76,44 @@ shared_examples 'an RDFSource' do
   it { is_expected.to be_rdf_source }
   it { is_expected.not_to be_non_rdf_source }
 
+  describe '#parse_graph' do
+    it 'raises UnsupportedMediaType if no reader found' do
+      expect { subject.send(:parse_graph, 'graph', 'text/fake') }
+        .to raise_error RDF::LDP::UnsupportedMediaType
+    end
+
+    it 'raises BadRequest if graph cannot be parsed' do
+      expect { subject.send(:parse_graph, 'graph', 'text/plain') }
+        .to raise_error RDF::LDP::BadRequest
+    end
+
+    describe 'parsing the graph' do
+      let(:graph) { RDF::Graph.new }
+
+      before do
+        graph << RDF::Statement(RDF::URI('http://ex.org/moomin'), 
+                                RDF.type, 
+                                RDF::FOAF.Person)
+
+        10.times do
+          graph << RDF::Statement(RDF::Node.new,
+                                  RDF::DC.creator, 
+                                  RDF::Node.new)
+        end
+      end
+
+      it 'parses turtle' do
+        expect(subject.send(:parse_graph, graph.dump(:ttl), 'text/turtle'))
+          .to be_isomorphic_with graph
+      end
+
+      it 'parses ntriples' do
+        expect(subject.send(:parse_graph, graph.dump(:ntriples), 'text/plain'))
+          .to be_isomorphic_with graph
+      end
+    end
+  end
+
   describe '#etag' do
     before do
       subject.graph << statement
@@ -78,6 +134,43 @@ shared_examples 'an RDFSource' do
       subject.graph << RDF::Statement(RDF::Node.new, RDF::DC.title, 'mymble')
       expect(subject.etag).not_to eq other.etag
     end
+  end
+
+  describe '#create' do
+    let(:subject) { described_class.new(RDF::URI('http://ex.org/m')) }
+    let(:graph) { RDF::Graph.new }
+    
+    it 'is implemented' do
+      subject.create(graph.dump(:ttl), 'text/turtle')
+    end
+
+    it 'interprets NULL URI as this resource' do
+      graph << RDF::Statement(RDF::URI(), RDF::DC.title, 'moomin')
+
+      expect(subject.create(graph.dump(:ttl), 'text/turtle').graph)
+        .to have_statement RDF::Statement(subject.subject_uri, 
+                                          RDF::DC.title, 
+                                          'moomin')
+    end
+
+    it 'interprets Relatives URI as this based on this resource' do
+      graph << RDF::Statement(subject.subject_uri, 
+                              RDF::DC.isPartOf, 
+                              RDF::URI('#moomin'))
+      
+      expect(subject.create(graph.dump(:ttl), 'text/turtle').graph)
+        .to have_statement RDF::Statement(subject.subject_uri,
+                                          RDF::DC.isPartOf, 
+                                          subject.subject_uri / '#moomin')
+    end
+  end
+
+  describe '#update' do
+    it 'is implemented'
+  end
+
+  describe '#delete' do
+    it 'is implemented'
   end
 
   describe '#graph' do

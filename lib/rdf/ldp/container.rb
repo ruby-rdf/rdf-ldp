@@ -66,18 +66,17 @@ module RDF::LDP
     # statements in that graph (irrespective of any graph names) as constituting
     # the initial state of the created source.
     #
-    # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
-    # @raise [RDF::LDP::BadRequest] if the identified reader can't parse the 
-    #   graph
-    # @raise [RDF::LDP::Conflict] if the selected slug is already used
+    # @raise [RDF::LDP::RequestError] when creation fails
+    #
+    # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response 
+    #   array.
     def post(status, headers, env)
       klass = self.class.interaction_model(env.fetch('Link', ''))
       id = (subject_uri / env.fetch('Slug') { klass.gen_id }).canonicalize
 
-      statements = klass.parse_graph(env['rack.input'], env['CONTENT_TYPE'])
-      created = klass.new(id) do |resource|
-        resource.graph << statements
-      end
+
+      # statements = klass.parse_graph
+      created = klass.new(id).create(env['rack.input'], env['CONTENT_TYPE'])
       
       add_membership_triple(created)
       headers['Location'] = created.subject_uri.to_s
