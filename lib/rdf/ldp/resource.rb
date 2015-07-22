@@ -181,8 +181,8 @@ module RDF::LDP
     def request(method, status, headers, env)
       begin
         send(method.to_sym.downcase, status, headers, env)
-      rescue NoMethodError, NotImplementedError => e
-        raise MethodNotAllowed, method
+      rescue NotImplementedError => e
+        raise MethodNotAllowed, method 
       end
     end
 

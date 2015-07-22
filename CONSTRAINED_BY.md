@@ -25,6 +25,8 @@ Requests with conflicting Link headers (e.g. `ldp:Container` & `ldp:NonRDFSource
 
 Slugs are accepted to POST requests. Slugs are URL-encoded, and treated as a strong request to generate a URI of form [container-uri]/[url-encoded-Slug]. If there is already a resource at the requested address, the server will respond `409 Conflict`.
 
+Empty strings are treated as if no Slug was given.
+
 Named Graphs
 -------------
 

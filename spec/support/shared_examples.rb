@@ -52,6 +52,8 @@ shared_examples 'a Resource' do
     end
 
     it 'raises MethodNotAllowed when method is unimplemented' do
+      allow(subject).to receive(:not_implemented)
+                         .and_raise NotImplementedError
       expect { subject.request(:not_implemented, 200, {}, {}) }
         .to raise_error(RDF::LDP::MethodNotAllowed)
     end
@@ -343,6 +345,12 @@ shared_examples 'a Container' do
           env['Slug'] = 'snork'
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
             .to eq (subject.subject_uri / env['Slug'])
+        end
+
+        it 'mints a uri when empty Slug is given' do
+          env['Slug'] = ''
+          expect(subject.request(:POST, 200, {}, env).last.subject_uri)
+            .to be_starts_with (subject.subject_uri)
         end
 
         xit 'raises a 409 Conflict when slug is already taken' do

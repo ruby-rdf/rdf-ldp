@@ -72,10 +72,13 @@ module RDF::LDP
     #   array.
     def post(status, headers, env)
       klass = self.class.interaction_model(env.fetch('Link', ''))
-      id = (subject_uri / env.fetch('Slug') { klass.gen_id }).canonicalize
+      slug = env['Slug']
+      slug = klass.gen_id if slug.nil? || slug.empty?
+      raise(NotAcceptable('Refusing to create resource with `#` in Slug')) if 
+        slug.include? '#'
 
+      id = (subject_uri / slug).canonicalize
 
-      # statements = klass.parse_graph
       created = klass.new(id).create(env['rack.input'], env['CONTENT_TYPE'])
       
       add_membership_triple(created)
