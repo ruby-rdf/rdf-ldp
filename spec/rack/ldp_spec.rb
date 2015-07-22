@@ -96,7 +96,7 @@ describe 'middleware' do
     let(:results) { resource }
 
     it 'sends the request message' do
-      methods = [:GET, :POST, :PUT, :DELETE, :PATCH, :OPTIONS]
+      methods = [:GET, :POST, :PUT, :DELETE, :PATCH, :OPTIONS, :HEAD]
 
       methods.each do |m|
         expect(results)

@@ -64,5 +64,19 @@ describe RDF::LDP::Resource do
           .to eq [200, {'abc' => 'def'}, subject]
       end
     end
+
+    context 'with :HEAD' do
+      it 'gives empty response body' do
+        expect(subject.request(:HEAD, 200, {'abc' => 'def'}, {}))
+          .to eq [200, {'abc' => 'def'}, []]
+      end
+    end
+
+    context 'with :OPTIONS' do
+      it 'gives empty response body' do
+        expect(subject.request(:OPTIONS, 200, {'abc' => 'def'}, {}))
+          .to eq [200, {'abc' => 'def'}, []]
+      end
+    end
   end
 end

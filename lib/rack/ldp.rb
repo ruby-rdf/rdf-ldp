@@ -137,6 +137,8 @@ module Rack
         headers['Link'] = 
           ([headers['Link']] + link_headers(response)).compact.join(",")
 
+        headers['Allow'] = response.allowed_methods.join(', ')
+
         etag = etag(response)
         headers['Etag'] ||= etag if etag
         

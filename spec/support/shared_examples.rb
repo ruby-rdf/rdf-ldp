@@ -9,6 +9,18 @@ shared_examples 'a Resource' do
   it { is_expected.to respond_to :rdf_source? }
   it { is_expected.to respond_to :non_rdf_source? }
 
+  describe '#allowed_methods' do
+    it 'responds to all methods returned' do
+      subject.allowed_methods.each do |method|
+        expect(subject.respond_to?(method.downcase, true)).to be true
+      end
+    end
+
+    it 'includes the MUST methods' do
+      expect(subject.allowed_methods).to include(*[:GET, :OPTIONS, :HEAD])
+    end
+  end
+
   describe '#to_response' do
     it 'returns an object that responds to #each' do
       expect(subject.to_response).to respond_to :each

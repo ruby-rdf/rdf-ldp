@@ -68,6 +68,14 @@ module RDF::LDP
     end
 
     ##
+    # @return [Array<Symbol>] a list of HTTP methods allowed by this resource.
+    def allowed_methods
+      [:GET, :POST, :PUT, :DELETE, :PATCH, :OPTIONS, :HEAD].select do |m| 
+        respond_to?(m.downcase, true)
+      end
+    end
+
+    ##
     # @return [Boolean] whether this is an ldp:Resource
     def ldp_resource?
       true
