@@ -42,11 +42,11 @@ describe 'lamprey' do
           end
         end
 
-        # it 'is not a container' do
-        #   get @uri
-        #   expect(last_response.header['Link'])
-        #     .not_to include 'http://www.w3.org/ns/ldp#BasicContainer'
-        # end
+        it 'is not a container' do
+          get @uri
+          expect(last_response.header['Link'])
+            .not_to include 'http://www.w3.org/ns/ldp#BasicContainer'
+        end
       end
     end
 
