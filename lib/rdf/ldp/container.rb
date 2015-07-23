@@ -3,8 +3,8 @@ module RDF::LDP
     ##
     # @return [RDF::URI] uri with lexical representation 
     #   'http://www.w3.org/ns/ldp#Container'
-    def self.to_uri 
-      RDF::URI 'http://www.w3.org/ns/ldp#Container'
+    def self.to_uri
+      RDF::Vocab::LDP.Container
     end
 
     ##
@@ -30,7 +30,7 @@ module RDF::LDP
     # @return [RDF::URI] the membership predicate
     # @see http://www.w3.org/TR/ldp/#dfn-membership-predicate
     def membership_predicate
-      RDF::URI('http://www.w3.org/ns/ldp#contains')
+      RDF::Vocab::LDP.contains
     end
 
     ##
@@ -47,7 +47,7 @@ module RDF::LDP
     # @param [RDF::Term] a new member for this container
     # @return [Container] self
     def add_membership_triple(resource)
-      graph << make_membership_triple(resource)
+      graph << make_membership_triple(resource.to_uri)
       self
     end
 

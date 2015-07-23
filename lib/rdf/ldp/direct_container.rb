@@ -1,7 +1,7 @@
 module RDF::LDP
   class DirectContainer < Container
     def self.to_uri
-      RDF::URI('http://www.w3.org/ns/ldp#DirectContainer')
+      RDF::Vocab::LDP.DirectContainer
     end
   end
 end

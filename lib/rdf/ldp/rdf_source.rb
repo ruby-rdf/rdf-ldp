@@ -34,7 +34,7 @@ module RDF::LDP
       #
       # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
       def to_uri 
-        RDF::URI 'http://www.w3.org/ns/ldp#RDFSource'
+        RDF::Vocab::LDP.RDFSource
       end
     end
     

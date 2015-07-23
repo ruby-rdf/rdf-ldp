@@ -24,8 +24,7 @@ LDP Implementation Overview
 
 ### 4.2.2 HTTP GET
 
- - __4.2.2.1__: LDPRs support GET. Retrieving existing persisted resources
- is a work in progress. [TODO]
+ - __4.2.2.1__: LDPRs support GET.
  - __4.2.2.2__: The "Allow" headers specified for OPTIONS are returned with
  all requests for a given resource; this is handeled by the `Rack::LDP::Headers`
  middleware.
@@ -143,11 +142,12 @@ LDP Implementation Overview
  a resource at [container-uri]/[Slug]. If a resource exists at that address the
  request will fail.
  - __5.2.3.11__: [NON-COMPLIANT] handling for uri reuse will be addressed with
- persistence and deletion. [TODO]
+ deletion. [TODO]
  - __5.2.3.12__: POST requests to create LDP-NRs currently fail. Support is
  planned for future development [TODO].
- - __5.2.3.13__: [NON-COMPLIANT] Accept-Post headers are missing. Inclusion is
- planned for future development. [TODO]
+ - __5.2.3.13__: Accept-Post headers are added to all responses from resources
+ that accept post requests. Content types are added dynamically when new
+ RDF::Readers are loaded.
  - __5.2.3.14__: See: __5.2.3.5__.
 
 ### 5.2.4 HTTP PUT

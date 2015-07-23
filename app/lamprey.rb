@@ -8,16 +8,18 @@ use Rack::LDP::Requests
 use Rack::LDP::Headers
 
 repository = RDF::Repository.new
-RDF::LDP::Container.new(RDF::URI('http://example.org/'), repository).create('', 'text/plain')
+RDF::LDP::Container.new(RDF::URI('http://example.org/'), repository)
+  .create('', 'text/plain')
 
 get '/*' do
   RDF::LDP::Resource.find(RDF::URI(request.url), repository)
 end
 
-post '/' do
-  RDF::LDP::Container.new(RDF::URI(request.url), repository)
+post '/*' do
+  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
 end
 
-# options '/*' do
-# end
+options '/*' do
+  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+end
 

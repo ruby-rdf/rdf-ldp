@@ -136,8 +136,10 @@ module Rack
 
         headers['Link'] = 
           ([headers['Link']] + link_headers(response)).compact.join(",")
-
+        
         headers['Allow'] = response.allowed_methods.join(', ')
+        headers['Accept-Post'] = accept_post if 
+          response.respond_to?(:post, true)
 
         etag = etag(response)
         headers['Etag'] ||= etag if etag
@@ -153,6 +155,12 @@ module Rack
       def etag(response)
         return response.etag if response.respond_to? :etag
         nil
+      end
+
+      ##
+      # @return [String] the Accept-Post headers
+      def accept_post
+        RDF::Reader.map { |klass| klass.format.content_type }.flatten.join(', ')
       end
       
       ##

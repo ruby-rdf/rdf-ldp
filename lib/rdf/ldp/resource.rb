@@ -8,7 +8,7 @@ module RDF::LDP
     # requests; e.g. if a client sends a request with Resource, RDFSource, and
     # BasicContainer headers, the server gives a basic container.
     INTERACTION_MODELS = {
-      RDF::URI('http://www.w3.org/ns/ldp#Resource') => RDF::LDP::RDFSource,
+      RDF::Vocab::LDP.Resource => RDF::LDP::RDFSource,
       RDF::LDP::RDFSource.to_uri => RDF::LDP::RDFSource,
       RDF::LDP::Container.to_uri => RDF::LDP::Container,
       RDF::URI('http://www.w3.org/ns/ldp#BasicContainer') => RDF::LDP::Container,
@@ -18,7 +18,7 @@ module RDF::LDP
     }.freeze
 
     CONTAINER_CLASSES = { 
-      basic:    RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'),
+      basic:    RDF::Vocab::LDP.BasicContainer,
       direct:   RDF::LDP::DirectContainer.to_uri,
       indirect: RDF::LDP::IndirectContainer.to_uri
     }
@@ -33,7 +33,7 @@ module RDF::LDP
       #
       # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource
       def to_uri 
-        RDF::URI 'http://www.w3.org/ns/ldp#Resource'
+        RDF::Vocab::LDP.Resource
       end
 
       ##
@@ -152,7 +152,7 @@ module RDF::LDP
     #   subclasses for the appropriate response codes.
     #
     # @return [RDF::LDP::Resource] self
-    def delete
+    def destroy
       raise NotImplementedError
     end
 

@@ -6,7 +6,7 @@ module RDF::LDP
     #
     # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source
     def self.to_uri 
-      RDF::URI 'http://www.w3.org/ns/ldp#NonRDFSource'
+      RDF::Vocab::LDP.NonRDFSource
     end
 
     ##

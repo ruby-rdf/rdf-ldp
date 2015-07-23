@@ -26,6 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency     'rack-linkeddata'
   gem.add_runtime_dependency     'rdf', '~> 1.1'
   gem.add_runtime_dependency     'rdf-turtle', '~> 1.1'
+  gem.add_runtime_dependency     'rdf-vocab'
   gem.add_runtime_dependency     'json-ld'
   gem.add_runtime_dependency     'sinatra'
 

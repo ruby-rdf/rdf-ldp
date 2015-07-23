@@ -50,6 +50,31 @@ describe 'lamprey' do
       end
     end
 
+    describe 'OPTIONS' do
+      it 'has Allow headers' do
+        get '/'
+        expect(last_response.header['Allow'])
+          .to include('GET', 'POST', 'OPTIONS', 'HEAD')
+      end
+
+      it 'has Accept-Post headers' do
+        get '/'
+        expect(last_response['Accept-Post']).to include 'text/turtle'
+      end
+
+      context 'existing resource' do
+        before do
+          post '/', '', 'CONTENT_TYPE' => 'text/plain', 'Slug' => 'moomin'
+        end
+
+        it 'has Allow for resource type' do
+          options '/'
+          expect(last_response.header['Allow'])
+            .to include('GET', 'OPTIONS', 'HEAD')
+        end
+      end
+    end
+
     describe 'POST' do
       let(:graph) { RDF::Graph.new }
 
@@ -84,9 +109,9 @@ describe 'lamprey' do
         it 'accepts a Slug' do
           post '/', graph.dump(:ttl), 
                'CONTENT_TYPE' => 'text/plain', 
-               'Slug' => 'moomin'
+               'Slug' => 'moominpapa'
           expect(last_response.header['Location'])
-            .to eq 'http://example.org/moomin'
+            .to eq 'http://example.org/moominpapa'
         end
 
         it 'rejects slugs with #' do

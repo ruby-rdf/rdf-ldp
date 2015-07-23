@@ -1,4 +1,5 @@
 require 'rdf'
+require 'rdf/vocab'
 
 module RDF
   module LDP
@@ -9,8 +10,7 @@ module RDF
     autoload :DirectContainer,      'rdf/ldp/direct_container'
     autoload :IndirectContainer,    'rdf/ldp/indirect_container'
 
-    CONSTRAINED_BY = 
-      RDF::URI.new('http://www.w3.org/ns/ldp#constrainedBy').freeze
+    CONSTRAINED_BY = RDF::Vocab::LDP.constrainedBy
 
     ##
     # A base class for HTTP request errors.

@@ -49,9 +49,9 @@ shared_examples 'a Resource' do
     end
   end
 
-  describe '#delete' do
+  describe '#destroy' do
     it 'accepts no args' do
-      expect(described_class.instance_method(:delete).arity).to eq 0
+      expect(described_class.instance_method(:destroy).arity).to eq 0
     end
   end
 
@@ -199,7 +199,7 @@ shared_examples 'an RDFSource' do
     it 'is implemented'
   end
 
-  describe '#delete' do
+  describe '#destory' do
     it 'is implemented'
   end
 
@@ -296,6 +296,12 @@ shared_examples 'a Container' do
     it 'statement subject *or* object is #subject_uri' do
       sub = subject.make_membership_triple(resource).subject
       obj = subject.make_membership_triple(resource).object
+      expect([sub, obj]).to include subject.subject_uri
+    end
+
+    it 'converts Resource classes to URI' do
+      sub = subject.make_membership_triple(subject).subject
+      obj = subject.make_membership_triple(subject).object
       expect([sub, obj]).to include subject.subject_uri
     end
   end
