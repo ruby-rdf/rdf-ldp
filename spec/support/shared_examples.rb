@@ -383,6 +383,13 @@ shared_examples 'a Container' do
             .to raise_error RDF::LDP::Conflict
         end
 
+        it 'raises a 406 NotAcceptable if slug has a uri fragment `#`' do
+          env['Slug'] = 'snork#maiden'
+
+          expect { subject.request(:POST, 200, {}, env) }
+            .to raise_error RDF::LDP::NotAcceptable
+        end
+
         it 'url-encodes Slug' do
           env['Slug'] = 'snork maiden'
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)

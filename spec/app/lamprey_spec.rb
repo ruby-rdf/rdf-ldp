@@ -79,6 +79,30 @@ describe 'lamprey' do
         expect(last_response.header['Location'])
           .to start_with 'http://example.org/'
       end
+
+      context 'with Slug' do
+        it 'accepts a Slug' do
+          post '/', graph.dump(:ttl), 
+               'CONTENT_TYPE' => 'text/plain', 
+               'Slug' => 'moomin'
+          expect(last_response.header['Location'])
+            .to eq 'http://example.org/moomin'
+        end
+
+        it 'rejects slugs with #' do
+          post '/', graph.dump(:ttl), 
+               'CONTENT_TYPE' => 'text/plain', 
+               'Slug' => 'moomin#papa'
+          expect(last_response.status).to eq 406
+        end
+
+        it 'gives Conflict if slug is taken' do
+          post '/', graph.dump(:ttl), 
+               'CONTENT_TYPE' => 'text/plain', 
+               'Slug' => 'moomin'
+          expect(last_response.status).to eq 409
+        end
+      end
     end
   end
 end

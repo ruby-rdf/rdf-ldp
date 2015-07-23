@@ -74,7 +74,7 @@ module RDF::LDP
       klass = self.class.interaction_model(env.fetch('Link', ''))
       slug = env['Slug']
       slug = klass.gen_id if slug.nil? || slug.empty?
-      raise(NotAcceptable('Refusing to create resource with `#` in Slug')) if 
+      raise NotAcceptable.new('Refusing to create resource with `#` in Slug') if 
         slug.include? '#'
 
       id = (subject_uri / slug).canonicalize
