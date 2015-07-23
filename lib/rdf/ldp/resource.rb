@@ -47,10 +47,27 @@ module RDF::LDP
       end
 
       ##
-      # @return [Resource]
-      # def find(uri, data)
-      #   require 'pry'; binding.pry
-      # end
+      # Finds an existing resource and 
+      # 
+      # @param [RDF::URI] uri  the URI for the resource to be found
+      # @param [RDF::Repository] data  a repostiory instance in which to find 
+      #   the resource.
+      #
+      # @raise [RDF::LDP::NotFound] when the resource doesn't exist
+      #
+      # @return [RDF::LDP::Resource] a resource instance matching the given URI;
+      #   usually of a subclass 
+      #   from the interaction models.
+      def find(uri, data)
+        graph = RDF::Graph.new(uri / '#meta', data: data)
+        raise NotFound if graph.empty?
+
+        rdf_class = graph.query([uri, RDF.type, :o]).first
+        klass = INTERACTION_MODELS[rdf_class.object] if rdf_class
+        klass ||= RDFSource
+        
+        klass.new(uri, data) 
+      end
 
       ##
       # Retrieves the correct interaction model from the Link headers.

@@ -6,6 +6,41 @@ describe RDF::LDP::Resource do
   subject { described_class.new(uri) }
   let(:uri) { RDF::URI 'http://example.org/moomin' }
 
+  describe '.find' do
+    it 'raises NotFound when the resource does not exist' do
+      expect { described_class.find(uri, RDF::Repository.new) }
+        .to raise_error RDF::LDP::NotFound
+    end
+    context 'when the resource exists' do
+      before { graph << RDF::Statement(uri, RDF::DC.title, 'snorkmaiden') }
+
+      let(:repository) { RDF::Repository.new }
+      let(:graph) { RDF::Graph.new(uri / '#meta', data: repository) }
+
+      it 'gives an RDFSource when no class exists in interaction models' do
+        expect(described_class.find(uri, repository))
+          .to be_a RDF::LDP::RDFSource
+        expect(described_class.find(uri, repository).subject_uri).to eq uri
+      end
+      
+      it 'finds the resource with container interaction model' do
+        graph << RDF::Statement(uri, RDF.type, RDF::LDP::Container.to_uri)
+
+        expect(described_class.find(uri, repository))
+          .to be_a RDF::LDP::Container
+        expect(described_class.find(uri, repository).subject_uri).to eq uri
+      end
+
+      it 'finds the resource with non-rdf source interaction model' do
+        graph << RDF::Statement(uri, RDF.type, RDF::LDP::NonRDFSource.to_uri)
+
+        expect(described_class.find(uri, repository))
+          .to be_a RDF::LDP::NonRDFSource
+        expect(described_class.find(uri, repository).subject_uri).to eq uri
+      end
+    end
+  end
+
   describe '.interaction_model' do
     it 'matches header to class' do
       header = '<http://www.w3.org/ns/ldp#BasicContainer>;rel="type"'

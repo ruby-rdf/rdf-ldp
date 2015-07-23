@@ -34,6 +34,10 @@ module RDF
       STATUS = 400
     end
 
+    class NotFound < RequestError
+      STATUS = 404
+    end
+
     class MethodNotAllowed < RequestError
       STATUS = 405
     end
