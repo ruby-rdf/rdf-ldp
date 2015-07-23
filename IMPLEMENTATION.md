@@ -130,13 +130,12 @@ LDP Implementation Overview
    This behavior represents our interpretation.
  - __5.2.3.5__: POST requests to create an LDP-RS accept all content types
  supported with an `RDF::Reader` in the `linkeddata` gem (including
- 'text/turtle'). These requests are processed, but persistence is a work in
- progress. [TODO]
+ 'text/turtle').
  - __5.2.3.6__: The server relies solely on the `Content-Type` headers to
  understand the format of posted graphs. Requests without a `Content-Type` (or
  body) will fail.
- - __5.2.3.7__: [NON-COMPLIANT] Null/Relative URL resolution is planned for
- future development.
+ - __5.2.3.7__: Relative URI resolution in RDF graphs is handled with
+ `RDF::Reader#base_uri`. This is tested for Turtle input.
  - __5.2.3.8__: Created resources are assigned UUID's with the container as
  the base URI when no Slug header is present.
  - __5.2.3.9__: No constraints on graph contents are imposed.

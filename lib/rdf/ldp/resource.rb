@@ -22,6 +22,9 @@ module RDF::LDP
       direct:   RDF::LDP::DirectContainer.to_uri,
       indirect: RDF::LDP::IndirectContainer.to_uri
     }
+
+    attr_reader :subject_uri
+    attr_accessor :metagraph
                           
     class << self
       ##
@@ -32,6 +35,22 @@ module RDF::LDP
       def to_uri 
         RDF::URI 'http://www.w3.org/ns/ldp#Resource'
       end
+
+      ##
+      # Creates an unique id (URI Slug) for a resource.
+      #
+      # @note the current implementation uses {SecureRandom#uuid}.
+      #
+      # @return [String] a unique ID
+      def gen_id
+        SecureRandom.uuid
+      end
+
+      ##
+      # @return [Resource]
+      # def find(uri, data)
+      #   require 'pry'; binding.pry
+      # end
 
       ##
       # Retrieves the correct interaction model from the Link headers.
@@ -67,6 +86,13 @@ module RDF::LDP
       end
     end
 
+    def initialize(subject_uri, data = RDF::Repository.new)
+      @subject_uri = RDF::URI(subject_uri)
+      @data = data
+      @metagraph = RDF::Graph.new(metagraph_name, data: data)
+      yield self if block_given?
+    end
+
     ##
     # @abstract creates the resource
     #
@@ -81,7 +107,9 @@ module RDF::LDP
     #
     # @return [RDF::LDP::Resource] self
     def create(input, content_type)
-      raise NotImplementedError
+      raise Conflict if exists?
+      metagraph << RDF::Statement(subject_uri, RDF.type, self.class.to_uri)
+      self
     end
 
     ##
@@ -109,6 +137,12 @@ module RDF::LDP
     # @return [RDF::LDP::Resource] self
     def delete
       raise NotImplementedError
+    end
+
+    ##
+    # @return [Boolean] true if the resource exists within the repository
+    def exists?
+      @data.has_context? metagraph.context
     end
 
     ##
@@ -207,6 +241,12 @@ module RDF::LDP
     # an empty body.
     def options(status, headers, env)
       [status, headers, []]
+    end
+
+    ##
+    # @return [RDF::URI] the name for this resource's metagraph
+    def metagraph_name
+      subject_uri / '#meta'
     end
   end
 end

@@ -4,6 +4,9 @@ shared_examples 'a Resource' do
     it { expect(described_class.to_uri).to be_a RDF::URI }
   end
 
+  subject { described_class.new(uri) }
+  let(:uri) { RDF::URI 'http://example.org/moomin' }
+
   it { is_expected.to be_ldp_resource }
   it { is_expected.to respond_to :container? }
   it { is_expected.to respond_to :rdf_source? }
@@ -25,6 +28,19 @@ shared_examples 'a Resource' do
     it 'accepts two args' do
       expect(described_class.instance_method(:create).arity).to eq 2
     end
+
+    it 'adds a type triple to metagraph' do
+      subject.create('', 'text/plain')
+      expect(subject.metagraph)
+        .to have_statement RDF::Statement(subject.subject_uri, 
+                                          RDF.type, 
+                                          described_class.to_uri)
+    end
+
+    it 'marks resource as existing' do
+      expect { subject.create('', 'text/plain') }
+        .to change { subject.exists? }.from(false).to(true)
+    end
   end
 
   describe '#update' do
@@ -36,6 +52,16 @@ shared_examples 'a Resource' do
   describe '#delete' do
     it 'accepts no args' do
       expect(described_class.instance_method(:delete).arity).to eq 0
+    end
+  end
+
+  describe '#metagraph' do
+    it 'returns a graph' do
+      expect(subject.metagraph).to be_a RDF::Graph
+    end
+
+    it 'has the metagraph name for the resource' do
+      expect(subject.metagraph.context).to eq subject.subject_uri / '#meta'
     end
   end
 
@@ -74,7 +100,9 @@ end
 
 shared_examples 'an RDFSource' do
   it_behaves_like 'a Resource'
-
+  
+  let(:uri) { RDF::URI('http://ex.org/moomin') }
+  subject { described_class.new('http://ex.org/moomin') }
   it { is_expected.to be_rdf_source }
   it { is_expected.not_to be_non_rdf_source }
 
@@ -122,7 +150,7 @@ shared_examples 'an RDFSource' do
       other.graph << statement
     end
 
-    let(:other) { described_class.new }
+    let(:other) { described_class.new(RDF::URI('http://ex.org/blah')) }
 
     let(:statement) do
       RDF::Statement(RDF::URI('http://ex.org/m'), RDF::DC.title, 'moomin')
@@ -142,8 +170,8 @@ shared_examples 'an RDFSource' do
     let(:subject) { described_class.new(RDF::URI('http://ex.org/m')) }
     let(:graph) { RDF::Graph.new }
     
-    it 'is implemented' do
-      subject.create(graph.dump(:ttl), 'text/turtle')
+    it 'returns itself' do
+      expect(subject.create(graph.dump(:ttl), 'text/turtle')).to eq subject
     end
 
     it 'interprets NULL URI as this resource' do
@@ -184,20 +212,18 @@ shared_examples 'an RDFSource' do
   describe '#subject_uri' do
     let(:uri) { RDF::URI('http://ex.org/moomin') }
 
-    it 'has a uri setter/getter' do
-      subject.subject_uri = uri
+    it 'has a uri getter' do
       expect(subject.subject_uri).to eq uri
     end
 
     it 'aliases to #to_uri' do
-      subject.subject_uri = uri
       expect(subject.to_uri).to eq uri
     end
   end
 
   describe '#to_response' do
-    it 'gives the graph' do
-      expect(subject.to_response).to eq subject.graph
+    it 'gives the graph minus context' do
+      expect(subject.to_response.context).to eq nil
     end
   end
 
@@ -215,6 +241,7 @@ shared_examples 'a Container' do
   it_behaves_like 'an RDFSource'
 
   let(:uri) { RDF::URI('http://ex.org/moomin') }
+  subject { described_class.new(uri) }
 
   it { is_expected.to be_container }
 
@@ -226,7 +253,6 @@ shared_examples 'a Container' do
 
   describe '#membership_constant_uri' do
     it 'aliases #subject_uri' do
-      subject.subject_uri = uri
       expect(subject.membership_constant_uri).to eq subject.subject_uri
     end
   end
@@ -238,7 +264,6 @@ shared_examples 'a Container' do
   end
 
   describe '#membership_triples' do
-    before { subject.subject_uri = uri }
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'returns a uri' do
@@ -249,7 +274,6 @@ shared_examples 'a Container' do
   end
 
   describe '#add_membership_triple' do
-    before { subject.subject_uri = uri }
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'returns self' do
@@ -263,7 +287,6 @@ shared_examples 'a Container' do
   end
 
   describe '#make_membership_triple' do
-    before { subject.subject_uri = uri }
     let(:resource) { uri / 'papa' }
 
     it 'returns a statement' do
@@ -280,7 +303,6 @@ shared_examples 'a Container' do
   describe '#request' do
     context 'when POST is implemented', 
             if: described_class.private_method_defined?(:post) do
-      before { subject.subject_uri = uri }
       let(:graph) { RDF::Graph.new }
 
       let(:env) do
@@ -353,7 +375,7 @@ shared_examples 'a Container' do
             .to be_starts_with (subject.subject_uri)
         end
 
-        xit 'raises a 409 Conflict when slug is already taken' do
+        it 'raises a 409 Conflict when slug is already taken' do
           env['Slug'] = 'snork'
           subject.request(:POST, 200, {}, env)
 
@@ -376,7 +398,7 @@ shared_examples 'a Container' do
         end
 
         it 'parses graph into created resource' do
-          expect(subject.request(:POST, 200, {}, env).last.graph)
+          expect(subject.request(:POST, 200, {}, env).last.to_response)
             .to be_isomorphic_with graph
         end
 
@@ -399,7 +421,7 @@ shared_examples 'a Container' do
             context_free_graph = RDF::Graph.new
             context_free_graph << graph.statements
 
-            expect(subject.request(:POST, 200, {}, env).last.graph)
+            expect(subject.request(:POST, 200, {}, env).last.to_response)
               .to be_isomorphic_with context_free_graph
           end
         end

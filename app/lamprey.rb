@@ -7,12 +7,14 @@ use Rack::LDP::Responses
 use Rack::LDP::Requests
 use Rack::LDP::Headers
 
+repository = RDF::Repository.new
+
 get '/*' do
-  RDF::LDP::Container.new.tap { |c| c.subject_uri = RDF::URI(request.url) }
+  RDF::LDP::Container.new(RDF::URI(request.url), repository)
 end
 
 post '/' do
-  RDF::LDP::Container.new.tap { |c| c.subject_uri = RDF::URI(request.url) }
+  RDF::LDP::Container.new(RDF::URI(request.url), repository)
 end
 
 # options '/*' do

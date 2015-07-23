@@ -79,7 +79,8 @@ module RDF::LDP
 
       id = (subject_uri / slug).canonicalize
 
-      created = klass.new(id).create(env['rack.input'], env['CONTENT_TYPE'])
+      created = klass.new(id, @data)
+                .create(env['rack.input'], env['CONTENT_TYPE'])
       
       add_membership_triple(created)
       headers['Location'] = created.subject_uri.to_s

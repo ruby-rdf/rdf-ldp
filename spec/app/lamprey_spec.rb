@@ -20,22 +20,33 @@ describe 'lamprey' do
       end
       
       context 'when resource exists' do
-        it 'can get the resource'
-        
-        xit 'can get the resource created with POST' do
+        let(:graph) { RDF::Graph.new }
+
+        before do
+          graph << RDF::Statement(RDF::URI('http://example.org/moomin'), 
+                                  RDF::DC.title,
+                                  'mummi')
+          
           graph_str = graph.dump(:ntriples)
 
           post '/', graph_str, 'CONTENT_TYPE' => 'text/plain'
-          uri = last_response.header['Location']
-
-          get uri
-          
+          @uri = last_response.header['Location']
+        end
+        
+        it 'can get the resource' do
+          get @uri
           returned = RDF::Reader.for(:ttl).new(last_response.body).statements.to_a
 
           graph.statements.each do |s|
             expect(returned).to include s
           end
         end
+
+        # it 'is not a container' do
+        #   get @uri
+        #   expect(last_response.header['Link'])
+        #     .not_to include 'http://www.w3.org/ns/ldp#BasicContainer'
+        # end
       end
     end
 

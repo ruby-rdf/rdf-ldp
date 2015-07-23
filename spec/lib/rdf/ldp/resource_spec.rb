@@ -3,6 +3,9 @@ require 'spec_helper'
 describe RDF::LDP::Resource do
   it_behaves_like 'a Resource' 
 
+  subject { described_class.new(uri) }
+  let(:uri) { RDF::URI 'http://example.org/moomin' }
+
   describe '.interaction_model' do
     it 'matches header to class' do
       header = '<http://www.w3.org/ns/ldp#BasicContainer>;rel="type"'

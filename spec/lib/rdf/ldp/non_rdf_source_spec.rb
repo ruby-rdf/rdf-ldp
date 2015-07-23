@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe RDF::LDP::NonRDFSource do
+  subject { described_class.new(uri) }
+  let(:uri) { RDF::URI 'http://example.org/moomin' }
+
   describe '.to_uri' do
     it { expect(described_class.to_uri).to be_a RDF::URI }
   end

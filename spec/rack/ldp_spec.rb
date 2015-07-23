@@ -10,6 +10,8 @@ end
 describe 'middleware' do
   include ::Rack::Test::Methods
 
+  let(:uri) { 'http://example.org/moomin' }
+
   before do
     ##
     # Dummy response handler middleware
@@ -72,7 +74,7 @@ describe 'middleware' do
     end
 
     context 'when response responds to #to_response' do
-      let(:resource) { RDF::LDP::Resource.new }
+      let(:resource) { RDF::LDP::Resource.new(uri) }
       let(:results) { resource }
 
       it 'closes response' do
@@ -92,7 +94,7 @@ describe 'middleware' do
   describe Rack::LDP::Requests do
     subject { described_class.new(base_app) }
 
-    let(:resource) { RDF::LDP::Resource.new }
+    let(:resource) { RDF::LDP::Resource.new(uri) }
     let(:results) { resource }
 
     it 'sends the request message' do
@@ -119,7 +121,7 @@ describe 'middleware' do
     end
 
     context 'when response responds to #etag' do
-      let(:resource) { RDF::LDP::Resource.new }
+      let(:resource) { RDF::LDP::Resource.new(uri) }
       let(:results) { resource }
 
       it 'adds an Etag header' do
@@ -139,7 +141,7 @@ describe 'middleware' do
     end
 
     context 'when response is a Resource' do
-      let(:resource) { RDF::LDP::Resource.new }
+      let(:resource) { RDF::LDP::Resource.new(uri) }
       let(:results) { resource }
 
       it 'retains existing Link headers' do
@@ -154,7 +156,8 @@ describe 'middleware' do
       end
 
       context 'and an RDFSource' do
-        let(:resource) { RDF::LDP::RDFSource.new }
+        let(:uri) { RDF::URI('http://ex.org/mymble') }
+        let(:resource) { RDF::LDP::RDFSource.new(uri) }
 
         it 'adds LDPRS Link header' do
           get '/'
@@ -166,7 +169,8 @@ describe 'middleware' do
       end
 
       context 'and a Container' do
-        let(:resource) { RDF::LDP::Container.new }
+        let(:uri) { RDF::URI('http://ex.org/mymble') }
+        let(:resource) { RDF::LDP::Container.new(uri) }
 
         it 'adds LDPC Link header' do
           get '/'
@@ -180,7 +184,8 @@ describe 'middleware' do
       end
 
       context 'and a NonRDFSource' do
-        let(:resource) { RDF::LDP::NonRDFSource.new }
+        let(:uri) { RDF::URI('http://ex.org/mymble') }
+        let(:resource) { RDF::LDP::NonRDFSource.new(uri) }
 
         it 'adds LDPNR Link header' do
           get '/'

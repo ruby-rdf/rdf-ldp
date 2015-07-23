@@ -25,7 +25,7 @@ module RDF::LDP
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source definition 
   #   of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
-    attr_accessor :graph, :subject_uri
+    attr_accessor :graph
 
     class << self
       ##
@@ -36,23 +36,11 @@ module RDF::LDP
       def to_uri 
         RDF::URI 'http://www.w3.org/ns/ldp#RDFSource'
       end
-
-      ##
-      # Creates an unique id (URI Slug) for a resource.
-      #
-      # @note the current implementation uses {SecureRandom#uuid}.
-      #
-      # @return [String] a unique ID
-      def gen_id
-        SecureRandom.uuid
-      end
     end
     
-    def initialize(subject_uri = nil, graph = RDF::Graph.new, &block)
-      @subject_uri = subject_uri
-      @graph = graph
-
-      yield self if block_given?
+    def initialize(subject_uri, data = RDF::Repository.new)
+      @graph = RDF::Graph.new(subject_uri, data: data)
+      super
       self
     end
 
@@ -72,6 +60,7 @@ module RDF::LDP
     #
     # @return [RDF::LDP::Resource] self
     def create(input, content_type)
+      super
       statements = parse_graph(input, content_type)
       graph << statements
       self
@@ -121,8 +110,11 @@ module RDF::LDP
       subject_uri
     end
 
+    ##
+    # Returns the graph representing this resource's state, without the graph 
+    # context.
     def to_response
-      graph
+      RDF::Graph.new << graph
     end
 
     private

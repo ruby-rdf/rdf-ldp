@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe RDF::LDP::Container do
+  subject { described_class.new(RDF::URI('http://ex.org/moomin')) }
   it_behaves_like 'a Container'
   
   describe 'CONTAINER_CLASSES' do
@@ -25,7 +26,6 @@ describe RDF::LDP::Container do
   end
 
   describe '#make_membership_triple' do
-    before { subject.subject_uri = RDF::URI('http://ex.org/moomin') }
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'statement subject is #subject_uri' do
