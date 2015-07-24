@@ -70,6 +70,10 @@ module RDF
       STATUS = 409
     end
 
+    class PreconditionFailed < RequestError
+      STATUS = 412
+    end
+
     class UnsupportedMediaType < RequestError
       STATUS = 415
     end

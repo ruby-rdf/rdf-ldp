@@ -112,7 +112,7 @@ module RDF::LDP
     # @param [String] tag  a tag to compare to `#etag`
     # @return [Boolean] whether the given tag matches `#etag`
     def match?(tag)
-      return false unless tag.split('==').last == graph.statements.count
+      return false unless tag.split('==').last == graph.statements.count.to_s
       tag == etag
     end
 
@@ -141,6 +141,10 @@ module RDF::LDP
     # Generate response for PUT requsets.
     def put(status, headers, env)
       if exists?
+        if env.has_key? 'If-Match'
+          raise PreconditionFailed.new('Etag invalid') unless 
+            match?(env['If-Match'])
+        end
         update(env['rack.input'], env['CONTENT_TYPE'])
         headers = update_headers(headers)
         [200, headers, self]

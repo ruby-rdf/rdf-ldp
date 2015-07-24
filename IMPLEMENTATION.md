@@ -11,9 +11,8 @@ LDP Implementation Overview
  HTTP 1.1 in their servers.
  - __4.2.1.2__: Currently, LDP-RSs are supported. LDP-NR support is a work in
  progress. See: __4.4__ for details on the status of LDP-NR development. [TODO]
- - __4.2.1.3__: ETags are generated for all LDPRs and returned for all requests
- to the resource. The specifics of ETag handling for POST requests are a work in
- progress.
+ - __4.2.1.3__: Etags are generated for all LDPRs and returned for all requests
+ to the resource.
  - __4.2.1.4__: Link headers for the resquested resource are added by
  `Rack::LDP::Headers` middleware.
  - __4.2.1.5__: Relative URI resolution in RDF graphs is handled with
@@ -44,8 +43,10 @@ LDP Implementation Overview
  explicitly excluded by LDP (i.e. server-managed-triples), which are handled
  as described under relevant sections.
  - __4.2.4.4__: Server persists all content PUT to LDP-RS's, per __4.2.4.1__.
- - __4.2.4.5__: [IGNORED SHOULD] ETags aren't checked. Checking them on PUT is
- planned development. [TODO]
+ - __4.2.4.5__: [IGNORED SHOULD] Etags are checked as specified IF an
+ `If-Match` header is present. `If-Match` headers are NOT required, and requests
+ without them will operate as though the correct Etag has been given. We
+ consider "_clients SHOULD use the HTTP If-Match header_".
  - __4.2.4.6__: Server throws 404 when trying to create non-existant resources
  via PUT.
 
@@ -163,8 +164,8 @@ LDP Implementation Overview
 
 ### 5.2.4 HTTP PUT
 
-- __5.2.4.1__: [IGNORED SHOULD] Server updates resources without regard for
-type. Handling of containment triples is planned development [TODO]
+- __5.2.4.1__: Responds with 409 when attempting to write containment triples
+that do not already exist.
 - __5.2.4.2__: See: __5.2.3.11__.
 
  
@@ -207,3 +208,6 @@ Indirect Container support is planned for future development. [TODO]
 Handling of Non-Normative Notes
 ================================
 
+
+Test Suite
+==========

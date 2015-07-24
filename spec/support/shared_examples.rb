@@ -282,6 +282,19 @@ shared_examples 'an RDFSource' do
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['Etag'])
             .to eq subject.etag
         end
+
+        it 'gives PreconditionFailed when trying to update with wrong Etag' do
+          env['If-Match'] = 'not an Etag'
+          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+            .to raise_error RDF::LDP::PreconditionFailed
+        end
+
+        it 'succeeds when giving correct Etag' do
+          graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+          env['If-Match'] = subject.etag
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
+            .to change { subject.graph.statements.count }
+        end
       end
     end
   end
@@ -420,7 +433,7 @@ shared_examples 'a Container' do
 
       it 'adds membership statement to resource' do
         expect { subject.request(:POST, 200, {}, env) }
-          .to change { subject.membership_triples.count }.by(1)
+          .to change { subject.membership_triples.count }.from(0).to(1)
       end
 
       context 'with Container interaction model' do
