@@ -242,12 +242,23 @@ shared_examples 'an RDFSource' do
           'CONTENT_TYPE' => 'text/plain' }
       end
 
+      it 'creates the resource' do
+        expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+          .to change { subject.exists? }.from(false).to(true)
+      end
+
+      it 'responds 201' do
+        expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
+          .to eq 201
+      end
+
+      it 'returns the etag' do
+        expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['Etag'])
+          .to eq subject.etag
+      end
+
       context 'when subject exists' do
-        before do
-          subject.metagraph << RDF::Statement(subject.subject_uri,
-                                              RDF.type,
-                                              RDF::LDP::RDFSource)
-        end
+        before { subject.create('', 'text/plain') }
         
         it 'responds 200' do
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env))
