@@ -231,7 +231,7 @@ shared_examples 'an RDFSource' do
     context 'with :GET' do
       it 'gives the subject' do
         expect(subject.request(:GET, 200, {'abc' => 'def'}, {}))
-          .to eq [200, {'abc' => 'def'}, subject]
+          .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
       end
     end
     
@@ -251,7 +251,7 @@ shared_examples 'an RDFSource' do
         
         it 'replaces the graph with the input' do
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env))
-            .to eq [200, {'abc' => 'def'}, subject]
+            .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
         end
       end
     end

@@ -143,7 +143,7 @@ module RDF::LDP
       return [200, headers, update(env['rack.input'], env['CONTENT_TYPE'])] if
         exists?
       
-      [201, headers, create(env['rack.input'], env['CONTENT_TYPE'])]
+      [201, update_headers(headers), create(env['rack.input'], env['CONTENT_TYPE'])]
     end
 
     ##

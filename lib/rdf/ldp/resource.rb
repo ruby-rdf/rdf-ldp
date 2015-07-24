@@ -2,27 +2,6 @@ require 'link_header'
 
 module RDF::LDP
   class Resource
-
-    ##
-    # Interaction models are in reverse order of preference for POST/PUT 
-    # requests; e.g. if a client sends a request with Resource, RDFSource, and
-    # BasicContainer headers, the server gives a basic container.
-    INTERACTION_MODELS = {
-      RDF::Vocab::LDP.Resource => RDF::LDP::RDFSource,
-      RDF::LDP::RDFSource.to_uri => RDF::LDP::RDFSource,
-      RDF::LDP::Container.to_uri => RDF::LDP::Container,
-      RDF::URI('http://www.w3.org/ns/ldp#BasicContainer') => RDF::LDP::Container,
-      RDF::LDP::DirectContainer.to_uri => RDF::LDP::DirectContainer,
-      RDF::LDP::IndirectContainer.to_uri => RDF::LDP::IndirectContainer,
-      RDF::LDP::NonRDFSource.to_uri => RDF::LDP::NonRDFSource
-    }.freeze
-
-    CONTAINER_CLASSES = { 
-      basic:    RDF::Vocab::LDP.BasicContainer,
-      direct:   RDF::LDP::DirectContainer.to_uri,
-      indirect: RDF::LDP::IndirectContainer.to_uri
-    }
-
     attr_reader :subject_uri
     attr_accessor :metagraph
                           
@@ -243,27 +222,70 @@ module RDF::LDP
     # Generate response for GET requests. Returns existing status and headers, 
     # with `self` as the body.
     def get(status, headers, env)
-      [status, headers, self]
+      [status, update_headers(headers), self]
     end
 
     ##
     # Generate response for HEAD requsets. Adds appropriate headers and returns 
     # an empty body.
     def head(status, headers, env)
-      [status, headers, []]
+      [status, update_headers(headers), []]
     end
 
     ##
     # Generate response for OPTIONS requsets. Adds appropriate headers and 
     # returns an empty body.
     def options(status, headers, env)
-      [status, headers, []]
+      [status, update_headers(headers), []]
     end
 
     ##
     # @return [RDF::URI] the name for this resource's metagraph
     def metagraph_name
       subject_uri / '#meta'
+    end
+
+    ##
+    # @param [Hash<String, String>] headers
+    # @return [Hash<String, String>] the updated headers
+    def update_headers(headers)
+      headers['Link'] = 
+        ([headers['Link']] + link_headers).compact.join(",")
+      
+      headers['Allow'] = allowed_methods.join(', ')
+      headers['Accept-Post'] = accept_post if respond_to?(:post, true)
+
+      headers['Etag'] ||= etag if respond_to?(:etag)
+      headers
+    end
+
+    ##
+    # @return [String] the Accept-Post headers
+    def accept_post
+      RDF::Reader.map { |klass| klass.format.content_type }.flatten.join(', ')
+    end
+
+    ##
+    # @return [Array<String>] an array of link headers to add to the 
+    #   existing ones
+    #
+    # @see http://www.w3.org/TR/ldp/#h-ldpr-gen-linktypehdr
+    # @see http://www.w3.org/TR/ldp/#h-ldprs-are-ldpr
+    # @see http://www.w3.org/TR/ldp/#h-ldpnr-type
+    # @see http://www.w3.org/TR/ldp/#h-ldpc-linktypehdr
+    def link_headers
+      return [] unless is_a? RDF::LDP::Resource
+      headers = [link_type_header(RDF::LDP::Resource.to_uri)]
+      headers << link_type_header(RDF::LDP::RDFSource.to_uri) if rdf_source?
+      headers << link_type_header(RDF::LDP::NonRDFSource.to_uri) if
+        non_rdf_source?
+      headers << link_type_header(container_class) if container?
+      headers
+    end
+    
+
+    def link_type_header(uri)
+      "<#{uri}>;rel=\"type\""
     end
   end
 end

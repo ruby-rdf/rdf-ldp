@@ -99,21 +99,21 @@ describe RDF::LDP::Resource do
     context 'with :GET' do
       it 'echos the request' do
         expect(subject.request(:GET, 200, {'abc' => 'def'}, {}))
-          .to eq [200, {'abc' => 'def'}, subject]
+          .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
       end
     end
 
     context 'with :HEAD' do
       it 'gives empty response body' do
         expect(subject.request(:HEAD, 200, {'abc' => 'def'}, {}))
-          .to eq [200, {'abc' => 'def'}, []]
+          .to contain_exactly(200, a_hash_including('abc' => 'def'), [])
       end
     end
 
     context 'with :OPTIONS' do
       it 'gives empty response body' do
         expect(subject.request(:OPTIONS, 200, {'abc' => 'def'}, {}))
-          .to eq [200, {'abc' => 'def'}, []]
+          .to contain_exactly(200, a_hash_including('abc' => 'def'), [])
       end
     end
   end

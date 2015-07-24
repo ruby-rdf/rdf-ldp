@@ -84,7 +84,7 @@ module RDF::LDP
       
       add_membership_triple(created)
       headers['Location'] = created.subject_uri.to_s
-      [201, headers, created]
+      [201, update_headers(headers), created]
     end
   end
 end

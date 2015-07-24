@@ -52,13 +52,13 @@ describe 'lamprey' do
 
     describe 'OPTIONS' do
       it 'has Allow headers' do
-        get '/'
+        options '/'
         expect(last_response.header['Allow'])
           .to include('GET', 'POST', 'OPTIONS', 'HEAD')
       end
 
       it 'has Accept-Post headers' do
-        get '/'
+        options '/'
         expect(last_response['Accept-Post']).to include 'text/turtle'
       end
 
@@ -85,6 +85,11 @@ describe 'lamprey' do
       end
 
       it 'gives a 201 status code' do
+        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/plain'
+        expect(last_response.status).to eq 201
+      end
+
+      it 'gives an ETag for the new resource' do
         post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/plain'
         expect(last_response.status).to eq 201
       end
@@ -132,6 +137,24 @@ describe 'lamprey' do
 
     describe 'PUT' do
       let(:graph) { RDF::Graph.new }
+
+      context 'with existing resource' do
+        before do
+          post '/', graph.dump(:ttl), 
+               'CONTENT_TYPE' => 'text/plain', 
+               'Slug' => 'moomin'
+        end
+        
+        it 'updates ETag' do
+          get '/moomin'
+          etag = last_response.header['Etag']
+          graph << RDF::Statement(RDF::Node.new,
+                                  RDF::DC.title,
+                                  'moomin')
+          put '/moomin', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/turtle'
+          expect(last_response.header['Etag']).not_to eq etag
+        end
+      end
     end
   end
 end

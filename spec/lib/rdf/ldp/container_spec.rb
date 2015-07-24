@@ -6,7 +6,7 @@ describe RDF::LDP::Container do
   
   describe 'CONTAINER_CLASSES' do
     it 'has basic, direct, and indirect' do
-      expect(described_class::CONTAINER_CLASSES.keys)
+      expect(RDF::LDP::CONTAINER_CLASSES.keys)
         .to contain_exactly(:basic, :direct, :indirect)
     end
   end
