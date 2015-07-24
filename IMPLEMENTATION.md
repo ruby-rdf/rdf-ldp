@@ -36,7 +36,18 @@ LDP Implementation Overview
 
 ### 4.2.4 HTTP PUT
 
- - PUT support is planned for future development. [TODO]
+ - __4.2.4.1__: RDFSources completely replace the content of existing graphs with
+ the graph in the PUT request body. Any properties to be handled by the server
+ with update restrictions are left to implementers to enforce. 
+ - __4.2.4.2__: See: __4.2.4.1__ 
+ - __4.2.4.3__: Server allows client to modify all content except that
+ explicitly excluded by LDP (i.e. server-managed-triples), which are handled
+ as described under relevant sections.
+ - __4.2.4.4__: Server persists all content PUT to LDP-RS's, per __4.2.4.1__.
+ - __4.2.4.5__: [IGNORED SHOULD] ETags aren't checked. Checking them on PUT is
+ planned development. [TODO]
+ - __4.2.4.6__: Server throws 404 when trying to create non-existant resources
+ via PUT.
 
 ### 4.2.5 HTTP DELETE
 
@@ -152,8 +163,10 @@ LDP Implementation Overview
 
 ### 5.2.4 HTTP PUT
 
- - __5.2.4.1__: PUT support is planned for future development. [TODO]
- - __5.2.4.2__: See: __5.2.4.1__.
+- __5.2.4.1__: [IGNORED SHOULD] Server updates resources without regard for
+type. Handling of containment triples is planned development [TODO]
+- __5.2.4.2__: See: __5.2.3.11__.
+
  
 ### 5.2.5 HTTP DELETE
 

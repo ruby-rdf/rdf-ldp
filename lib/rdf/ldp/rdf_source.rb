@@ -67,6 +67,24 @@ module RDF::LDP
     end
 
     ##
+    # Updates the resource. Replaces the contents of `graph` with the parsed 
+    # input.
+    #
+    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    #   `rack.input` key) used to determine the Resource's new state.
+    # @param [#to_s] content_type  a MIME content_type used to interpret the
+    #   input.
+    #
+    # @return [RDF::LDP::Resource] self
+    def update(input, content_type)
+      return create(input, content_type) unless exists?
+      statements = parse_graph(input, content_type)
+      graph.clear!
+      graph << statements
+      self
+    end
+
+    ##
     # Returns an Etag. This may be a strong or a weak ETag.
     #
     # @return [String] an HTTP Etag 
@@ -118,6 +136,15 @@ module RDF::LDP
     end
 
     private
+
+    ##
+    # Generate response for PUT requsets.
+    def put(status, headers, env)
+      return [200, headers, update(env['rack.input'], env['CONTENT_TYPE'])] if
+        exists?
+      
+      [201, headers, create(env['rack.input'], env['CONTENT_TYPE'])]
+    end
 
     ##
     # Finds an {RDF::Reader} appropriate for the given content_type and attempts

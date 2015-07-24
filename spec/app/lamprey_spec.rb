@@ -129,5 +129,9 @@ describe 'lamprey' do
         end
       end
     end
+
+    describe 'PUT' do
+      let(:graph) { RDF::Graph.new }
+    end
   end
 end

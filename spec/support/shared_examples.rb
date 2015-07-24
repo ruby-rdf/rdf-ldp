@@ -229,9 +229,30 @@ shared_examples 'an RDFSource' do
 
   describe '#request' do
     context 'with :GET' do
-      it 'echos the request' do
+      it 'gives the subject' do
         expect(subject.request(:GET, 200, {'abc' => 'def'}, {}))
           .to eq [200, {'abc' => 'def'}, subject]
+      end
+    end
+    
+    context 'with :PUT' do
+      let(:graph) { RDF::Graph.new }
+      let(:env) do
+        { 'rack.input' => graph.dump(:ntriples),
+          'CONTENT_TYPE' => 'text/plain' }
+      end
+
+      context 'when subject exists' do
+        before do
+          subject.metagraph << RDF::Statement(subject.subject_uri,
+                                              RDF.type,
+                                              RDF::LDP::RDFSource)
+        end
+        
+        it 'replaces the graph with the input' do
+          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env))
+            .to eq [200, {'abc' => 'def'}, subject]
+        end
       end
     end
   end

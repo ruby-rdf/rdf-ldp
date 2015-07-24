@@ -254,8 +254,8 @@ module RDF::LDP
     end
 
     ##
-    # Generate response for HEAD requsets. Adds appropriate headers and returns 
-    # an empty body.
+    # Generate response for OPTIONS requsets. Adds appropriate headers and 
+    # returns an empty body.
     def options(status, headers, env)
       [status, headers, []]
     end

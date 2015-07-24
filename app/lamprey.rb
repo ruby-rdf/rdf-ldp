@@ -19,6 +19,10 @@ post '/*' do
   RDF::LDP::Resource.find(RDF::URI(request.url), repository)
 end
 
+put '/*' do
+  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+end
+
 options '/*' do
   RDF::LDP::Resource.find(RDF::URI(request.url), repository)
 end
