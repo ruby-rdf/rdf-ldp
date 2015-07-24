@@ -144,6 +144,11 @@ describe 'lamprey' do
                'CONTENT_TYPE' => 'text/plain', 
                'Slug' => 'moomin'
         end
+
+        it 'returns an etag' do
+          put '/moomin', '', 'CONTENT_TYPE' => 'text/plain'
+          expect(last_response.header['Etag']).to be_a String
+        end
         
         it 'updates ETag' do
           get '/moomin'

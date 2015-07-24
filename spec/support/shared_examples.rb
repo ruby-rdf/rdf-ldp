@@ -249,9 +249,26 @@ shared_examples 'an RDFSource' do
                                               RDF::LDP::RDFSource)
         end
         
-        it 'replaces the graph with the input' do
+        it 'responds 200' do
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env))
             .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
+        end
+
+        it 'replaces the graph with the input' do
+          graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+            .to change { subject.graph.statements.count }.to(1)
+        end
+
+        it 'updates the etag' do
+          graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+            .to change { subject.etag }
+        end
+
+        it 'returns the etag' do
+          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['Etag'])
+            .to eq subject.etag
         end
       end
     end

@@ -140,10 +140,14 @@ module RDF::LDP
     ##
     # Generate response for PUT requsets.
     def put(status, headers, env)
-      return [200, headers, update(env['rack.input'], env['CONTENT_TYPE'])] if
-        exists?
-      
-      [201, update_headers(headers), create(env['rack.input'], env['CONTENT_TYPE'])]
+      if exists?
+        update(env['rack.input'], env['CONTENT_TYPE'])
+        headers = update_headers(headers)
+        [200, headers, self]
+      else
+        create(env['rack.input'], env['CONTENT_TYPE'])
+        [201, update_headers(headers), self]
+      end
     end
 
     ##
