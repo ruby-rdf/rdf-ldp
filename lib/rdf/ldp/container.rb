@@ -14,6 +14,20 @@ module RDF::LDP
     end
 
     ##
+    # @see RDFSource#create
+    def create(input, content_type)
+      validate_triples!(parse_graph(input, content_type))
+      super
+    end
+    
+    ##
+    # @see RDFSource#update
+    def update(input, content_type)
+      validate_triples!(parse_graph(input, content_type))
+      super
+    end
+
+    ##
     # @return [RDF::URI] a URI representing the container type
     def container_class
       CONTAINER_CLASSES[:basic]
@@ -39,6 +53,17 @@ module RDF::LDP
       graph.query([membership_constant_uri, 
                    membership_predicate, 
                    nil]).statements
+    end
+
+    ##
+    # @param [RDF::Statement] statement
+    #
+    # @return [Boolean] true if the membership triple exists
+    #
+    # @todo for some reason `#include?` doesn't work! figure out why, this is 
+    #   clumsy.
+    def has_membership_triple?(statement)
+      !(membership_triples.select { |t| statement == t }.empty?)
     end
 
     ##
@@ -85,6 +110,14 @@ module RDF::LDP
       add_membership_triple(created)
       headers['Location'] = created.subject_uri.to_s
       [201, update_headers(headers), created]
+    end
+
+    def validate_triples!(statements)
+      statements.query(subject: subject_uri, 
+                       predicate: membership_predicate) do |statement|
+        raise Conflict.new("Attempted to write unacceptable LDP membership-triple: #{statement}") unless 
+          has_membership_triple?(statement)
+      end
     end
   end
 end

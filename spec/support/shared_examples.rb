@@ -235,7 +235,8 @@ shared_examples 'an RDFSource' do
       end
     end
     
-    context 'with :PUT' do
+    context 'with :PUT',
+            if: described_class.private_method_defined?(:put) do
       let(:graph) { RDF::Graph.new }
       let(:env) do
         { 'rack.input' => graph.dump(:ntriples),
@@ -356,6 +357,44 @@ shared_examples 'a Container' do
   end
 
   describe '#request' do
+    context 'with :PUT',
+            if: described_class.private_method_defined?(:put) do
+      let(:graph) { RDF::Graph.new }
+
+      let(:env) do
+        { 'rack.input' => graph.dump(:ntriples),
+          'CONTENT_TYPE' => 'text/plain' }
+      end
+      
+      context 'when PUTing membership triples' do
+        let(:statement) do
+          RDF::Statement(subject.subject_uri, 
+                         subject.membership_predicate, 
+                         'moomin')
+        end
+
+        it 'when creating a resource raises a Conflict error' do
+          graph << statement
+          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+            .to raise_error RDF::LDP::Conflict
+        end
+
+        it 'when resource exists raises a Conflict error' do
+          subject.create('', 'text/plain')
+          graph << statement
+          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+            .to raise_error RDF::LDP::Conflict
+        end
+
+        it 'can put existing membership triple' do
+          subject.create('', 'text/plain')
+          subject.graph << statement
+          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
+            .to eq 200
+        end
+      end
+    end
+
     context 'when POST is implemented', 
             if: described_class.private_method_defined?(:post) do
       let(:graph) { RDF::Graph.new }
