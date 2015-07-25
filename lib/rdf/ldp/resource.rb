@@ -311,6 +311,8 @@ module RDF::LDP
       headers
     end
 
+    ##
+    # @return [String] a string to insert into a Link header
     def link_type_header(uri)
       "<#{uri}>;rel=\"type\""
     end
