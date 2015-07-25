@@ -85,6 +85,15 @@ module RDF::LDP
     end
 
     ##
+    # Clears the graph and marks as destroyed.
+    #
+    # @see RDF::LDP::Resource#destroy
+    def destroy
+      @graph.clear
+      super
+    end
+
+    ##
     # Returns an Etag. This may be a strong or a weak ETag.
     #
     # @return [String] an HTTP Etag 
@@ -138,13 +147,12 @@ module RDF::LDP
     private
 
     ##
-    # Generate response for PUT requsets.
+    # Process & generate response for PUT requsets.
     def put(status, headers, env)
+      raise PreconditionFailed.new('Etag invalid') if 
+        env.has_key?('If-Match') && !match?(env['If-Match'])
+
       if exists?
-        if env.has_key? 'If-Match'
-          raise PreconditionFailed.new('Etag invalid') unless 
-            match?(env['If-Match'])
-        end
         update(env['rack.input'], env['CONTENT_TYPE'])
         headers = update_headers(headers)
         [200, headers, self]

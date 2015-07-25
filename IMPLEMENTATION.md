@@ -52,7 +52,7 @@ LDP Implementation Overview
 
 ### 4.2.5 HTTP DELETE
 
- - DELETE support is planned for future development. [TODO]
+ - DELETE is supported
 
 ### 4.2.6 HTTP HEAD
 
@@ -171,8 +171,8 @@ that do not already exist.
  
 ### 5.2.5 HTTP DELETE
 
- - __5.2.5.1__: DELETE support is planned for future development. [TODO]
- - __5.2.5.2__:See: __5.2.5.1__.
+ - __5.2.5.1__: Containment triples are removed as required when a resource is destroyed.
+ - __5.2.5.2__: See: __5.2.8.1__.
 
 ### 5.2.6 HTTP HEAD
 
@@ -192,7 +192,7 @@ that do not already exist.
 
 ### 5.3.1 General
 
- - __5.3.1.1__: Basic Containers are treated as an alias for Container. 
+ - __5.3.1.1__: Basic Containers are treated as an alias for Container.
 
 5.4 Direct Container
 --------------------

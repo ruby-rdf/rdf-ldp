@@ -70,6 +70,10 @@ module RDF
       STATUS = 409
     end
 
+    class Gone < RequestError
+      STATUS = 410
+    end
+
     class PreconditionFailed < RequestError
       STATUS = 412
     end

@@ -33,4 +33,13 @@ describe RDF::LDP::Container do
         .to eq subject.subject_uri
     end
   end
+
+  describe '#add_membership_triple' do
+    let(:resource) { RDF::URI('http://ex.org/mymble') }
+
+    it 'adds triple to graph' do
+      expect { subject.add_membership_triple(resource) }
+        .to change { subject.graph.count }.by(1)
+    end
+  end
 end

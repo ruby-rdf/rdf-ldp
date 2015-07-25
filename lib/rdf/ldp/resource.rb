@@ -125,20 +125,33 @@ module RDF::LDP
     end
 
     ##
-    # @abstract mark the resource as deleted
+    # Mark the resource as destroyed.
     #
-    # @raise [RDF::LDP::RequestError] when delete fails. May raise various 
-    #   subclasses for the appropriate response codes.
+    # This adds a statment to the metagraph expressing that the resource has 
+    # been deleted
     #
     # @return [RDF::LDP::Resource] self
+    # 
+    # @todo Use of owl:Nothing is probably problematic. Define an internal 
+    # namespace and class represeting deletion status as a stateful property.
     def destroy
-      raise NotImplementedError
+      containers.each do |container|
+        container.remove_membership_triple(self) if container.container?
+      end
+      @metagraph << RDF::Statement(subject_uri, RDF.type, RDF::OWL.Nothing)
+      self
     end
 
     ##
     # @return [Boolean] true if the resource exists within the repository
     def exists?
       @data.has_context? metagraph.context
+    end
+
+    ##
+    # @return [Boolean] true if resource has been destroyed
+    def destroyed?
+      !(@metagraph.query([subject_uri, RDF.type, RDF::OWL.Nothing]).empty?)
     end
 
     ##
@@ -171,6 +184,14 @@ module RDF::LDP
     # @return [Boolean] whether this is an ldp:RDFSource
     def rdf_source?
       false
+    end
+
+    ##
+    # @return [Array<RDF::LDP::Resource>] the container for this resource
+    def containers
+      @data.query([:s, RDF::Vocab::LDP.contains, subject_uri]).map do |st|
+        RDF::LDP::Resource.find(st.subject, @data)
+      end
     end
 
     ##
@@ -209,6 +230,7 @@ module RDF::LDP
     # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response 
     #   array.
     def request(method, status, headers, env)
+      raise Gone if destroyed?
       begin
         send(method.to_sym.downcase, status, headers, env)
       rescue NotImplementedError => e
@@ -237,6 +259,12 @@ module RDF::LDP
     # returns an empty body.
     def options(status, headers, env)
       [status, update_headers(headers), []]
+    end
+
+    ##
+    # Process & generate response for DELETE requests.
+    def delete(status, headers, env)
+      [204, headers, destroy]
     end
 
     ##
@@ -282,7 +310,6 @@ module RDF::LDP
       headers << link_type_header(container_class) if container?
       headers
     end
-    
 
     def link_type_header(uri)
       "<#{uri}>;rel=\"type\""

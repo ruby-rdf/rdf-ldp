@@ -26,3 +26,11 @@ options '/*' do
   RDF::LDP::Resource.find(RDF::URI(request.url), repository)
 end
 
+head '/*' do
+  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+end
+
+delete '/*' do
+  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+end
+

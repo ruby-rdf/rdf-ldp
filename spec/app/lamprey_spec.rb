@@ -50,6 +50,14 @@ describe 'lamprey' do
       end
     end
 
+    describe 'HEAD' do
+      it 'responds to head' do
+        head '/'
+        expect(last_response.header['Allow'])
+          .to include('GET', 'POST', 'OPTIONS', 'HEAD')
+      end
+    end
+
     describe 'OPTIONS' do
       it 'has Allow headers' do
         options '/'
@@ -68,7 +76,7 @@ describe 'lamprey' do
         end
 
         it 'has Allow for resource type' do
-          options '/'
+          options '/moomin'
           expect(last_response.header['Allow'])
             .to include('GET', 'OPTIONS', 'HEAD')
         end
@@ -160,6 +168,9 @@ describe 'lamprey' do
           expect(last_response.header['Etag']).not_to eq etag
         end
       end
+    end
+    
+    describe 'DELETE' do
     end
   end
 end

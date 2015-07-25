@@ -131,8 +131,8 @@ shared_examples 'an RDFSource' do
                                   RDF::Node.new)
         end
       end
-
-      it 'parses turtle' do
+ 
+     it 'parses turtle' do
         expect(subject.send(:parse_graph, graph.dump(:ttl), 'text/turtle'))
           .to be_isomorphic_with graph
       end
@@ -232,6 +232,30 @@ shared_examples 'an RDFSource' do
       it 'gives the subject' do
         expect(subject.request(:GET, 200, {'abc' => 'def'}, {}))
           .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
+      end
+
+      it 'returns 410 GONE when destroyed' do
+        allow(subject).to receive(:destroyed?).and_return true
+        expect { subject.request(:GET, 200, {'abc' => 'def'}, {}) }
+          .to raise_error RDF::LDP::Gone
+      end
+    end
+
+    context 'with :DELETE' do
+      before { subject.create('', 'text/plain') }
+
+      it 'returns 204' do
+        expect(subject.request(:DELETE, 200, {}, {}).first).to eq 204
+      end
+
+      it 'returns an empty body' do
+        expect(subject.request(:DELETE, 200, {}, {}).last.to_response)
+          .to be_empty
+      end
+
+      it 'marks resource as destroyed' do
+        expect { subject.request(:DELETE, 200, {}, {}) }
+          .to change { subject.destroyed? }.from(false).to(true)
       end
     end
     
@@ -486,6 +510,15 @@ shared_examples 'a Container' do
           env['Slug'] = 'snork'
           subject.request(:POST, 200, {}, env)
 
+          expect { subject.request(:POST, 200, {}, env) }
+            .to raise_error RDF::LDP::Conflict
+        end
+
+        it 'raises a 409 Conflict when slug is already taken but destroyed' do
+          env['Slug'] = 'snork'
+          created = subject.request(:POST, 200, {}, env).last
+          allow(created).to receive(:destroyed?).and_return true
+          
           expect { subject.request(:POST, 200, {}, env) }
             .to raise_error RDF::LDP::Conflict
         end

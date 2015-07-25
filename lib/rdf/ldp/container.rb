@@ -77,6 +77,16 @@ module RDF::LDP
     end
 
     ##
+    # Remove a membership triple for `resource` to the container's `#graph`.
+    #
+    # @param [RDF::Term] a member to remove from this container
+    # @return [Container] self
+    def remove_membership_triple(resource)
+      graph.delete(make_membership_triple(resource.to_uri))
+      self
+    end
+
+    ##
     # @param [RDF::Term] a member for this container
     #
     # @return [RDF::URI] the membership triple
