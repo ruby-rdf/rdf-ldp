@@ -18,27 +18,20 @@ describe RDF::LDP::Container do
     end
   end
 
-  describe '#membership_predicate' do
-    it 'gives default membership predicate' do
-      expect(subject.membership_predicate)
-        .to eq RDF::URI('http://www.w3.org/ns/ldp#contains')
-    end
-  end
-
-  describe '#make_membership_triple' do
+  describe '#make_containment_triple' do
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'statement subject is #subject_uri' do
-      expect(subject.make_membership_triple(resource).subject)
+      expect(subject.make_containment_triple(resource).subject)
         .to eq subject.subject_uri
     end
   end
 
-  describe '#add_membership_triple' do
+  describe '#add_containment_triple' do
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'adds triple to graph' do
-      expect { subject.add_membership_triple(resource) }
+      expect { subject.add_containment_triple(resource) }
         .to change { subject.graph.count }.by(1)
     end
   end

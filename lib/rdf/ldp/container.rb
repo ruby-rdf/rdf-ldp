@@ -27,6 +27,14 @@ module RDF::LDP
       super
     end
 
+    def add(resource)
+      add_containment_triple(resource)
+    end
+
+    def remove(resource)
+      remove_containment_triple(resource)
+    end
+
     ##
     # @return [RDF::URI] a URI representing the container type
     def container_class
@@ -34,64 +42,50 @@ module RDF::LDP
     end
 
     ##
-    # Aliases #subject_uri
-    # @return [RDF::URI] #subject_uri
-    def membership_constant_uri
-      subject_uri
-    end
-
-    ##
-    # @return [RDF::URI] the membership predicate
-    # @see http://www.w3.org/TR/ldp/#dfn-membership-predicate
-    def membership_predicate
-      RDF::Vocab::LDP.contains
-    end
-
-    ##
-    # @return [RDF::Query::Enumerator] the membership triples
-    def membership_triples
-      graph.query([membership_constant_uri, 
-                   membership_predicate, 
+    # @return [RDF::Query::Enumerator] the containment triples
+    def containment_triples
+      graph.query([subject_uri, 
+                   RDF::Vocab::LDP.contains, 
                    nil]).statements
     end
 
     ##
     # @param [RDF::Statement] statement
     #
-    # @return [Boolean] true if the membership triple exists
+    # @return [Boolean] true if the containment triple exists
     #
     # @todo for some reason `#include?` doesn't work! figure out why, this is 
     #   clumsy.
-    def has_membership_triple?(statement)
-      !(membership_triples.select { |t| statement == t }.empty?)
+    def has_containment_triple?(statement)
+      !(containment_triples.select { |t| statement == t }.empty?)
     end
 
     ##
-    # Adds a membership triple for `resource` to the container's `#graph`.
+    # Adds a containment triple for `resource` to the container's `#graph`.
     #
     # @param [RDF::Term] a new member for this container
     # @return [Container] self
-    def add_membership_triple(resource)
-      graph << make_membership_triple(resource.to_uri)
+    def add_containment_triple(resource)
+      graph << make_containment_triple(resource.to_uri)
       self
     end
 
     ##
-    # Remove a membership triple for `resource` to the container's `#graph`.
+    # Remove a containment triple for `resource` to the container's `#graph`.
     #
     # @param [RDF::Term] a member to remove from this container
     # @return [Container] self
-    def remove_membership_triple(resource)
-      graph.delete(make_membership_triple(resource.to_uri))
+    def remove_containment_triple(resource)
+      graph.delete(make_containment_triple(resource.to_uri))
       self
     end
 
     ##
     # @param [RDF::Term] a member for this container
     #
-    # @return [RDF::URI] the membership triple
-    def make_membership_triple(resource)
-      RDF::Statement(subject_uri, membership_predicate, resource)
+    # @return [RDF::URI] the containment triple
+    def make_containment_triple(resource)
+      RDF::Statement(subject_uri, RDF::Vocab::LDP.contains, resource)
     end
 
     private
@@ -117,16 +111,16 @@ module RDF::LDP
       created = klass.new(id, @data)
                 .create(env['rack.input'], env['CONTENT_TYPE'])
       
-      add_membership_triple(created)
+      add(created)
       headers['Location'] = created.subject_uri.to_s
       [201, update_headers(headers), created]
     end
 
     def validate_triples!(statements)
       statements.query(subject: subject_uri, 
-                       predicate: membership_predicate) do |statement|
-        raise Conflict.new("Attempted to write unacceptable LDP membership-triple: #{statement}") unless 
-          has_membership_triple?(statement)
+                       predicate: RDF::Vocab::LDP.contains) do |statement|
+        raise Conflict.new("Attempted to write unacceptable LDP containment-triple: #{statement}") unless 
+          has_containment_triple?(statement)
       end
     end
   end

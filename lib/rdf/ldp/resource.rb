@@ -135,9 +135,7 @@ module RDF::LDP
     # @todo Use of owl:Nothing is probably problematic. Define an internal 
     # namespace and class represeting deletion status as a stateful property.
     def destroy
-      containers.each do |container|
-        container.remove_membership_triple(self) if container.container?
-      end
+      containers.each { |con| con.remove(self) if con.container? }
       @metagraph << RDF::Statement(subject_uri, RDF.type, RDF::OWL.Nothing)
       self
     end

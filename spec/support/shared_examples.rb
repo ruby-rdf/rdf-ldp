@@ -338,57 +338,45 @@ shared_examples 'a Container' do
     end
   end
 
-  describe '#membership_constant_uri' do
-    it 'aliases #subject_uri' do
-      expect(subject.membership_constant_uri).to eq subject.subject_uri
-    end
-  end
-
-  describe '#membership_predicate' do
-    it 'returns a uri' do
-      expect(subject.membership_predicate).to be_a RDF::URI
-    end
-  end
-
-  describe '#membership_triples' do
+  describe '#containment_triples' do
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'returns a uri' do
-      subject.add_membership_triple(resource)
-      expect(subject.membership_triples)
+      subject.add_containment_triple(resource)
+      expect(subject.containment_triples)
         .to contain_exactly(an_instance_of(RDF::Statement))
     end
   end
 
-  describe '#add_membership_triple' do
+  describe '#add_containment_triple' do
     let(:resource) { RDF::URI('http://ex.org/mymble') }
 
     it 'returns self' do
-      expect(subject.add_membership_triple(resource)).to eq subject
+      expect(subject.add_containment_triple(resource)).to eq subject
     end
 
     it 'membership triple is added to graph' do
-      expect(subject.add_membership_triple(resource).graph)
-        .to include subject.make_membership_triple(resource)
+      expect(subject.add_containment_triple(resource).graph)
+        .to include subject.make_containment_triple(resource)
     end
   end
 
-  describe '#make_membership_triple' do
+  describe '#make_containment_triple' do
     let(:resource) { uri / 'papa' }
 
     it 'returns a statement' do
-      expect(subject.make_membership_triple(resource)).to be_a RDF::Statement
+      expect(subject.make_containment_triple(resource)).to be_a RDF::Statement
     end
 
     it 'statement subject *or* object is #subject_uri' do
-      sub = subject.make_membership_triple(resource).subject
-      obj = subject.make_membership_triple(resource).object
+      sub = subject.make_containment_triple(resource).subject
+      obj = subject.make_containment_triple(resource).object
       expect([sub, obj]).to include subject.subject_uri
     end
 
     it 'converts Resource classes to URI' do
-      sub = subject.make_membership_triple(subject).subject
-      obj = subject.make_membership_triple(subject).object
+      sub = subject.make_containment_triple(subject).subject
+      obj = subject.make_containment_triple(subject).object
       expect([sub, obj]).to include subject.subject_uri
     end
   end
@@ -403,10 +391,10 @@ shared_examples 'a Container' do
           'CONTENT_TYPE' => 'text/plain' }
       end
       
-      context 'when PUTing membership triples' do
+      context 'when PUTing containment triples' do
         let(:statement) do
-          RDF::Statement(subject.subject_uri, 
-                         subject.membership_predicate, 
+          RDF::Statement(subject.subject_uri,
+                         RDF::Vocab::LDP.contains,
                          'moomin')
         end
 
@@ -423,7 +411,7 @@ shared_examples 'a Container' do
             .to raise_error RDF::LDP::Conflict
         end
 
-        it 'can put existing membership triple' do
+        it 'can put existing containment triple' do
           subject.create('', 'text/plain')
           subject.graph << statement
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
@@ -455,9 +443,9 @@ shared_examples 'a Container' do
           .to be_starts_with subject.subject_uri.to_s
       end
 
-      it 'adds membership statement to resource' do
+      it 'adds containment statement to resource' do
         expect { subject.request(:POST, 200, {}, env) }
-          .to change { subject.membership_triples.count }.from(0).to(1)
+          .to change { subject.containment_triples.count }.from(0).to(1)
       end
 
       context 'with Container interaction model' do
@@ -573,6 +561,25 @@ shared_examples 'a Container' do
           end
         end
       end
+    end
+  end
+end
+
+shared_examples 'a DirectContainer' do
+  it_behaves_like 'a Container'
+
+  let(:uri) { RDF::URI('http://ex.org/moomin') }
+  subject { described_class.new(uri) }
+
+  describe '#membership_constant_uri' do
+    it 'aliases #subject_uri' do
+      expect(subject.membership_constant_uri).to eq subject.subject_uri
+    end
+  end
+
+  describe '#membership_predicate' do
+    it 'returns a uri' do
+      expect(subject.membership_predicate).to be_a RDF::URI
     end
   end
 end

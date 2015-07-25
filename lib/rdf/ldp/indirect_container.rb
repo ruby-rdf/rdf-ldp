@@ -1,5 +1,5 @@
 module RDF::LDP
-  class IndirectContainer < Container
+  class IndirectContainer < DirectContainer
     def self.to_uri
       RDF::Vocab::LDP.IndirectContainer
     end
