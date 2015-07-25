@@ -76,9 +76,10 @@ module RDF::LDP
     #   input.
     #
     # @return [RDF::LDP::Resource] self
-    def update(input, content_type)
+    def update(input, content_type, &block)
       return create(input, content_type) unless exists?
       statements = parse_graph(input, content_type)
+      yield statements if block_given?
       graph.clear!
       graph << statements
       self

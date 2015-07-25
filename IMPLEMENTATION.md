@@ -119,7 +119,8 @@ LDP Implementation Overview
  - __5.2.1.2-3__: rdf:type is left to the client and/or implementer.
  - __5.2.1.4__: Link headers for type are added for all Resources; See:
  __4.2.1.4__.
- - __5.2.1.5__: [IGNORING SHOULD] Client hints are unimplemented. [TODO]
+ - __5.2.1.5__: [IGNORING SHOULD] Client hints are unimplemented. We are
+ considering including them in future development. [TODO]
 
 ### 5.2.2 HTTP GET
 
@@ -153,8 +154,8 @@ LDP Implementation Overview
  - __5.2.3.10__: Slug headers are treated as non-negotiable requests to create
  a resource at [container-uri]/[Slug]. If a resource exists at that address the
  request will fail.
- - __5.2.3.11__: [NON-COMPLIANT] handling for uri reuse will be addressed with
- deletion. [TODO]
+ - __5.2.3.11__: Deleted resources are tombstoned and their URI's are protected
+ from future use.
  - __5.2.3.12__: POST requests to create LDP-NRs currently fail. Support is
  planned for future development [TODO].
  - __5.2.3.13__: Accept-Post headers are added to all responses from resources
@@ -197,7 +198,35 @@ that do not already exist.
 5.4 Direct Container
 --------------------
 
-Direct Container support is planned for future development. [TODO]
+### 5.4.1 General
+
+- __5.4.1.1__: DirectContainers inherit all BasicContainer behavior
+- __5.4.1.2__: `ldp:member` is used as the default predicate in cases where the
+client provides none.
+- __5.4.1.3__: We enforce the inclusion of _exactly one_
+`ldp:membershipResource` by:
+  - adding the LDPDC as the `ldp:membershipResource` if the client does not
+  provide one.
+  - rejecting POST requests with `NotAcceptable` if more than one is present
+We allow clients to change triples including `ldp:membershipResource` at their
+own risk.
+- __5.4.1.4__: The behaivor described in __5.4.1.3__ applies to statements
+with either of `ldp:hasMemberRelation` and `ldp:isMemberOfRelation`.
+- __5.4.1.5__: We implement the `ldp:MemberSubject` behavior as described and
+ignore `ldp:insertedContentRelation` on DirectContainers.
+
+### 5.4.2 POST
+
+- __5.4.2.1__: Triples are created as described when POSTing to a container. We
+allow clients to delete and replace triples at their own risk, per the MAY in
+this section. Membership triples are added to the Membership Resource's graph.
+POST requests are rejected if the Membership Resource does not exist.
+
+
+### 5.4.2 DELETE
+
+- __5.4.3.1__: Triples are deleted as described in this section.
+
 
 5.5 Indirect Container
 -----------------------
@@ -207,6 +236,20 @@ Indirect Container support is planned for future development. [TODO]
 
 Handling of Non-Normative Notes
 ================================
+
+ - __6.2.2__ We supply swappable backends via the `RDF::Repository` abstraction.
+ Clients may edit the resources available to LDP freely through the interfaces
+ provided by `RDF::Repository` or by other means. Resources are marked as LDPRs
+ by the presence of a specific named graph structure, which should be maintained
+ for resources indended to be created or accessed over this server.
+ - __6.2.3__ After delete, we supply `410 GONE` responses. Resourced deleted are
+ treated as permanently deleted. Clients may recover them manually.
+ - __6.2.5__ We are considering options for HTTP PATCH implementations.
+ - __6.2.6__ We do not infer content types (or LDP interaction models) from
+ resource contents, instead relying exclusively on the headers defined and used
+ by LDP.
+ - __6.3.1__ We allow clients complete control over graph contents, except
+ where LDP _requires_ otherwise.
 
 
 Test Suite

@@ -14,6 +14,12 @@ module RDF::LDP
     end
 
     ##
+    # @return [RDF::URI] a URI representing the container type
+    def container_class
+      CONTAINER_CLASSES[:basic]
+    end
+
+    ##
     # @see RDFSource#create
     def create(input, content_type)
       validate_triples!(parse_graph(input, content_type))
@@ -27,18 +33,24 @@ module RDF::LDP
       super
     end
 
+    ##
+    # Adds a member `resource` to the container. Handles containment and 
+    # membership triples as appropriate for the container type.
+    #
+    # @param [RDF::Term] a new member for this container
+    # @return [Container] self
     def add(resource)
       add_containment_triple(resource)
     end
 
+    ##
+    # Removes a member `resource` from the container. Handles containment and
+    # membership triples as appropriate for the container type.
+    #
+    # @param [RDF::Term] a new member for this container
+    # @return [Container] self
     def remove(resource)
       remove_containment_triple(resource)
-    end
-
-    ##
-    # @return [RDF::URI] a URI representing the container type
-    def container_class
-      CONTAINER_CLASSES[:basic]
     end
 
     ##
