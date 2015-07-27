@@ -10,6 +10,15 @@ This software ships with the following libraries:
   `RDF::LDP`.
   - Lamprey --- a basic LDP server implemented with `Rack::LDP`.
 
+Lamprey
+=======
+
+Lamprey is a basic LDP server. To start it, use:
+
+```
+bundle exec ruby app/lamprey.rb
+```
+
 License
 ========
 
