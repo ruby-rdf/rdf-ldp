@@ -1,6 +1,8 @@
 require 'rdf'
 require 'rdf/vocab'
 
+require 'rdf/ldp/version'
+
 require 'rdf/ldp/resource'
 require 'rdf/ldp/rdf_source'
 require 'rdf/ldp/non_rdf_source'

@@ -8,8 +8,10 @@ Gem::Specification.new do |gem|
   gem.name               = 'rdf-ldp'
   gem.homepage           = 'http://ruby-rdf.github.com/'
   gem.license            = 'Public Domain' if gem.respond_to?(:license=)
-  gem.summary            = 'A Ruby LDP Server.'
-  gem.description        = 'A Ruby LDP Server.'
+  gem.summary            = 'A suite of LDP software and middleware for RDF.rb.'
+  gem.description        = 'Implements a Linked Data Platform domain model, Rack ' \
+                           'middleware for server implementers, and a simple ' \
+                           'Sinatra-based server for RDF.rb'
 
   gem.authors            = ['Tom Johnson']
   gem.email              = 'public-rdf-ruby@w3.org'
