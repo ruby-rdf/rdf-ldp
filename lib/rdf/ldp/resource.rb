@@ -281,7 +281,7 @@ module RDF::LDP
       headers['Allow'] = allowed_methods.join(', ')
       headers['Accept-Post'] = accept_post if respond_to?(:post, true)
 
-      headers['Etag'] ||= etag if respond_to?(:etag)
+      headers['ETag'] ||= etag if respond_to?(:etag)
       headers
     end
 

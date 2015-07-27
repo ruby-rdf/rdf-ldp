@@ -5,7 +5,7 @@ require 'lamprey'
 
 describe 'lamprey' do
   include ::Rack::Test::Methods
-  let(:app) { Sinatra::Application }
+  let(:app) { Lamprey }
   
   describe 'base container /' do 
     describe 'GET' do
@@ -72,7 +72,7 @@ describe 'lamprey' do
 
       context 'existing resource' do
         before do
-          post '/', '', 'CONTENT_TYPE' => 'text/plain', 'Slug' => 'moomin'
+          post '/', '', 'CONTENT_TYPE' => 'text/plain', 'HTTP_SLUG' => 'moomin'
         end
 
         it 'has Allow for resource type' do
@@ -122,7 +122,7 @@ describe 'lamprey' do
         it 'accepts a Slug' do
           post '/', graph.dump(:ttl), 
                'CONTENT_TYPE' => 'text/plain', 
-               'Slug' => 'moominpapa'
+               'HTTP_SLUG' => 'moominpapa'
           expect(last_response.header['Location'])
             .to eq 'http://example.org/moominpapa'
         end
@@ -130,14 +130,14 @@ describe 'lamprey' do
         it 'rejects slugs with #' do
           post '/', graph.dump(:ttl), 
                'CONTENT_TYPE' => 'text/plain', 
-               'Slug' => 'moomin#papa'
+               'HTTP_SLUG' => 'moomin#papa'
           expect(last_response.status).to eq 406
         end
 
         it 'gives Conflict if slug is taken' do
           post '/', graph.dump(:ttl), 
                'CONTENT_TYPE' => 'text/plain', 
-               'Slug' => 'moomin'
+               'HTTP_SLUG' => 'moomin'
           expect(last_response.status).to eq 409
         end
       end
@@ -150,7 +150,7 @@ describe 'lamprey' do
         before do
           post '/', graph.dump(:ttl), 
                'CONTENT_TYPE' => 'text/plain', 
-               'Slug' => 'moomin'
+               'HTTP_SLUG' => 'moomin'
         end
 
         it 'returns an etag' do

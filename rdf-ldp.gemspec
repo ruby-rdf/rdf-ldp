@@ -16,22 +16,23 @@ Gem::Specification.new do |gem|
 
   gem.platform           = Gem::Platform::RUBY
   gem.files              = %w(AUTHORS CREDITS README.md CHANGELOG.md UNLICENSE VERSION) + Dir.glob('lib/**/*.rb')
-  gem.require_paths      = %w(lib, app)
+  gem.require_paths      = %w(lib app)
   gem.has_rdoc           = false
 
   gem.required_ruby_version      = '>= 1.9.2'
   gem.requirements               = []
 
   gem.add_runtime_dependency     'rack'
-  gem.add_runtime_dependency     'rack-linkeddata'
   gem.add_runtime_dependency     'rdf', '~> 1.1'
-  gem.add_runtime_dependency     'rdf-turtle', '~> 1.1'
   gem.add_runtime_dependency     'rdf-vocab'
+  gem.add_runtime_dependency     'rack-linkeddata'
+
+  gem.add_runtime_dependency     'rdf-turtle', '~> 1.1'
   gem.add_runtime_dependency     'json-ld'
+
   gem.add_runtime_dependency     'sinatra'
 
   gem.add_runtime_dependency     'link_header'
-
 
   gem.add_development_dependency 'rdf-spec',    '~> 1.1', '>= 1.1.13'
   gem.add_development_dependency 'rdf-rdfxml',  '~> 1.1'

@@ -1,36 +1,40 @@
-require 'sinatra'
 require 'rack/ldp'
+require 'sinatra/base'
 
-use Rack::LDP::ContentNegotiation
-use Rack::LDP::Errors
-use Rack::LDP::Responses
-use Rack::LDP::Requests
+class Lamprey < Sinatra::Base
 
-repository = RDF::Repository.new
-RDF::LDP::Container.new(RDF::URI('http://example.org/'), repository)
-  .create('', 'text/plain')
+  use Rack::LDP::ContentNegotiation
+  use Rack::LDP::Errors
+  use Rack::LDP::Responses
+  use Rack::LDP::Requests
 
-get '/*' do
-  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  repository = RDF::Repository.new
+
+  get '/*' do
+    RDF::LDP::Container.new(RDF::URI(request.url), repository)
+      .create('', 'text/plain') if repository.empty?
+    RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  end
+
+  post '/*' do
+    RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  end
+
+  put '/*' do
+    RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  end
+
+  options '/*' do
+    RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  end
+
+  head '/*' do
+    RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  end
+
+  delete '/*' do
+    RDF::LDP::Resource.find(RDF::URI(request.url), repository)
+  end
+
+  run! if app_file == $0
 end
-
-post '/*' do
-  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
-end
-
-put '/*' do
-  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
-end
-
-options '/*' do
-  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
-end
-
-head '/*' do
-  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
-end
-
-delete '/*' do
-  RDF::LDP::Resource.find(RDF::URI(request.url), repository)
-end
-

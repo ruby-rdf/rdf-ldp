@@ -278,7 +278,7 @@ shared_examples 'an RDFSource' do
       end
 
       it 'returns the etag' do
-        expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['Etag'])
+        expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['ETag'])
           .to eq subject.etag
       end
 
@@ -303,19 +303,19 @@ shared_examples 'an RDFSource' do
         end
 
         it 'returns the etag' do
-          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['Etag'])
+          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['ETag'])
             .to eq subject.etag
         end
 
         it 'gives PreconditionFailed when trying to update with wrong Etag' do
-          env['If-Match'] = 'not an Etag'
+          env['HTTP_IF_MATCH'] = 'not an Etag'
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
             .to raise_error RDF::LDP::PreconditionFailed
         end
 
         it 'succeeds when giving correct Etag' do
           graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
-          env['If-Match'] = subject.etag
+          env['HTTP_IF_MATCH'] = subject.etag
           expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.graph.statements.count }
         end
@@ -513,19 +513,19 @@ shared_examples 'a Container' do
 
       context 'with a Slug' do
         it 'creates resource with Slug' do
-          env['Slug'] = 'snork'
+          env['HTTP_SLUG'] = 'snork'
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
-            .to eq (subject.subject_uri / env['Slug'])
+            .to eq (subject.subject_uri / env['HTTP_SLUG'])
         end
 
         it 'mints a uri when empty Slug is given' do
-          env['Slug'] = ''
+          env['HTTP_SLUG'] = ''
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
             .to be_starts_with (subject.subject_uri)
         end
 
         it 'raises a 409 Conflict when slug is already taken' do
-          env['Slug'] = 'snork'
+          env['HTTP_SLUG'] = 'snork'
           subject.request(:POST, 200, {}, env)
 
           expect { subject.request(:POST, 200, {}, env) }
@@ -533,7 +533,7 @@ shared_examples 'a Container' do
         end
 
         it 'raises a 409 Conflict when slug is already taken but destroyed' do
-          env['Slug'] = 'snork'
+          env['HTTP_SLUG'] = 'snork'
           created = subject.request(:POST, 200, {}, env).last
           allow(created).to receive(:destroyed?).and_return true
           
@@ -542,14 +542,14 @@ shared_examples 'a Container' do
         end
 
         it 'raises a 406 NotAcceptable if slug has a uri fragment `#`' do
-          env['Slug'] = 'snork#maiden'
+          env['HTTP_SLUG'] = 'snork#maiden'
 
           expect { subject.request(:POST, 200, {}, env) }
             .to raise_error RDF::LDP::NotAcceptable
         end
 
         it 'url-encodes Slug' do
-          env['Slug'] = 'snork maiden'
+          env['HTTP_SLUG'] = 'snork maiden'
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
             .to eq (subject.subject_uri / 'snork%20maiden')
         end

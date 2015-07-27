@@ -104,7 +104,7 @@ module Rack
         status, headers, response = @app.call(env)
         return [status, headers, response] unless
           response.is_a? RDF::LDP::Resource
-
+        
         response
           .send(:request, env['REQUEST_METHOD'].to_sym, status, headers, env)
       end

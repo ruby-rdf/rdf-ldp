@@ -113,7 +113,7 @@ module RDF::LDP
     #   array.
     def post(status, headers, env)
       klass = self.class.interaction_model(env.fetch('Link', ''))
-      slug = env['Slug']
+      slug = env['HTTP_SLUG']
       slug = klass.gen_id if slug.nil? || slug.empty?
       raise NotAcceptable.new('Refusing to create resource with `#` in Slug') if 
         slug.include? '#'

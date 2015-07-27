@@ -115,14 +115,14 @@ module RDF::LDP
     def etag
       subs = graph.subjects.map { |s| s.node? ? nil : s.to_s }
              .compact.sort.join()
-      "#{Digest::MD5.base64digest(subs)}#{graph.statements.count}"
+      "\"#{Digest::MD5.base64digest(subs)}#{graph.statements.count}\""
     end
 
     ##
     # @param [String] tag  a tag to compare to `#etag`
     # @return [Boolean] whether the given tag matches `#etag`
     def match?(tag)
-      return false unless tag.split('==').last == graph.statements.count.to_s
+      # return false unless tag.split('==').last == graph.statements.count.to_s
       tag == etag
     end
 
@@ -151,7 +151,7 @@ module RDF::LDP
     # Process & generate response for PUT requsets.
     def put(status, headers, env)
       raise PreconditionFailed.new('Etag invalid') if 
-        env.has_key?('If-Match') && !match?(env['If-Match'])
+        env.has_key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
 
       if exists?
         update(env['rack.input'], env['CONTENT_TYPE'])
