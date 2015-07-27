@@ -1,6 +1,8 @@
 RDF::LDP
 ========
 
+[![Build Status](https://travis-ci.org/ruby-rdf/rdf-ldp.svg?branch=master)](https://travis-ci.org/ruby-rdf/rdf-ldp)
+
 __WORK IN PROGRESS__
 
 This software ships with the following libraries:
