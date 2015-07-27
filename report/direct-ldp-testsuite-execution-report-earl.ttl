@@ -1,0 +1,1228 @@
+@prefix rdft:  <http://www.w3.org/ns/rdftest#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:  <http://www.w3.org/ns/earl#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix td:    <http://www.w3.org/2006/03/test-description#> .
+@prefix mf:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix ldpt:  <http://w3c.github.io/ldp-testsuite/manifest#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.12Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because PUT request was successful.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxStatus(RdfSourceTest.java:532)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxConstrainedBy(RdfSourceTest.java:489)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPublishConstraintsUnknownProp(RdfSourceTest.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PublishConstraintsUnknownProp
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.133Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-Head
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.139Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-DeleteResourceUpdatesTriples
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.143Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ServerHonorsSlug
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.103Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: LDPC does not have an rdf:type of ldp:Container expected [true] but found [false]\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testRdfTypeLdpContainer(CommonContainerTest.java:793)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 24 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RdfTypeLdpContainer
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.13Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because we have no read-only properties to PUT. Server-managed properties are specified using the \"read-only-prop\" command-line parameter.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPublishConstraintsReadOnlyProp(RdfSourceTest.java:357)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PublishConstraintsReadOnlyProp
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.136Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-UseMemberPredicate
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.142Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PutReplacesResource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.145Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ETagHeadersGet
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.124Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because PUT request was successful.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxStatus(RdfSourceTest.java:532)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxResponseBody(RdfSourceTest.java:542)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testResponsePropertiesNotPersisted(RdfSourceTest.java:462)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ResponsePropertiesNotPersisted
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.135Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-GetResource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.14Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-AcceptPostResponseHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.105Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: Container <http://localhost:4567/dc> has not advertised PATCH support through its HTTP OPTIONS response. expected [true] but found [false]\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testPatchMethod(CommonContainerTest.java:766)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 24 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PatchMethod
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.115Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because PUT request was successful.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxStatus(RdfSourceTest.java:532)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxResponseBody(RdfSourceTest.java:542)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testResponsePropertiesNotPersisted(RdfSourceTest.java:462)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ResponsePropertiesNotPersisted
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.132Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Server does not require If-Match header.\n\tat org.w3.ldp.testsuite.test.CommonResourceTest.testPreconditionRequiredStatusCode(CommonResourceTest.java:369)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PreconditionRequiredStatusCode
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.138Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-GetResponseHeaders
+] .
+
+<https://github.com/ruby-rdf/rdf-ldp/>
+        a                          doap:Project , earl:Software , earl:TestSubject ;
+        dcterms:title              "Lamprey Server (Rack::LDP)" ;
+        doap:developer             [ a          foaf:Person ;
+                                     foaf:name  "Tom Johnson"
+                                   ] ;
+        doap:homepage              "https://github.com/ruby-rdf/rdf-ldp/" ;
+        doap:name                  "Lamprey" ;
+        doap:programming-language  "Ruby" .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.146Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-DeleteRemovesContainmentTriple
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.101Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: 1 expectation failed.\nExpected status code not between 200 and 209 doesn't match actual status code <200>.\n\n\tat org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrap.callConstructor(ConstructorSite.java:81)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:190)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:577)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeFilterChain(RequestSpecificationImpl.groovy:927)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1347)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.this$2$applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.put(RequestSpecificationImpl.groovy:159)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.put(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:120)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy:274)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy)\n\tat org.w3.ldp.testsuite.test.CommonResourceTest.testPutRequiresIfMatch(CommonResourceTest.java:270)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 40 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutRequiresIfMatch
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testUseStandardVocabularies(RdfSourceTest.java:256)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-UseStandardVocabularies
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.129Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because PUT request was successful.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxStatus(RdfSourceTest.java:532)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxConstrainedBy(RdfSourceTest.java:489)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPublishConstraintsUnknownProp(RdfSourceTest.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PublishConstraintsUnknownProp
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.136Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PutSimpleUpdate
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.141Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-Head
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.144Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ETagHeadersHead
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.108Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testRestrictClientInference(RdfSourceTest.java:276)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RestrictClientInference
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.133Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ConditionFailedStatusCode
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.139Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-OptionsAllowHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.144Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PutBadETag
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.104Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: LDP-RS representation does not have rdf:type ldp:RDFSource expected [true] but found [false]\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testTypeRdfSource(RdfSourceTest.java:208)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 24 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-TypeRdfSource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.13Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because there are restrictions on PUT content for this resource. The requirement needs to be tested manually.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testRelativeUriResolutionPut(RdfSourceTest.java:79)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RelativeUriResolutionPut
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.137Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-GetResource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.142Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PostResourceUpdatesTriples
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.112Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testUseStandardVocabularies(RdfSourceTest.java:256)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-UseStandardVocabularies
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.127Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.testng.SkipException: Covered indirectly by the MUST tests defined in CommonContainerTest class\n\tat org.w3.ldp.testsuite.test.DirectContainerTest.testConformsDcLdpContainer(DirectContainerTest.java:324)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ConformsDcLdpContainer
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.14Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-MemberRelationOrIsMemberOfRelationTripleExists
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.106Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: Container has containment triples when minimal container was requested expected [false] but found [true]\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testPreferContainmentTriples(CommonContainerTest.java:198)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 24 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PreferContainmentTriples
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.testng.SkipException: Covered indirectly by the MUST tests defined in CommonResourceTest class\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testConformsRdfSourceLdpResource(RdfSourceTest.java:477)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ConformsRdfSourceLdpResource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.133Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ContainsRdfType
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.138Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-JsonLdRepresentation
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.143Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-GetResourceAcceptTurtle
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.146Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-GetResourceAsTurtleNoAccept
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.102Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: LDP-RS representation has no explicit rdf:type expected [true] but found [false]\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testContainsRdfType(RdfSourceTest.java:194)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 24 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ContainsRdfType
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.114Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testReUseVocabularies(RdfSourceTest.java:231)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ReUseVocabularies
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.136Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-RelativeUriResolutionPut
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.141Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RelativeUriResolutionPost
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.145Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-GetResourceAsTurtleNoAccept
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.108Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: containerAsResource is null\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testRequestedInteractionModelHeaders(CommonContainerTest.java:351)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RequestedInteractionModelHeaders
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.135Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ConditionFailedStatusCode
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RestrictUriReUseNoSlug
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.139Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-TypeRdfSource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.144Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-AcceptTurtle
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.104Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: 1 expectation failed.\nExpected status code not between 200 and 209 doesn't match actual status code <200>.\n\n\tat org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrap.callConstructor(ConstructorSite.java:81)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:190)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:577)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeFilterChain(RequestSpecificationImpl.groovy:927)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1347)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.this$2$applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.put(RequestSpecificationImpl.groovy:159)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.put(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:120)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy:274)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy)\n\tat org.w3.ldp.testsuite.test.CommonResourceTest.testPutRequiresIfMatch(CommonResourceTest.java:270)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 40 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PutRequiresIfMatch
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.119Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.testng.SkipException: Covered indirectly by the MUST tests defined in RdfSourceTest class\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testConformsContainerRdfResource(CommonContainerTest.java:889)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ConformsContainerRdfResource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.131Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.CommonResourceTest.testIsHttp11Manual(CommonResourceTest.java:130)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-IsHttp11Manual
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.142Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-MemberResourceTriple
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.112Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because PUT request was successful.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxStatus(RdfSourceTest.java:532)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPutPropertiesNotPersisted(RdfSourceTest.java:444)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutPropertiesNotPersisted
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.129Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testRestrictClientInference(RdfSourceTest.java:276)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-RestrictClientInference
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.14Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-Options
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.145Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RejectPutModifyingContainmentTriples
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.107Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because there are restrictions on PUT content for this resource. The requirement needs to be tested manually.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.putReplaceResource(RdfSourceTest.java:572)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPutSimpleUpdate(RdfSourceTest.java:158)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutSimpleUpdate
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.123Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because we have no read-only properties to PUT. Server-managed properties are specified using the \"read-only-prop\" command-line parameter.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPutReadOnlyProperties4xxStatus(RdfSourceTest.java:400)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PutReadOnlyProperties4xxStatus
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-CreateWithoutConstraints
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.138Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ETagHeadersHead
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.143Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-JsonLdRepresentation
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.114Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Server does not require If-Match header.\n\tat org.w3.ldp.testsuite.test.CommonResourceTest.testPreconditionRequiredStatusCode(CommonResourceTest.java:369)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PreconditionRequiredStatusCode
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.137Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-AcceptPatchHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.141Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ETagHeadersGet
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.145Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-AcceptPatchHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.108Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because we have no read-only properties to PUT. Server-managed properties are specified using the \"read-only-prop\" command-line parameter.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPutReadOnlyProperties4xxStatus(RdfSourceTest.java:400)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutReadOnlyProperties4xxStatus
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.128Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because we have no read-only properties to PUT. Server-managed properties are specified using the \"read-only-prop\" command-line parameter.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.test4xxErrorHasResponseBody(RdfSourceTest.java:423)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-4xxErrorHasResponseBody
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.135Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-OptionsAllowHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PostJsonLd
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.144Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PostResponseStatusAndLocation
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.105Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: Container has membership triples when minimal container was requested expected [false] but found [true]\n\tat org.w3.ldp.testsuite.test.DirectContainerTest.testPreferMembershipTriples(DirectContainerTest.java:384)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 24 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PreferMembershipTriples
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.119Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because we have no read-only properties to PUT. Server-managed properties are specified using the \"read-only-prop\" command-line parameter.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPublishConstraintsReadOnlyProp(RdfSourceTest.java:357)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PublishConstraintsReadOnlyProp
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.133Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ContentTypeHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.142Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-NoRdfBagSeqOrList
+] .
+
+<https://github.com/ruby-rdf/>
+        a       earl:Assertor .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.146Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-LdpLinkHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.103Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: 1 expectation failed.\nExpected status code <201> doesn't match actual status code <404>.\n\n\tat org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrap.callConstructor(ConstructorSite.java:81)\n\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:182)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:190)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:577)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeFilterChain(RequestSpecificationImpl.groovy:927)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1347)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.this$2$applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:133)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.put(RequestSpecificationImpl.groovy:159)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.put(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:108)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:120)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy:274)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSite.invoke(PogoMetaMethodSite.java:166)\n\tat org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:56)\n\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:133)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:141)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy:301)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.put(ResponseSpecificationImpl.groovy)\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.putToCreate(CommonContainerTest.java:955)\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testPutToCreate(CommonContainerTest.java:64)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 44 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutToCreate
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.CommonResourceTest.testIsHttp11Manual(CommonResourceTest.java:130)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-IsHttp11Manual
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.129Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RestrictPutReUseUri
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.136Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PostNoSlug
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.14Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ActAsIfInsertedContentRelationTripleExists
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.145Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-GetResourceAcceptTurtle
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.123Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because PUT request was successful.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.expectPut4xxStatus(RdfSourceTest.java:532)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPutPropertiesNotPersisted(RdfSourceTest.java:444)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-PutPropertiesNotPersisted
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-NullRelativeUriPost
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.139Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PostContainer
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.143Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-LdpLinkHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:manual ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.115Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipNotTestableException: This requirement or recommendation must be tested manually. It is difficult or impossible to write automated tests for and is not part of the testsuite.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testReUseVocabularies(RdfSourceTest.java:231)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-ReUseVocabularies
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.132Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because we have no read-only properties to PUT. Server-managed properties are specified using the \"read-only-prop\" command-line parameter.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.test4xxErrorHasResponseBody(RdfSourceTest.java:423)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-4xxErrorHasResponseBody
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.138Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-Options
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.146Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutBadETag
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.1Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "java.lang.AssertionError: 1 expectation failed.\nExpected status code <201> doesn't match actual status code <409>.\n\n\tat org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrap.callConstructor(ConstructorSite.java:81)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:190)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:577)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeFilterChain(RequestSpecificationImpl.groovy:927)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1347)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.this$2$applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:55)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:149)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.post(RequestSpecificationImpl.groovy:155)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.post(RequestSpecificationImpl.groovy)\n\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:324)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1207)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1016)\n\tat groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:807)\n\tat com.jayway.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)\n\tat org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:45)\n\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:120)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.post(ResponseSpecificationImpl.groovy:270)\n\tat com.jayway.restassured.internal.ResponseSpecificationImpl.post(ResponseSpecificationImpl.groovy)\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.post(CommonContainerTest.java:934)\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testRestrictUriReUse(CommonContainerTest.java:921)\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testRestrictUriReUseSlug(CommonContainerTest.java:594)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 40 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:failed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RestrictUriReUseSlug
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.111Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.testng.SkipException: Covered indirectly by the MUST tests defined in CommonResourceTest class\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testConformsRdfSourceLdpResource(RdfSourceTest.java:477)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-ConformsRdfSourceLdpResource
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.128Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: containerAsResource is null\n\tat org.w3.ldp.testsuite.test.CommonContainerTest.testRequestedInteractionModelCreateNotAllowed(CommonContainerTest.java:315)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-RequestedInteractionModelCreateNotAllowed
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.135Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-HttpLinkHeader
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "MemberResourceTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dcterms:date  "2015-07-27T23:07:23.144Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:MemberResource-GetResponseHeaders
+] .
+
+[ a                earl:Assertion ;
+  ldpt:ranAsClass  "DirectContainerTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
+  earl:assertedBy  <https://github.com/ruby-rdf/> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a                    earl:TestResult ;
+                     dcterms:date         "2015-07-27T23:07:23.107Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                     dcterms:description  "org.w3.ldp.testsuite.exception.SkipException: Skipping test because there are restrictions on PUT content for this resource. The requirement needs to be tested manually.\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.putReplaceResource(RdfSourceTest.java:572)\n\tat org.w3.ldp.testsuite.test.RdfSourceTest.testPutReplacesResource(RdfSourceTest.java:144)\n\tat org.w3.ldp.testsuite.LdpTestSuite.run(LdpTestSuite.java:379)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:415)\n\tat org.w3.ldp.testsuite.LdpTestSuite.executeTestSuite(LdpTestSuite.java:407)\n\tat org.w3.ldp.testsuite.RunLdpTestSuite.main(RunLdpTestSuite.java:26)\n... Removed 21 stack frames"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                     earl:outcome         earl:untested
+                   ] ;
+  earl:subject     <https://github.com/ruby-rdf/rdf-ldp/> ;
+  earl:test        ldpt:DirectContainer-PutReplacesResource
+] .
