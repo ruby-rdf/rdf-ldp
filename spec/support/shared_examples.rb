@@ -443,8 +443,16 @@ shared_examples 'a Container' do
         it 'can put existing containment triple' do
           subject.create('', 'text/plain')
           subject.graph << statement
+          graph << statement
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
             .to eq 200
+        end
+
+        it 'raises conflict error when without existing containment triples' do
+          subject.create('', 'text/plain')
+          subject.graph << statement
+          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+            .to raise_error RDF::LDP::Conflict
         end
       end
     end
@@ -480,14 +488,14 @@ shared_examples 'a Container' do
 
       context 'with Container interaction model' do
         it 'creates a basic container' do
-          env['Link'] = "<#{RDF::LDP::Container.to_uri}>;rel=\"type\""
+          env['HTTP_LINK'] = "<#{RDF::LDP::Container.to_uri}>;rel=\"type\""
           expect(subject.request(:POST, 200, {}, env).last)
             .to be_a RDF::LDP::Container
         end
 
         context 'BasicContainer' do
           it 'creates a basic container' do
-            env['Link'] = 
+            env['HTTP_LINK'] = 
               "<http://www.w3.org/ns/ldp#BasicContainer>;rel=\"type\""
             expect(subject.request(:POST, 200, {}, env).last)
               .to be_a RDF::LDP::Container
@@ -496,7 +504,7 @@ shared_examples 'a Container' do
 
         context 'DirectContainer' do
           it 'creates a direct container' do
-            env['Link'] = "<#{RDF::LDP::DirectContainer.to_uri}>;rel=\"type\""
+            env['HTTP_LINK'] = "<#{RDF::LDP::DirectContainer.to_uri}>;rel=\"type\""
             expect(subject.request(:POST, 200, {}, env).last)
               .to be_a RDF::LDP::DirectContainer
           end
@@ -504,7 +512,7 @@ shared_examples 'a Container' do
 
         context 'IndirectContainer' do
           it 'creates a indirect container' do
-            env['Link'] = "<#{RDF::LDP::IndirectContainer.to_uri}>;rel=\"type\""
+            env['HTTP_LINK'] = "<#{RDF::LDP::IndirectContainer.to_uri}>;rel=\"type\""
             expect(subject.request(:POST, 200, {}, env).last)
               .to be_a RDF::LDP::IndirectContainer
           end

@@ -7,15 +7,21 @@ module RDF::LDP
     RELATION_TERMS = [RDF::Vocab::LDP.hasMemberRelation,
                       RDF::Vocab::LDP.isMemberOfRelation]
 
+    ##
+    # @return [RDF::URI] a URI representing the container type
+    def container_class
+      CONTAINER_CLASSES[:direct]
+    end
+
     def add(resource)
-      process_membership_resource(resource) do |membership, triple|
+      process_membership_resource(resource.to_uri) do |membership, triple|
         super
         membership.graph << triple
       end
     end
 
     def remove(resource)
-      process_membership_resource(resource) do |membership, triple|
+      process_membership_resource(resource.to_uri) do |membership, triple|
         super
         membership.graph.delete(triple)
       end

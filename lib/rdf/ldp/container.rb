@@ -40,7 +40,7 @@ module RDF::LDP
     # @param [RDF::Term] a new member for this container
     # @return [Container] self
     def add(resource)
-      add_containment_triple(resource)
+      add_containment_triple(resource.to_uri)
     end
 
     ##
@@ -50,7 +50,7 @@ module RDF::LDP
     # @param [RDF::Term] a new member for this container
     # @return [Container] self
     def remove(resource)
-      remove_containment_triple(resource)
+      remove_containment_triple(resource.to_uri)
     end
 
     ##
@@ -78,7 +78,7 @@ module RDF::LDP
     # @param [RDF::Term] a new member for this container
     # @return [Container] self
     def add_containment_triple(resource)
-      graph << make_containment_triple(resource.to_uri)
+      graph << make_containment_triple(resource)
       self
     end
 
@@ -88,7 +88,7 @@ module RDF::LDP
     # @param [RDF::Term] a member to remove from this container
     # @return [Container] self
     def remove_containment_triple(resource)
-      graph.delete(make_containment_triple(resource.to_uri))
+      graph.delete(make_containment_triple(resource))
       self
     end
 
@@ -112,7 +112,7 @@ module RDF::LDP
     # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response 
     #   array.
     def post(status, headers, env)
-      klass = self.class.interaction_model(env.fetch('Link', ''))
+      klass = self.class.interaction_model(env.fetch('HTTP_LINK', ''))
       slug = env['HTTP_SLUG']
       slug = klass.gen_id if slug.nil? || slug.empty?
       raise NotAcceptable.new('Refusing to create resource with `#` in Slug') if 
@@ -125,15 +125,21 @@ module RDF::LDP
       
       add(created)
       headers['Location'] = created.subject_uri.to_s
-      [201, update_headers(headers), created]
+      [201, created.send(:update_headers, headers), created]
     end
 
     def validate_triples!(statements)
+      existing_triples = containment_triples.to_a
       statements.query(subject: subject_uri, 
                        predicate: RDF::Vocab::LDP.contains) do |statement|
-        raise Conflict.new("Attempted to write unacceptable LDP containment-triple: #{statement}") unless 
-          has_containment_triple?(statement)
+        existing_triples.delete(statement) do 
+          raise Conflict.new('Attempted to write unacceptable LDP ' \
+                             "containment-triple: #{statement}") 
+        end
       end
+      raise Conflict.new('Cannot remove containment triples in updates. ' \
+                         "Attepted to remove #{existing_triples}") unless
+        existing_triples.empty?
     end
   end
 end

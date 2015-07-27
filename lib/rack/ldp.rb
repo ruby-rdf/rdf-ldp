@@ -50,8 +50,6 @@ module Rack
       #
       # @param [Array] env  a rack env array
       # @return [Array]  a rack env array with added headers
-      #
-      # @todo handle adding `constrainedBy` headers on errored requests.
       def call(env)
         begin
           @app.call(env)

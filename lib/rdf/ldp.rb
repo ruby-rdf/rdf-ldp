@@ -46,7 +46,7 @@ module RDF
       def headers
         uri = 
           'https://github.com/no-reply/rdf-ldp/blob/master/CONSTRAINED_BY.md'
-        { 'Link' => "<#{uri}>;rel=#{CONSTRAINED_BY}" }
+        { 'Link' => "<#{uri}>;rel=\"#{CONSTRAINED_BY}\"" }
       end
     end
 
