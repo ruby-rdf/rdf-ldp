@@ -22,15 +22,13 @@ module RDF::LDP
     ##
     # @see RDFSource#create
     def create(input, content_type)
-      validate_triples!(parse_graph(input, content_type))
-      super
+      super { |statements| validate_triples!(statements) }
     end
     
     ##
     # @see RDFSource#update
     def update(input, content_type)
-      validate_triples!(parse_graph(input, content_type))
-      super
+      super { |statements| validate_triples!(statements) }
     end
 
     ##

@@ -59,9 +59,10 @@ module RDF::LDP
     # @raise [RDF::LDP::Conflict] if the RDFSource already exists
     #
     # @return [RDF::LDP::Resource] self
-    def create(input, content_type)
+    def create(input, content_type, &block)
       super
       statements = parse_graph(input, content_type)
+      yield statements if block_given?
       graph << statements
       self
     end

@@ -416,7 +416,7 @@ shared_examples 'a Container' do
       let(:graph) { RDF::Graph.new }
 
       let(:env) do
-        { 'rack.input' => graph.dump(:ntriples),
+        { 'rack.input' => StringIO.new(graph.dump(:ntriples)),
           'CONTENT_TYPE' => 'text/plain' }
       end
       
@@ -448,6 +448,19 @@ shared_examples 'a Container' do
             .to eq 200
         end
 
+        it 'writes data when putting existing containment triple' do
+          subject.create('', 'text/plain')
+          subject.graph << statement
+          graph << statement
+          
+          new_st = RDF::Statement(RDF::URI('http://example.org/new_moomin'), 
+                                  RDF::DC.title, 
+                                  'moomin')
+          graph << new_st
+          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).last.graph)
+            .to have_statement new_st
+        end
+
         it 'raises conflict error when without existing containment triples' do
           subject.create('', 'text/plain')
           subject.graph << statement
@@ -463,7 +476,7 @@ shared_examples 'a Container' do
       before { subject.create('', 'text/plain') }
 
       let(:env) do
-        { 'rack.input' => graph.dump(:ntriples),
+        { 'rack.input' => StringIO.new(graph.dump(:ntriples)),
           'CONTENT_TYPE' => 'text/plain' }
       end
       
@@ -586,7 +599,7 @@ shared_examples 'a Container' do
           end
 
           let(:env) do
-            { 'rack.input' => graph.dump(:nquads),
+            { 'rack.input' => StringIO.new(graph.dump(:nquads)),
               'CONTENT_TYPE' => 'application/n-quads' }
           end
 
