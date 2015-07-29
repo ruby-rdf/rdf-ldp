@@ -181,23 +181,23 @@ module RDF::LDP
       
       ##
       # Gives an IO object which represents the current state of @resource.
+      # Opens the file for read-write (mode: r+), if it already exists; 
+      # otherwise, creates the file and opens it for read-write (mode: w+).
       #
-      # @yield [IO] yields a writable object conforming to the Ruby IO 
-      #   interface for storage. After the block closes
+      # @yield [IO] yields a read-writable object conforming to the Ruby IO 
+      #   interface for storage. The IO object will be closed when the block 
+      #   ends.
       #
-      # @retrn [IO] an object conforming to the Ruby IO interface
+      # @return [IO] an object conforming to the Ruby IO interface
       def io(&block)
-        Dir.mkdir(STORAGE_PATH) unless Dir.exists?(STORAGE_PATH)
+        FileUtils.mkdir_p(path_dir) unless Dir.exists?(path_dir)
 
         if block_given?
-          mode = File.exists?(path) ? 'r+b' : 'w+b'
-          io_object = File.open(path, mode)
-
-          result = yield(io_object)
-          io_object.close
+          mode = file_exists? ? 'r+b' : 'w+b'
+          return File.open(path, mode, &block)
         end
         
-        File.exists?(path) ? File.open(path, 'rb') : StringIO.new('')
+        file_exists? ? File.open(path, 'rb') : StringIO.new('')
       end
       
       ##
@@ -210,9 +210,23 @@ module RDF::LDP
       private 
 
       ##
+      # @return [Boolean]
+      def file_exists?
+        File.exists?(path)
+      end
+
+      ##
       # Build the path to the file on disk.
+      # @return [String]
       def path
         File.join(STORAGE_PATH, @resource.subject_uri.path)
+      end
+
+      ##
+      # Build the path to the file's directory on disk
+      # @return [String]
+      def path_dir
+        File.split(path).first
       end
     end
   end
