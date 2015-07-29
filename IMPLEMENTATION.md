@@ -9,8 +9,9 @@ LDP Implementation Overview
  - __4.2.1.1__: HTTP 1.1 is supported through Rack. Implementers can use
  Rackup, Sinatra, Rails, and other Rack-driven frameworks to fully support
  HTTP 1.1 in their servers.
- - __4.2.1.2__: Currently, LDP-RSs are supported. LDP-NR support is a work in
- progress. See: __4.4__ for details on the status of LDP-NR development. [TODO]
+ - __4.2.1.2__: Both LDP-RSs and LDP-NRs are supported. LDP-RS is the default
+ interaction model; clients must request an LDP-NR specificially at time of
+ creation.
  - __4.2.1.3__: Etags are generated for all LDPRs and returned for all requests
  to the resource.
  - __4.2.1.4__: Link headers for the resquested resource are added by
@@ -106,8 +107,9 @@ LDP Implementation Overview
 ### 4.4.1 General
 
  - __4.4.1.1__: Each LDP-NR is an LDPR as described in this reports description
- of __4.2__. LDP-NR persistence is a work in progress. [TODO]
- - __4.4.1.2__: See __4.2.1.4__.
+ of __4.2__. LDP-NRs are persisted through a `StorageAdapter` allowing easily
+ swappable approaches to persistence.
+ - __4.4.1.2__: LDP-NRs include the specified Link header on all requests.
 
 5.2 Container
 --------------
@@ -131,7 +133,8 @@ LDP Implementation Overview
  the POST.
  - __5.2.3.2__: Server adds a containment triple with predicate `ldp:contains`
  when POST is successful.
- - __5.2.3.3__: POSTing an LDP-NR results in an error. [TODO]
+ - __5.2.3.3__: POSTs of LDP-NRs are accepted if the client specifies the LDP-NR
+ interaction model. Content types for LDP-NRs must be sent in a request header.
  - __5.2.3.4__: Honors LDP interaction models in HTTP Link headers. Requests
  without an interaction model specified are treated as requests to create an
  LDP-RS.
@@ -156,8 +159,8 @@ LDP Implementation Overview
  request will fail.
  - __5.2.3.11__: Deleted resources are tombstoned and their URI's are protected
  from future use.
- - __5.2.3.12__: POST requests to create LDP-NRs currently fail. Support is
- planned for future development [TODO].
+ - __5.2.3.12__: When an LDP-NR is created, an LDP-RS is created at
+ `[ldp-nr-uri]/.well-known/desc`. The `describedBy` Link header is added.
  - __5.2.3.13__: Accept-Post headers are added to all responses from resources
  that accept post requests. Content types are added dynamically when new
  RDF::Readers are loaded.
@@ -185,8 +188,8 @@ that do not already exist.
 
 ### 5.2.8 HTTP OPTIONS
 
- - __5.2.8.1__: Requests to create LDP-NR resources currently fail. No related
- LDP-RSs exist. [TODO]
+ - __5.2.8.1__: The related LDP-RSs are created and the required Link headers
+ are included on all requests to LDP-NRs.
 
 5.3 Basic Container
 --------------------
