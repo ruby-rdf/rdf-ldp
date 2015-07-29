@@ -17,7 +17,14 @@ Lamprey is a basic LDP server. To start it, use:
 
 ```
 bundle exec ruby app/lamprey.rb
+
+# At v0.3.0, and after, do:
+
+gem install rdf-ldp
+lamprey
 ```
+
+
 
 An `ldp:BasicContainer` will be created at the address of your first
 `GET` request. Note that if that request is made to the server root,

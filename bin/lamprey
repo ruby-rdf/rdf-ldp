@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'app')))
+require 'lamprey'
+
+begin
+  require 'rdf/sparql'
+rescue LoadError => e; end
+
+RDF::Lamprey.run!

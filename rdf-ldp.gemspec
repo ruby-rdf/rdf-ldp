@@ -18,6 +18,9 @@ Gem::Specification.new do |gem|
 
   gem.platform           = Gem::Platform::RUBY
   gem.files              = %w(AUTHORS CREDITS README.md UNLICENSE VERSION) + Dir.glob('lib/**/*.rb')
+  gem.bindir             = %q(bin)
+  gem.executables        = %w(lamprey)
+  gem.default_executable = gem.executables.first
   gem.require_paths      = %w(lib app)
   gem.has_rdoc           = false
 
