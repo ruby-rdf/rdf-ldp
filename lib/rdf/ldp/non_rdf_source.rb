@@ -191,13 +191,9 @@ module RDF::LDP
       # @return [IO] an object conforming to the Ruby IO interface
       def io(&block)
         FileUtils.mkdir_p(path_dir) unless Dir.exists?(path_dir)
+        FileUtils.touch(path) unless file_exists?
 
-        if block_given?
-          mode = file_exists? ? 'r+b' : 'w+b'
-          return File.open(path, mode, &block)
-        end
-        
-        file_exists? ? File.open(path, 'rb') : StringIO.new('')
+        File.open(path, 'r+b', &block)
       end
       
       ##
