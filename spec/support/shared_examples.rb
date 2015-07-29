@@ -161,7 +161,12 @@ shared_examples 'a NonRDFSource' do
 
   describe '#to_response' do
     it 'gives an empty response if it is new' do
-      expect(subject.to_response.read).to eq ''
+      expect(subject.to_response.to_a).to eq []
+    end
+
+    it 'does not create a non-existant file' do
+      subject.to_response
+      expect(subject.storage.send(:file_exists?)).to be false
     end
   end
 
