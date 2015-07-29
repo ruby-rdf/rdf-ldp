@@ -30,7 +30,7 @@ shared_examples 'a Resource' do
     end
 
     it 'adds a type triple to metagraph' do
-      subject.create('', 'text/plain')
+      subject.create(StringIO.new(''), 'text/plain')
       expect(subject.metagraph)
         .to have_statement RDF::Statement(subject.subject_uri, 
                                           RDF.type, 
@@ -38,7 +38,7 @@ shared_examples 'a Resource' do
     end
 
     it 'marks resource as existing' do
-      expect { subject.create('', 'text/plain') }
+      expect { subject.create(StringIO.new(''), 'text/plain') }
         .to change { subject.exists? }.from(false).to(true)
     end
   end
@@ -94,6 +94,91 @@ shared_examples 'a Resource' do
 
     it 'responds to :OPTIONS' do
       expect { subject.request(:OPTIONS, 200, {}, {}) }.not_to raise_error
+    end
+  end
+end
+
+shared_examples 'a NonRDFSource' do
+  it_behaves_like 'a Resource'
+
+  subject { described_class.new(uri) }
+  let(:uri) { RDF::URI 'http://example.org/moomin' }
+
+  let(:contents) { StringIO.new('mummi') }
+  
+  after { subject.destroy }
+
+  describe '#create' do
+    it 'writes the input to body' do
+      subject.create(contents, 'text/plain')
+      contents.rewind
+      expect(subject.to_response.each.to_a).to eq contents.each.to_a
+    end
+
+    it 'sets #content_type' do
+      expect { subject.create(StringIO.new(''), 'text/plain') }
+        .to change { subject.content_type }.to('text/plain')
+    end
+
+    it 'persists to resource' do
+      repo = RDF::Repository.new
+      saved = described_class.new(uri, repo)
+
+      saved.create(contents, 'text/plain')
+      contents.rewind
+
+      loaded = RDF::LDP::Resource.find(uri, repo)
+      expect(loaded.to_response.each.to_a).to eq contents.each.to_a
+    end
+
+    it 'creates an  LDP::RDFSource' do
+      repo = RDF::Repository.new
+      saved = described_class.new(uri, repo)
+      description = RDF::LDP::RDFSource.new(subject.description_uri, repo)
+
+      expect { saved.create(contents, 'text/plain') }
+        .to change { description.exists? }.from(false).to(true)
+    end
+  end
+
+  describe '#update' do
+    before { subject.create(contents, 'text/plain') }
+
+    it 'writes the input to body' do
+      new_contents = StringIO.new('snorkmaiden')
+      expect { subject.update(new_contents, 'text/plain') }
+        .to change { subject.to_response.to_a }
+             .from(a_collection_containing_exactly('mummi'))
+             .to(a_collection_containing_exactly('snorkmaiden'))
+    end
+
+    it 'updates #content_type' do
+      expect { subject.update(contents, 'text/prs.moomin') }
+        .to change { subject.content_type }
+             .from('text/plain').to('text/prs.moomin')
+    end
+  end
+
+  describe '#to_response' do
+    it 'gives an empty response if it is new' do
+      expect(subject.to_response.read).to eq ''
+    end
+  end
+
+  describe '#destroy' do
+    before { subject.create(contents, 'text/plain') }
+
+    it 'deletes the content' do
+      expect { subject.destroy }
+        .to change { subject.to_response.to_a }
+             .from(a_collection_containing_exactly('mummi')).to([])
+    end
+  end
+
+  describe '#content_type' do
+    it 'sets and gets a content_type' do
+      expect { subject.content_type = 'text/plain' }
+        .to change { subject.content_type }.to('text/plain')
     end
   end
 end

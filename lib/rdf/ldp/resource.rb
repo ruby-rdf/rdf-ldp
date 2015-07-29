@@ -92,7 +92,7 @@ module RDF::LDP
     ##
     # @abstract creates the resource
     #
-    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    # @param [IO, File] input  input (usually from a Rack env's 
     #   `rack.input` key) used to determine the Resource's initial state.
     # @param [#to_s] content_type  a MIME content_type used to interpret the
     #   input. This MAY be used as a content type for the created Resource 
@@ -150,6 +150,23 @@ module RDF::LDP
     # @return [Boolean] true if resource has been destroyed
     def destroyed?
       !(@metagraph.query([subject_uri, RDF.type, RDF::OWL.Nothing]).empty?)
+    end
+
+    def etag
+      nil
+    end
+
+    ##
+    # @param [String] tag  a tag to compare to `#etag`
+    # @return [Boolean] whether the given tag matches `#etag`
+    def match?(tag)
+      tag == etag 
+    end
+
+    ##
+    # @return [RDF::URI] the subject URI for this resource
+    def to_uri
+      subject_uri
     end
 
     ##
@@ -281,7 +298,7 @@ module RDF::LDP
       headers['Allow'] = allowed_methods.join(', ')
       headers['Accept-Post'] = accept_post if respond_to?(:post, true)
 
-      headers['ETag'] ||= etag if respond_to?(:etag)
+      headers['ETag'] ||= etag if etag
       headers
     end
 

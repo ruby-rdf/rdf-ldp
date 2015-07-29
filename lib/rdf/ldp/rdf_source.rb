@@ -1,4 +1,4 @@
-require 'digest/md5'
+require 'digest/sha1'
 
 module RDF::LDP
   ##
@@ -116,27 +116,20 @@ module RDF::LDP
     def etag
       subs = graph.subjects.map { |s| s.node? ? nil : s.to_s }
              .compact.sort.join()
-      "\"#{Digest::MD5.base64digest(subs)}#{graph.statements.count}\""
+      "\"#{Digest::SHA1.base64digest(subs)}#{graph.statements.count}\""
     end
 
     ##
     # @param [String] tag  a tag to compare to `#etag`
     # @return [Boolean] whether the given tag matches `#etag`
-    def match?(tag)
-      # return false unless tag.split('==').last == graph.statements.count.to_s
-      tag == etag
-    end
+    # def match?(tag)
+    #   return false unless tag.split('==').last == graph.statements.count.to_s
+    # end
 
     ##
     # @return [Boolean] whether this is an ldp:RDFSource
     def rdf_source?
       true
-    end
-
-    ##
-    # @return [RDF::URI] the subject URI for this resource
-    def to_uri
-      subject_uri
     end
 
     ##
