@@ -5,7 +5,7 @@ require 'lamprey'
 
 describe 'lamprey' do
   include ::Rack::Test::Methods
-  let(:app) { Lamprey }
+  let(:app) { RDF::Lamprey }
   
   describe 'base container /' do 
     describe 'GET' do

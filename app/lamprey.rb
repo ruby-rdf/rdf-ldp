@@ -1,7 +1,7 @@
 require 'rack/ldp'
 require 'sinatra/base'
 
-class Lamprey < Sinatra::Base
+class RDF::Lamprey < Sinatra::Base
 
   use Rack::LDP::ContentNegotiation
   use Rack::LDP::Errors
