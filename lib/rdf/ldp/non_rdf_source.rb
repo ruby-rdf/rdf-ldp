@@ -61,6 +61,14 @@ module RDF::LDP
     end
 
     ##
+    # @raise [RDF::LDP::NotFound] if the describedby resource doesn't exist
+    #
+    # @return [RDF::LDP::RDFSource] resource describing this resource
+    def description
+      RDF::LDP::Resource.find(description_uri, @data)
+    end
+
+    ##
     # @return [RDF::URI] uri for this resource's associated RDFSource
     def description_uri
       subject_uri / '.well-known' / 'desc'

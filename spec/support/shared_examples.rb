@@ -131,7 +131,7 @@ shared_examples 'a NonRDFSource' do
       expect(loaded.to_response.each.to_a).to eq contents.each.to_a
     end
 
-    it 'creates an  LDP::RDFSource' do
+    it 'creates an LDP::RDFSource' do
       repo = RDF::Repository.new
       saved = described_class.new(uri, repo)
       description = RDF::LDP::RDFSource.new(subject.description_uri, repo)
@@ -156,6 +156,30 @@ shared_examples 'a NonRDFSource' do
       expect { subject.update(contents, 'text/prs.moomin') }
         .to change { subject.content_type }
              .from('text/plain').to('text/prs.moomin')
+    end
+  end
+
+  describe '#description' do
+    it 'is not found' do
+      expect { subject.description }.to raise_error RDF::LDP::NotFound
+    end
+
+    context 'when it exists' do
+      before { subject.create(StringIO.new(''), 'text/plain') }
+
+      it 'is an RDFSource' do
+        expect(subject.description).to be_rdf_source
+      end
+
+      it 'is the description uri' do
+        expect(subject.description.to_uri).to eq subject.description_uri
+      end
+    end
+  end
+
+  describe '#description_uri' do
+    it 'is a uri' do
+      expect(subject.description_uri).to be_a RDF::URI
     end
   end
 
@@ -713,7 +737,6 @@ end
 shared_examples 'a DirectContainer' do
   it_behaves_like 'a Container'
 
-
   let(:uri) { RDF::URI('http://ex.org/moomin') }
   subject { described_class.new(uri) }
 
@@ -774,6 +797,21 @@ shared_examples 'a DirectContainer' do
           .to have_statement subject.make_membership_triple(resource_uri)
       end
 
+      it 'adds membership triple to LDP-NR membership resource' do
+        repo = RDF::Repository.new
+        container = described_class.new(uri, repo)
+        nr = RDF::LDP::NonRDFSource.new('http://example.org/moomin_file',
+                                        repo)
+        nr.create(StringIO.new(''), 'text/plain')
+        container.graph << RDF::Statement(subject.subject_uri,
+                                          RDF::Vocab::LDP.membershipResource,
+                                          nr.to_uri)
+
+        container.add(resource_uri)
+        expect(nr.description.graph)
+          .to have_statement container.make_membership_triple(resource_uri)
+      end
+
       context 'with multiple membership resources' do
         it 'raises an error' do
           subject.graph << RDF::Statement(subject.subject_uri,
@@ -782,21 +820,6 @@ shared_examples 'a DirectContainer' do
           subject.graph << RDF::Statement(subject.subject_uri,
                                           RDF::Vocab::LDP.membershipResource,
                                           (subject.subject_uri / 'moomin'))
-
-          expect { subject.add(resource_uri) }
-            .to raise_error RDF::LDP::RequestError
-          expect(subject.containment_triples).to be_empty
-        end
-      end
-
-      context 'with multiple membership resources' do
-        it 'raises an error' do
-          subject.graph << RDF::Statement(subject.subject_uri,
-                                          RDF::Vocab::LDP.hasMemberRelation,
-                                          RDF::DC.creator)
-          subject.graph << RDF::Statement(subject.subject_uri,
-                                          RDF::Vocab::LDP.hasMemberRelation,
-                                          RDF::DC.contributor)
 
           expect { subject.add(resource_uri) }
             .to raise_error RDF::LDP::RequestError
