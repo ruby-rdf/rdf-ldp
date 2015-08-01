@@ -91,7 +91,9 @@ module RDF::LDP
     def membership_resource
       uri = membership_constant_uri
       uri = uri.fragment ? (uri.root / uri.request_uri) : uri
-      RDF::LDP::Resource.find(uri, @data)
+      resource = RDF::LDP::Resource.find(uri, @data)
+      return resource.description if resource.non_rdf_source?
+      resource
     end
 
     def process_membership_resource(resource, &block)
