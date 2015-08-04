@@ -108,6 +108,10 @@ shared_examples 'a NonRDFSource' do
   
   after { subject.destroy }
 
+  describe '#non_rdf_source?' do
+    it { is_expected.to be_non_rdf_source }
+  end
+
   describe '#create' do
     it 'writes the input to body' do
       subject.create(contents, 'text/plain')
