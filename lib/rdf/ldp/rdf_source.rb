@@ -5,7 +5,6 @@ module RDF::LDP
   # The base class for all directly usable LDP Resources that *are not* 
   # `NonRDFSources`. RDFSources are implemented as a resource with:
   #
-  #   - a `#subject_uri` identifying the RDFSource (see: {RDF::LDP::Resource}).
   #   - a `#graph` representing the "entire persistent state"
   #   - a `#metagraph` containing internal properties of the RDFSource
   #
@@ -19,8 +18,6 @@ module RDF::LDP
   # LDP-server-managed triples. `#metagraph` contains statements internal 
   # properties of the RDFSource which are necessary for the server's management
   # purposes, but MAY be absent from the representation of its state in `#graph`.
-  # `#metagraph` is invisible to the client unless the implementation mirrors
-  # its contents in `#graph`.
   # 
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source definition 
   #   of ldp:RDFSource in the LDP specification

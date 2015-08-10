@@ -1,8 +1,55 @@
 require 'link_header'
 
 module RDF::LDP
+  ##
+  # The base class for all LDP Resources. 
+  #
+  # The internal state of a Resource is specific to a given persistent datastore
+  # (an `RDF::Repository` passed to the initilazer) and is managed through an
+  # internal graph (`#metagraph`). A Resource has:
+  #
+  #   - a `#subject_uri` identifying the Resource.
+  #   - a `#metagraph` containing server-internal properties of the Resource.
+  #
+  # Resources also define a basic set of CRUD operations, identity and current 
+  # state, and a `#to_response`/`#each` method used by Rack & `Rack::LDP` to 
+  # generate an appropriate HTTP response body. 
+  #
+  # `#metagraph' holds internal properites used by the server. It is distinct 
+  # from, and may conflict with, other RDF and non-RDF information about the 
+  # resource (e.g. representations suitable for a response body). Metagraph 
+  # contains a canonical `rdf:type` statement, which specifies the resource's 
+  # interaction model. If the resource is deleted, a flag in metagraph 
+  # indicates this.
+  # 
+  # The contents of `#metagraph` should not be confused with LDP 
+  # server-managed-triples, Those triples are included in the state of the 
+  # resource as represented by the response body. `#metagraph` is invisible to
+  # the client except where a subclass mirrors its contents in the body.
+  #
+  # 
+  #
+  # @example creating a new Resource
+  #   repository = RDF::Repository.new
+  #   resource = RDF::LDP::Resource.new('http://example.org/moomin', repository)
+  #   resource.exists? # => false
+  #
+  #   resource.create('', 'text/plain')
+  #
+  #   resource.exists? # => true
+  #   resource.metagraph.dump :ttl
+  #   # => "<http://example.org/moomin> a <http://www.w3.org/ns/ldp#Resource> ."
+  #
+  # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource for a 
+  #   definition of 'Resource' in LDP
   class Resource
+    # @!attribute [r] subject_uri
+    #   an rdf term
     attr_reader :subject_uri
+
+    # @!attribute [rw] metagraph
+    #   a graph representing the server-internal state of the resource
     attr_accessor :metagraph
                           
     class << self
