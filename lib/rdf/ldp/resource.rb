@@ -100,6 +100,7 @@ module RDF::LDP
     #
     # @raise [RDF::LDP::RequestError] when creation fails. May raise various 
     #   subclasses for the appropriate response codes.
+    # @raise [RDF::LDP::Conflict] when the resource exists
     #
     # @return [RDF::LDP::Resource] self
     def create(input, content_type)

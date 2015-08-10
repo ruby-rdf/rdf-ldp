@@ -25,6 +25,9 @@ module RDF::LDP
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source definition 
   #   of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
+    
+    # @!attribute [rw] graph
+    #   a graph representing the current persistent state of the resource.
     attr_accessor :graph
 
     class << self
@@ -51,6 +54,11 @@ module RDF::LDP
     #   `rack.input` key) used to determine the Resource's initial state.
     # @param [#to_s] content_type  a MIME content_type used to read the graph.
     #
+    # @yield gives the new contents of `graph` to the caller's block before 
+    #   altering the state of the resource. This is useful when validation is
+    #   required or triples are to be added by a subclass.
+    # @yieldparam [RDF::Enumerable] the contents parsed from input.
+    #
     # @raise [RDF::LDP::RequestError] 
     # @raise [RDF::LDP::UnsupportedMediaType] if no reader can be found for the 
     #   graph
@@ -75,6 +83,15 @@ module RDF::LDP
     #   `rack.input` key) used to determine the Resource's new state.
     # @param [#to_s] content_type  a MIME content_type used to interpret the
     #   input.
+    #
+    # @yield gives the new contents of `graph` to the caller's block before 
+    #   altering the state of the resource. This is useful when validation is
+    #   required or triples are to be added by a subclass.
+    # @yieldparam [RDF::Enumerable] the triples parsed from input.
+    #
+    # @raise [RDF::LDP::RequestError] 
+    # @raise [RDF::LDP::UnsupportedMediaType] if no reader can be found for the 
+    #   graph
     #
     # @return [RDF::LDP::Resource] self
     def update(input, content_type, &block)

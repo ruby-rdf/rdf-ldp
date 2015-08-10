@@ -41,6 +41,12 @@ shared_examples 'a Resource' do
       expect { subject.create(StringIO.new(''), 'text/plain') }
         .to change { subject.exists? }.from(false).to(true)
     end
+
+    it 'raises Conlict when already exists' do
+      subject.create(StringIO.new(''), 'text/plain')
+      expect { subject.create(StringIO.new(''), 'text/plain') }
+        .to raise_error RDF::LDP::Conflict
+    end
   end
 
   describe '#update' do
@@ -206,6 +212,11 @@ shared_examples 'a NonRDFSource' do
         .to change { subject.to_response.to_a }
              .from(a_collection_containing_exactly('mummi')).to([])
     end
+
+    it 'marks resource as destroyed' do
+      expect { subject.destroy }
+        .to change { subject.destroyed? }.from(false).to(true)
+    end
   end
 
   describe '#content_type' do
@@ -314,11 +325,37 @@ shared_examples 'an RDFSource' do
   end
 
   describe '#update' do
-    it 'is implemented'
-  end
+    let(:statement) do
+      RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+    end
 
-  describe '#destory' do
-    it 'is implemented'
+    let(:graph) { RDF::Graph.new << statement }
+    let(:content_type) { 'text/turtle' }
+    
+    shared_examples 'updating rdf_sources' do
+      it 'changes the response' do
+        expect { subject.update(graph.dump(:ttl), content_type) }
+          .to change { subject.to_response }
+      end
+
+      it 'changes etag' do
+        expect { subject.update(graph.dump(:ttl), content_type) }
+          .to change { subject.etag }
+      end
+
+      it 'raises UnsupportedMediaType' do
+        expect { subject.update(graph.dump(:ttl), 'text/moomin') }
+          .to raise_error RDF::LDP::UnsupportedMediaType
+      end
+    end
+
+    include_examples 'updating rdf_sources' 
+
+    context 'when it exists' do
+      before { subject.create('', 'text/plain') }
+
+      include_examples 'updating rdf_sources' 
+    end
   end
 
   describe '#graph' do
