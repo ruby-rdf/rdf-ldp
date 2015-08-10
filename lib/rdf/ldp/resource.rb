@@ -82,6 +82,22 @@ module RDF::LDP
       end
     end
 
+    ##
+    # @param [RDF::URI, #to_s] subject_uri  the uri that identifies the Resource
+    # @param [RDF::Repository] data  the repository where the resource's RDF 
+    #   data (i.e. `metagraph`) is stored; defaults to an in-memory 
+    #   RDF::Repository specific to this Resource.
+    #
+    # @yield [RDF::Resource] Gives itself to the block
+    #
+    # @example 
+    #   RDF::Resource.new('http://example.org/moomin')
+    #
+    # @example with a block
+    #   RDF::Resource.new('http://example.org/moomin') do |resource| 
+    #     resource.metagraph << RDF::Statement(...)
+    #   end
+    #
     def initialize(subject_uri, data = RDF::Repository.new)
       @subject_uri = RDF::URI(subject_uri)
       @data = data

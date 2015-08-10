@@ -40,7 +40,9 @@ module RDF::LDP
         RDF::Vocab::LDP.RDFSource
       end
     end
-    
+
+    ##
+    # @see RDF::LDP::Resource#initialize
     def initialize(subject_uri, data = RDF::Repository.new)
       @graph = RDF::Graph.new(subject_uri, data: data)
       super
