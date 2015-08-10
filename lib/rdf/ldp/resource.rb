@@ -27,8 +27,6 @@ module RDF::LDP
   # resource as represented by the response body. `#metagraph` is invisible to
   # the client except where a subclass mirrors its contents in the body.
   #
-  # 
-  #
   # @example creating a new Resource
   #   repository = RDF::Repository.new
   #   resource = RDF::LDP::Resource.new('http://example.org/moomin', repository)

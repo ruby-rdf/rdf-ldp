@@ -102,6 +102,8 @@ module RDF::LDP
     ##
     # @return [#each] the response body. This is normally the StorageAdapter's 
     #   IO object in read and binary mode.
+    # 
+    # @raise [RDF::LDP::RequestError] when the request fails
     def to_response
       (exists? && !destroyed?) ? storage.io : []
     end
