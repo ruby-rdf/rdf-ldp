@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RDF::LDP::IndirectContainer do
-  it_behaves_like 'a DirectContainer'
+  it_behaves_like 'an IndirectContainer'
 
   let(:uri) { RDF::URI('http://ex.org/moomin') }
   subject { described_class.new(uri) }
@@ -15,6 +15,21 @@ describe RDF::LDP::IndirectContainer do
   describe '#membership_predicate' do
     it 'defaults to ldp:member' do
       expect(subject.membership_predicate).to eq RDF::Vocab::LDP.member
+    end
+  end
+
+  describe '#inserted_content_relation' do
+    it 'defaults to ldp:MemberSubject' do
+      expect(subject.inserted_content_relation)
+        .to eq RDF::Vocab::LDP.MemberSubject
+    end
+
+    it 'inserts ldp:MemberSubject statement into graph when defaulting' do
+      expect { subject.inserted_content_relation }
+        .to change { subject.graph.statements }
+             .to(contain_exactly(RDF::Statement(subject.subject_uri,
+                                        RDF::Vocab::LDP.indirectContentRelation,
+                                        RDF::Vocab::LDP.MemberSubject)))
     end
   end
 end

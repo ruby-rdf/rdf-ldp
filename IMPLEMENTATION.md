@@ -237,8 +237,25 @@ this section.
 5.5 Indirect Container
 -----------------------
 
-Indirect Container support is planned for future development. [TODO]
+### 5.5.1 General
 
+- __5.5.1.1__: Indirect Containers are implemented as a subclass of Direct
+Containers, inheriting all of their behavior.
+- __5.5.1.2__: We enforce the inclusion of _exactly one_
+`ldp:insertedContentRelation` by:
+  - adding `ldp:MemberSubject` if the client does not provide one.
+  - rejecting POST requests with `NotAcceptable` if more than one is present.
+We allow clients to change triples including `ldp:insertedContentRelation` at
+their own risk.
+
+POST requests for LDP-NRs and LDP-RSs missing an expected inserted content
+relation, or with multiple inserted content relations, are also rejected with
+`NotAcceptable`.
+
+### 5.5.2 HTTP POST
+
+- __5.5.2.1__: `ldp:contains` triples are added in the same way as with Basic
+and Direct Containers.
 
 Handling of Non-Normative Notes
 ================================

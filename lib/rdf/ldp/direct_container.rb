@@ -37,7 +37,7 @@ module RDF::LDP
     #
     # @see RDF::LDP::Container#add
     def add(resource)
-      process_membership_resource(resource.to_uri) do |membership, triple|
+      process_membership_resource(resource) do |membership, triple|
         super
         membership.graph << triple
       end
@@ -49,7 +49,7 @@ module RDF::LDP
     #
     # @see RDF::LDP::Container#remove
     def remove(resource)
-      process_membership_resource(resource.to_uri) do |membership, triple|
+      process_membership_resource(resource) do |membership, triple|
         super
         membership.graph.delete(triple)
       end
@@ -65,18 +65,19 @@ module RDF::LDP
     #
     # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
     def membership_constant_uri
-      case membership_resource_statements.count
+      statements = membership_resource_statements
+      case statements.count
         when 0
           graph << RDF::Statement(subject_uri, 
                                   RDF::Vocab::LDP.membershipResource, 
                                   subject_uri)
           subject_uri
         when 1
-          membership_resource_statements.first.object
+          statements.first.object
         else
           raise NotAcceptable.new('An LDP-DC MUST have exactly ' \
                                   'one membership resource; found ' \
-                                  "#{membership_resource_statements.count}.")
+                                  "#{statements}.")
       end
     end
 
@@ -90,18 +91,19 @@ module RDF::LDP
     #
     # @see http://www.w3.org/TR/ldp/#dfn-membership-predicate
     def membership_predicate
-      case member_relation_statements.count
+      statements = member_relation_statements
+      case statements.count
       when 0
         graph << RDF::Statement(subject_uri, 
                                 RELATION_TERMS.first, 
                                 RDF::Vocab::LDP.member)
         RDF::Vocab::LDP.member
       when 1
-        member_relation_statements.first.object
+        statements.first.object
       else
         raise NotAcceptable.new('An LDP-DC MUST have exactly ' \
                                 'one member relation triple; found ' \
-                                "#{member_relation_statements.count}.")
+                                "#{statements.count}.")
       end
     end
 
@@ -140,7 +142,7 @@ module RDF::LDP
     end
 
     def process_membership_resource(resource, &block)
-      triple = make_membership_triple(resource)
+      triple = make_membership_triple(resource.to_uri)
 
       begin
         membership_rs = membership_resource

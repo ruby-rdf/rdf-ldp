@@ -1,9 +1,7 @@
 RDF::LDP Server Constraints
 ===========================
 
-The RDF::LDP library, middleware, and the Lamprey server are all works in progress. We will use this file to document constraints imposed by these systems as implementation progresses.
-
-In the meanwhile: buyer beware.
+This file documents constraints imposed by `RDF::LDP`, `Rack:LDP` middleware, and the Lamprey LDP server.
 
 RDF Types
 ---------
@@ -36,11 +34,22 @@ The LDP specification requires the presence of _exactly one_ membership-constant
 
 We allow the user to edit the relevant triples at their own discretion (effectively changing the membership uri or predicate during the life of the container), but recommend that clients SHOULD NOT do so.
 
+### Inserted Content Relations
+
+Indirect Containers are required to have _exactly one_ `ldp:insertedContentRelation`. We do not impose this requirement on creation or update of an Indirect Container. Attepts to POST to an Indirect Container missing this triple will cause `ldp:MemberRelation` to be added to its RDF representation and used for that request. Attempts to POST to an Indirect Container with more than one inserted content relation will fail with `Not Allowed`.
+
+For Indirect Contianers with an `ldp:insertedContentRelation` other than `ldp:MemberRelation`, attempts to POST a resource (including an LDP-NR) without the expected content relation triple will fail with `Not Allowed`. This behavior also applies to LDP-RSs with multiple content relation triples.
+
 Named Graphs
 -------------
 
 Serializations supporting quads are allowed in POST and PUT requests. Graph names are ignored, and the file is treated as a single graph representing the resource. This behavior is seen as in compliance with [4.2.4.1](http://www.w3.org/TR/ldp/#h-ldpr-put-replaceall).
 
+HTTP PATCH
+-----------
+
+We do not currently support HTTP PATCH on any resources. We are exploring the possibility of supporting SPARQL 1.1 Update and/or LDPatch as PATCH formats.
+
 ----
 
-Linking to this document fulfills [Section 4.2.1.6](http://www.w3.org/TR/ldp#h-ldpr-gen-pubclireqs) of the LDP specification. Implementers are advised to create their own documents to clarify how these constraints effect their own services.
+Linking to this document fulfills [Section 4.2.1.6](http://www.w3.org/TR/ldp#h-ldpr-gen-pubclireqs) of the LDP specification. Implementers of servers based on `RDF::LDP` and `Rack::LDP` are advised to create their own documents to clarify how these constraints effect their own services.
