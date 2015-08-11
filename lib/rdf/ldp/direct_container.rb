@@ -1,4 +1,22 @@
 module RDF::LDP
+  ##
+  # An extension of `RDF::LDP::Container` implementing direct containment. 
+  # This adds the concepts of a membership resource, predicate, and triples to 
+  # the Basic Container's containment triples.
+  #
+  # When the membership resource is an `RDFSource`, the membership triple is 
+  # added/removed from its graph when the resource created/deleted within the
+  # container. When the membership resource is a `NonRDFSource`, the triple is 
+  # added/removed on its description's graph instead.
+  #
+  # A membership constant URI and membership predicate MUST be specified as
+  # described in LDP--exactly one of each. If none is given, we default to
+  # the container itself as a membership resource and `ldp:member` as predicate.
+  # If more than one of either is given, all `#add/#remove` (POST/DELETE) 
+  # requests will fail.
+  #
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-direct-container
+  #   definition of LDP Direct Container
   class DirectContainer < Container
     def self.to_uri
       RDF::Vocab::LDP.DirectContainer
@@ -13,6 +31,11 @@ module RDF::LDP
       CONTAINER_CLASSES[:direct]
     end
 
+    ##
+    # Adds a member `resource` to the container. Handles containment and adds 
+    # membership triple to the memebership resource.
+    #
+    # @see RDF::LDP::Container#add
     def add(resource)
       process_membership_resource(resource.to_uri) do |membership, triple|
         super
@@ -20,6 +43,11 @@ module RDF::LDP
       end
     end
 
+    ##
+    # Removes a member `resource` to the container. Handles containment and 
+    # removes membership triple to the memebership resource.
+    #
+    # @see RDF::LDP::Container#remove
     def remove(resource)
       process_membership_resource(resource.to_uri) do |membership, triple|
         super
@@ -28,8 +56,14 @@ module RDF::LDP
     end
 
     ##
-    # Aliases #subject_uri
-    # @return [RDF::URI] #subject_uri
+    # Gives the membership constant URI. If none is present in the container 
+    # state, we add the current resource as a membership constant.
+    #
+    # @return [RDF::URI] the membership constant uri for the container
+    #
+    # @raise [RDF::LDP::NotAcceptable] if multiple membership constant uris exist
+    #
+    # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
     def membership_constant_uri
       case membership_resource_statements.count
         when 0
@@ -47,7 +81,13 @@ module RDF::LDP
     end
 
     ##
+    # Gives the membership predicate. If none is present in the container 
+    # state, we add the current resource as a membership constant.
+    #
     # @return [RDF::URI] the membership predicate
+    #
+    # @raise [RDF::LDP::NotAcceptable] if multiple membership predicates exist
+    #
     # @see http://www.w3.org/TR/ldp/#dfn-membership-predicate
     def membership_predicate
       case member_relation_statements.count
@@ -66,9 +106,12 @@ module RDF::LDP
     end
 
     ##
-    # @param [RDF::Term] a member for this container
+    # @param [RDF::Term] resource  a member for this container
     #
-    # @return [RDF::URI] the membership triple to be added to the 
+    # @return [RDF::URI] the membership triple representing membership of the
+    #   `resource` parameter in this container
+    #
+    # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
     def make_membership_triple(resource)
       predicate = membership_predicate
       return RDF::Statement(membership_constant_uri, predicate, resource) if

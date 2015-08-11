@@ -1,4 +1,18 @@
 module RDF::LDP
+  ##
+  # An LDP Basic Container. This also serves as a base class for other 
+  # container types. Containers are implemented as `RDF::LDP::RDFSources` with
+  # the ability to contain other resources.
+  #
+  # Containers respond to `#post`, allowing new resources to be added to them.
+  # On the public interface (not running through HTTP/`#request`), this is 
+  # supported by `#add` and `#remove`.
+  #
+  # Containers will throw errors when attempting to edit them in conflict with
+  # LDP's restrictions on changing containment triples.
+  #
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-container definition
+  #   of LDP Container
   class Container < RDFSource
     ##
     # @return [RDF::URI] uri with lexical representation 
