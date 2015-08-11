@@ -27,6 +27,15 @@ Slugs are accepted to POST requests. Slugs are URL-encoded, and treated as a str
 
 Empty strings are treated as if no Slug was given.
 
+### Membership URI/Predicate
+
+The LDP specification requires the presence of _exactly one_ membership-constant-uri and membership predicate for each Direct Container. We do not impose this requirement on creation or update of a container. Attempts to POST to a Direct Container missing one of these triples will cause the defaults to be added and used for that request. Attempts to POST to a Direct Container with more than one of either of these triples will fail with `Not Allowed`. The defaults are:
+
+  - membership-constant-uri: the container itself as 
+  - membership-predicate: `ldp:member`
+
+We allow the user to edit the relevant triples at their own discretion (effectively changing the membership uri or predicate during the life of the container), but recommend that clients SHOULD NOT do so.
+
 Named Graphs
 -------------
 
