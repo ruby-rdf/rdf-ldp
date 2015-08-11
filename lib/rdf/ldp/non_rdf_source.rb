@@ -1,4 +1,20 @@
 module RDF::LDP
+  ##
+  # A NonRDFSource describes a `Resource` whose response body is a format other
+  # than an RDF serialization. The persistent state of the resource, as 
+  # represented by the body, is persisted to an IO stream provided by a 
+  # `RDF::LDP::NonRDFSource::StorageAdapter` given by `#storage`.
+  #
+  # In addition to the properties stored by the `RDF::LDP::Resource#metagraph`,
+  # `NonRDFSource`s also store a content type (format). 
+  #
+  # When a `NonRDFSource` is created, it also creates an `RDFSource` which 
+  # describes it. This resource is created at the URI in `#description_uri`,
+  # the resource itself is returned by `#description`. 
+  #
+  # @see RDF::LDP::Resource
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source for
+  #   a definition of NonRDFSource in LDP
   class NonRDFSource < Resource
     # Use DC elements format
     FORMAT_TERM = RDF::DC11.format
