@@ -62,12 +62,17 @@ describe 'lamprey' do
       it 'has Allow headers' do
         options '/'
         expect(last_response.header['Allow'])
-          .to include('GET', 'POST', 'OPTIONS', 'HEAD')
+          .to include('GET', 'POST', 'OPTIONS', 'HEAD', 'PATCH')
       end
 
       it 'has Accept-Post headers' do
         options '/'
         expect(last_response['Accept-Post']).to include 'text/turtle'
+      end
+
+      it 'has Accept-Patch headers' do
+        options '/'
+        expect(last_response['Accept-Patch']).to include 'text/ldpatch'
       end
 
       context 'existing resource' do
