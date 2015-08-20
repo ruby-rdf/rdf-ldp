@@ -1,4 +1,5 @@
 require 'digest/sha1'
+require 'ld/patch'
 
 module RDF::LDP
   ##
@@ -159,9 +160,30 @@ module RDF::LDP
 
     ##
     # Process & generate response for PUT requsets.
+    #
+    # @raise [RDF::LDP::UnsupportedMediaType] when a media type other than 
+    #   LDPatch is used
+    # @raise [RDF::LDP::BadRequest] when an invalid document is given
+    def patch(status, headers, env)
+      check_precondition!(env)
+      raise UnsupportedMediaType unless env['CONTENT_TYPE'] == 'text/ldpatch'
+
+      ld_patch(env['rack.input'], graph)
+      [200, update_headers(headers), self]
+    end
+
+    def ld_patch(input, graph)
+      begin
+        LD::Patch.parse(input).execute(graph)
+      rescue LD::Patch::Error => e
+        raise BadRequest, e.message
+      end
+    end
+
+    ##
+    # Process & generate response for PUT requsets.
     def put(status, headers, env)
-      raise PreconditionFailed.new('Etag invalid') if 
-        env.has_key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
+      check_precondition!(env)
 
       if exists?
         update(env['rack.input'], env['CONTENT_TYPE'])
@@ -172,6 +194,15 @@ module RDF::LDP
         [201, update_headers(headers), self]
       end
     end
+
+    ##
+    # @param [Hash<String, String>] env  a rack env
+    # @raise [RDF::LDP::PreconditionFailed]
+    def check_precondition!(env)
+      raise PreconditionFailed.new('Etag invalid') if 
+        env.has_key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
+    end
+
 
     ##
     # Finds an {RDF::Reader} appropriate for the given content_type and attempts

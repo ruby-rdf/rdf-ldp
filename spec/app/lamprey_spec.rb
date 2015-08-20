@@ -83,6 +83,23 @@ describe 'lamprey' do
       end
     end
 
+    describe 'PATCH' do
+      it 'returns 415 for unsupported media type' do
+        patch '/', '', 'CONTENT_TYPE' => 'text/plain'
+        expect(last_response.status).to eq 415
+      end
+
+      it 'returns 400 on improper document' do
+        patch '/', '---blah---', 'CONTENT_TYPE' => 'text/ldpatch'
+        expect(last_response.status).to eq 400
+      end
+
+      it 'returns 200 on valid LDPatch' do
+        patch '/', '', 'CONTENT_TYPE' => 'text/ldpatch'
+        expect(last_response.status).to eq 200
+      end
+    end
+
     describe 'POST' do
       let(:graph) { RDF::Graph.new }
 

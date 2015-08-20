@@ -114,6 +114,20 @@ module RDF::LDP
 
     private
 
+    def patch(status, headers, env)
+      check_precondition!(env)
+      raise UnsupportedMediaType unless env['CONTENT_TYPE'] == 'text/ldpatch'
+
+      temp_graph = RDF::Graph.new << graph.statements
+      ld_patch(env['rack.input'], temp_graph)
+
+      validate_triples!(temp_graph)
+      graph.clear!
+      graph << temp_graph.statements
+
+      [200, update_headers(headers), self]
+    end
+
     ##
     # Handles a POST request. Parses a graph in the body of `env` and treats all
     # statements in that graph (irrespective of any graph names) as constituting

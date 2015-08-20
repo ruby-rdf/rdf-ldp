@@ -29,6 +29,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency     'rack'
   gem.add_runtime_dependency     'rdf', '~> 1.1'
+  gem.add_runtime_dependency     'ld-patch'
   gem.add_runtime_dependency     'rdf-vocab'
   gem.add_runtime_dependency     'rack-linkeddata'
 
