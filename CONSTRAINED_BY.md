@@ -48,7 +48,7 @@ Serializations supporting quads are allowed in POST and PUT requests. Graph name
 HTTP PATCH
 -----------
 
-We do not currently support HTTP PATCH on any resources. We are exploring the possibility of supporting SPARQL 1.1 Update and/or LDPatch as PATCH formats.
+We currently support HTTP PATCH only with the LDPatch format. PATCH requests must have a content type header specifying `text/ldpatch`. SPARQL UPDATE and/or SPARQLPatch support is planned for future development.
 
 ----
 

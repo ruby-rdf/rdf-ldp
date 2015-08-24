@@ -19,6 +19,10 @@ class RDF::Lamprey < Sinatra::Base
     RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
   end
 
+  patch '/*' do
+    RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
+  end
+
   post '/*' do
     RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
   end

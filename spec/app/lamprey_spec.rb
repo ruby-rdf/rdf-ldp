@@ -62,12 +62,17 @@ describe 'lamprey' do
       it 'has Allow headers' do
         options '/'
         expect(last_response.header['Allow'])
-          .to include('GET', 'POST', 'OPTIONS', 'HEAD')
+          .to include('GET', 'POST', 'OPTIONS', 'HEAD', 'PATCH')
       end
 
       it 'has Accept-Post headers' do
         options '/'
         expect(last_response['Accept-Post']).to include 'text/turtle'
+      end
+
+      it 'has Accept-Patch headers' do
+        options '/'
+        expect(last_response['Accept-Patch']).to include 'text/ldpatch'
       end
 
       context 'existing resource' do
@@ -80,6 +85,23 @@ describe 'lamprey' do
           expect(last_response.header['Allow'])
             .to include('GET', 'OPTIONS', 'HEAD')
         end
+      end
+    end
+
+    describe 'PATCH' do
+      it 'returns 415 for unsupported media type' do
+        patch '/', '', 'CONTENT_TYPE' => 'text/plain'
+        expect(last_response.status).to eq 415
+      end
+
+      it 'returns 400 on improper document' do
+        patch '/', '---blah---', 'CONTENT_TYPE' => 'text/ldpatch'
+        expect(last_response.status).to eq 400
+      end
+
+      it 'returns 200 on valid LDPatch' do
+        patch '/', '', 'CONTENT_TYPE' => 'text/ldpatch'
+        expect(last_response.status).to eq 200
       end
     end
 

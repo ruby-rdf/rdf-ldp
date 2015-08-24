@@ -358,6 +358,39 @@ shared_examples 'an RDFSource' do
     end
   end
 
+  describe '#patch' do
+    it 'raises UnsupportedMediaType when no media type is given' do
+      expect { subject.request(:patch, 200, {}, {}) }
+        .to raise_error RDF::LDP::UnsupportedMediaType
+    end
+
+    it 'raises BadRequest when invalid document' do
+      env = { 'CONTENT_TYPE' => 'text/ldpatch',
+              'rack.input'   => '---invalid---' }
+      expect { subject.request(:patch, 200, {}, env) }
+        .to raise_error RDF::LDP::BadRequest
+    end
+
+    it 'handles patch' do
+      statement = RDF::Statement(subject.subject_uri, RDF::FOAF.name, 'Moomin')
+      patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
+              "Add { #{statement.subject.to_base} " \
+              "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
+      env = { 'CONTENT_TYPE' => 'text/ldpatch',
+              'rack.input'   => patch }
+
+      expect { subject.request(:patch, 200, {}, env) }
+        .to change { subject.graph.statements.to_a }
+             .to(contain_exactly(statement))
+    end
+
+    it 'gives PreconditionFailed when trying to update with wrong Etag' do
+      env = { 'HTTP_IF_MATCH' => 'not an Etag' }
+      expect { subject.request(:PATCH, 200, {'abc' => 'def'}, env) }
+        .to raise_error RDF::LDP::PreconditionFailed
+    end
+  end
+
   describe '#graph' do
     it 'has a graph' do
       expect(subject.graph).to be_a RDF::Enumerable
@@ -566,22 +599,39 @@ shared_examples 'a Container' do
   end
 
   describe '#request' do
+    let(:graph) { RDF::Graph.new }
+
+    let(:env) do
+      { 'rack.input' => StringIO.new(graph.dump(:ntriples)),
+        'CONTENT_TYPE' => 'text/plain' }
+    end
+
+    let(:statement) do
+      RDF::Statement(subject.subject_uri,
+                     RDF::Vocab::LDP.contains,
+                     'moomin')
+    end
+
+    context 'with :PATCH',
+            if: described_class.private_method_defined?(:patch) do
+
+      it 'raises conflict error when editing containment triples' do
+        patch_statement = statement.clone
+        patch_statement.object = 'snorkmaiden'
+        patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
+                "Add { #{statement.subject.to_base} " \
+                "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
+        env = { 'CONTENT_TYPE' => 'text/ldpatch',
+                'rack.input'   => patch }
+
+        expect { subject.request(:patch, 200, {}, env) }
+          .to raise_error RDF::LDP::Conflict
+      end
+    end
+            
     context 'with :PUT',
             if: described_class.private_method_defined?(:put) do
-      let(:graph) { RDF::Graph.new }
-
-      let(:env) do
-        { 'rack.input' => StringIO.new(graph.dump(:ntriples)),
-          'CONTENT_TYPE' => 'text/plain' }
-      end
-      
       context 'when PUTing containment triples' do
-        let(:statement) do
-          RDF::Statement(subject.subject_uri,
-                         RDF::Vocab::LDP.contains,
-                         'moomin')
-        end
-
         it 'when creating a resource raises a Conflict error' do
           graph << statement
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }

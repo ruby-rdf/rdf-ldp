@@ -61,8 +61,8 @@ LDP Implementation Overview
 
 ### 4.2.7 HTTP PATCH
 
- - PATCH support is under consideration. Decisions about formats for PATCH have
- not yet been made. [TODO]
+ - PATCH support is implemented with the LDPatch format. Additional formats are
+ planned as future development.
 
 ### 4.2.8 HTTP OPTIONS
 

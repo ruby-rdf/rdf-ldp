@@ -358,7 +358,8 @@ module RDF::LDP
         ([headers['Link']] + link_headers).compact.join(",")
       
       headers['Allow'] = allowed_methods.join(', ')
-      headers['Accept-Post'] = accept_post if respond_to?(:post, true)
+      headers['Accept-Post'] = accept_post   if respond_to?(:post, true)
+      headers['Accept-Patch'] = accept_patch if respond_to?(:patch, true)
 
       headers['ETag'] ||= etag if etag
       headers
@@ -368,6 +369,12 @@ module RDF::LDP
     # @return [String] the Accept-Post headers
     def accept_post
       RDF::Reader.map { |klass| klass.format.content_type }.flatten.join(', ')
+    end
+
+    ##
+    # @return [String] the Accept-Post headers
+    def accept_patch
+      'text/ldpatch'
     end
 
     ##
