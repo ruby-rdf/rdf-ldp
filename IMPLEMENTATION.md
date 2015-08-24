@@ -48,8 +48,9 @@ LDP Implementation Overview
  `If-Match` header is present. `If-Match` headers are NOT required, and requests
  without them will operate as though the correct Etag has been given. We
  consider "_clients SHOULD use the HTTP If-Match header_".
- - __4.2.4.6__: Server throws 404 when trying to create non-existant resources
- via PUT.
+ - __4.2.4.6__: Sending a PUT request to a non-existant Resource creates a
+ Resource at that URI with the selected interaction model (defaulting to
+ ldp:RDFSource). The created Resource will not be in any container.
 
 ### 4.2.5 HTTP DELETE
 

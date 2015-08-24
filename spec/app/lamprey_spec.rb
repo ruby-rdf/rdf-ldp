@@ -190,6 +190,84 @@ describe 'lamprey' do
           expect(last_response.header['Etag']).not_to eq etag
         end
       end
+      
+      context 'creating a resource' do
+        it 'returns 201' do
+          put '/put_source', '', 'CONTENT_TYPE' => 'text/plain'
+          expect(last_response.status).to eq 201
+        end
+
+        it 'creates an RDFSource' do
+          put '/put_rdf_source', '', 'CONTENT_TYPE' => 'text/plain'
+
+          links = LinkHeader.parse(last_response.header['Link']).links
+          expect(links.map(&:href))
+            .to contain_exactly(RDF::Vocab::LDP.Resource.to_s, 
+                                RDF::Vocab::LDP.RDFSource.to_s)
+                                                       
+        end
+
+        it 'creates an BasicContainer when using Container model' do
+          put '/put_container', '', 'CONTENT_TYPE' => 'text/plain', 
+              'HTTP_LINK' => "#{RDF::Vocab::LDP.Container.to_base};rel=\"type\""
+
+          links = LinkHeader.parse(last_response.header['Link']).links
+          expect(links.map(&:href))
+            .to include(RDF::Vocab::LDP.Resource.to_s, 
+                        RDF::Vocab::LDP.RDFSource.to_s,
+                        RDF::Vocab::LDP.BasicContainer.to_s)
+        end
+
+        it 'creates an BasicContainer when using BasicContainer model' do
+          put '/put_container', '', 'CONTENT_TYPE' => 'text/plain', 
+              'HTTP_LINK' => "#{RDF::Vocab::LDP.BasicContainer.to_base};rel=\"type\""
+
+          links = LinkHeader.parse(last_response.header['Link']).links
+          expect(links.map(&:href))
+            .to include(RDF::Vocab::LDP.Resource.to_s, 
+                        RDF::Vocab::LDP.RDFSource.to_s,
+                        RDF::Vocab::LDP.BasicContainer.to_s)
+        end
+
+        it 'creates an DirectContainer' do
+          uri = RDF::Vocab::LDP.DirectContainer.to_base
+
+          put '/put_direct_container', '', 'CONTENT_TYPE' => 'text/plain', 
+              'HTTP_LINK' => "#{uri};rel=\"type\""
+
+          links = LinkHeader.parse(last_response.header['Link']).links
+          expect(links.map(&:href))
+            .to include(RDF::Vocab::LDP.Resource.to_s, 
+                        RDF::Vocab::LDP.RDFSource.to_s,
+                        RDF::Vocab::LDP.DirectContainer.to_s)
+        end
+
+        it 'creates an IndirectContainer' do
+          uri = RDF::Vocab::LDP.IndirectContainer.to_base
+
+          put '/put_indirect_container', '', 'CONTENT_TYPE' => 'text/plain', 
+              'HTTP_LINK' => "#{uri};rel=\"type\""
+
+          links = LinkHeader.parse(last_response.header['Link']).links
+          expect(links.map(&:href))
+            .to include(RDF::Vocab::LDP.Resource.to_s, 
+                        RDF::Vocab::LDP.RDFSource.to_s,
+                        RDF::Vocab::LDP.IndirectContainer.to_s)
+        end
+
+        it 'creates a NonRDFSource' do
+          uri = RDF::Vocab::LDP.NonRDFSource.to_base
+          put '/put_nonrdf_source', '', 'CONTENT_TYPE' => 'text/plain', 
+              'HTTP_LINK' => "#{uri};rel=\"type\""
+
+          links = LinkHeader.parse(last_response.header['Link']).links
+            .select { |link| link.attr_pairs.first.include? 'type' }
+          expect(links.map(&:href))
+            .to contain_exactly(RDF::Vocab::LDP.Resource.to_s, 
+                                RDF::Vocab::LDP.NonRDFSource.to_s)
+                                                       
+        end
+      end
     end
     
     describe 'DELETE' do
