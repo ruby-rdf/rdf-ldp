@@ -25,6 +25,10 @@ Slugs are accepted to POST requests. Slugs are URL-encoded, and treated as a str
 
 Empty strings are treated as if no Slug was given.
 
+### Creating with PUT
+
+Sending a PUT request to a non-existant Resource creates a Resource at that URI with the selected interaction model (defaulting to ldp:RDFSource). The created Resource will not be in any container.
+
 ### Membership URI/Predicate
 
 The LDP specification requires the presence of _exactly one_ membership-constant-uri and membership predicate for each Direct Container. We do not impose this requirement on creation or update of a container. Attempts to POST to a Direct Container missing one of these triples will cause the defaults to be added and used for that request. Attempts to POST to a Direct Container with more than one of either of these triples will fail with `Not Allowed`. The defaults are:
