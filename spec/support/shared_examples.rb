@@ -364,30 +364,53 @@ shared_examples 'an RDFSource' do
         .to raise_error RDF::LDP::UnsupportedMediaType
     end
 
-    it 'raises BadRequest when invalid document' do
-      env = { 'CONTENT_TYPE' => 'text/ldpatch',
-              'rack.input'   => '---invalid---' }
-      expect { subject.request(:patch, 200, {}, env) }
-        .to raise_error RDF::LDP::BadRequest
-    end
-
-    it 'handles patch' do
-      statement = RDF::Statement(subject.subject_uri, RDF::FOAF.name, 'Moomin')
-      patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
-              "Add { #{statement.subject.to_base} " \
-              "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
-      env = { 'CONTENT_TYPE' => 'text/ldpatch',
-              'rack.input'   => patch }
-
-      expect { subject.request(:patch, 200, {}, env) }
-        .to change { subject.graph.statements.to_a }
-             .to(contain_exactly(statement))
-    end
-
     it 'gives PreconditionFailed when trying to update with wrong Etag' do
       env = { 'HTTP_IF_MATCH' => 'not an Etag' }
       expect { subject.request(:PATCH, 200, {'abc' => 'def'}, env) }
         .to raise_error RDF::LDP::PreconditionFailed
+    end
+
+    context 'ldpatch' do
+      it 'raises BadRequest when invalid document' do
+        env = { 'CONTENT_TYPE' => 'text/ldpatch',
+                'rack.input'   => '---invalid---' }
+        expect { subject.request(:patch, 200, {}, env) }
+          .to raise_error RDF::LDP::BadRequest
+      end
+
+      it 'handles patch' do
+        statement = RDF::Statement(subject.subject_uri, RDF::FOAF.name, 'Moomin')
+        patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
+                "Add { #{statement.subject.to_base} " \
+                "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
+        env = { 'CONTENT_TYPE' => 'text/ldpatch',
+                'rack.input'   => patch }
+
+        expect { subject.request(:patch, 200, {}, env) }
+          .to change { subject.graph.statements.to_a }
+               .to(contain_exactly(statement))
+      end
+    end
+    
+    context 'sparql update' do
+      it 'raises BadRequest when invalid document' do
+        env = { 'CONTENT_TYPE' => 'application/sparql-update',
+                'rack.input'   => '---invalid---' }
+        
+        expect { subject.request(:patch, 200, {}, env) }
+          .to raise_error RDF::LDP::BadRequest
+      end
+
+      it 'runs sparql update' do
+        update = "INSERT DATA { #{subject.subject_uri.to_base} "\
+                 "#{RDF::DC.title.to_base} 'moomin' . }"
+
+        env = { 'CONTENT_TYPE' => 'application/sparql-update',
+                'rack.input'   => update }
+
+        expect { subject.request(:patch, 200, {}, env) }
+          .to change { subject.graph.count }.from(0).to(1)
+      end
     end
   end
 

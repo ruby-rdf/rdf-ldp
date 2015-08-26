@@ -23,7 +23,7 @@ module RDF::LDP
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source definition 
   #   of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
-    
+
     # @!attribute [rw] graph
     #   a graph representing the current persistent state of the resource.
     attr_accessor :graph
@@ -166,16 +166,34 @@ module RDF::LDP
     # @raise [RDF::LDP::BadRequest] when an invalid document is given
     def patch(status, headers, env)
       check_precondition!(env)
-      raise UnsupportedMediaType unless env['CONTENT_TYPE'] == 'text/ldpatch'
+      method = patch_types[env['CONTENT_TYPE']]
 
-      ld_patch(env['rack.input'], graph)
+      raise UnsupportedMediaType unless method
+
+      send(method, env['rack.input'], graph)
       [200, update_headers(headers), self]
     end
-
+   
+    ##
+    # @return [Hash<String,Symbol>] a hash mapping supported PATCH content types
+    #   to the method used to process the PATCH request
+    def patch_types
+      { 'text/ldpatch'              => :ld_patch,
+        'application/sparql-update' => :sparql_update }
+    end
+   
     def ld_patch(input, graph)
       begin
         LD::Patch.parse(input).execute(graph)
       rescue LD::Patch::Error => e
+        raise BadRequest, e.message
+      end
+    end
+
+    def sparql_update(input, graph)
+      begin
+        SPARQL.execute(input, graph, update: true)
+      rescue SPARQL::MalformedQuery => e
         raise BadRequest, e.message
       end
     end

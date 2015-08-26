@@ -62,8 +62,7 @@ LDP Implementation Overview
 
 ### 4.2.7 HTTP PATCH
 
- - PATCH support is implemented with the LDPatch format. Additional formats are
- planned as future development.
+ - PATCH support is implemented with the LDPatch format and with SPARQL Update.
 
 ### 4.2.8 HTTP OPTIONS
 
@@ -268,7 +267,8 @@ Handling of Non-Normative Notes
  for resources indended to be created or accessed over this server.
  - __6.2.3__ After delete, we supply `410 GONE` responses. Resourced deleted are
  treated as permanently deleted. Clients may recover them manually.
- - __6.2.5__ We are considering options for HTTP PATCH implementations.
+ - __6.2.5__ PATCH support is implemented with the LDPatch format and with SPARQL
+ Update.
  - __6.2.6__ We do not infer content types (or LDP interaction models) from
  resource contents, instead relying exclusively on the headers defined and used
  by LDP.

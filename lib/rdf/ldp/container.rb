@@ -116,10 +116,12 @@ module RDF::LDP
 
     def patch(status, headers, env)
       check_precondition!(env)
-      raise UnsupportedMediaType unless env['CONTENT_TYPE'] == 'text/ldpatch'
+      method = patch_types[env['CONTENT_TYPE']]
+
+      raise UnsupportedMediaType unless method
 
       temp_graph = RDF::Graph.new << graph.statements
-      ld_patch(env['rack.input'], temp_graph)
+      send(method, env['rack.input'], temp_graph)
 
       validate_triples!(temp_graph)
       graph.clear!

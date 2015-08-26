@@ -52,7 +52,7 @@ Serializations supporting quads are allowed in POST and PUT requests. Graph name
 HTTP PATCH
 -----------
 
-We currently support HTTP PATCH only with the LDPatch format. PATCH requests must have a content type header specifying `text/ldpatch`. SPARQL UPDATE and/or SPARQLPatch support is planned for future development.
+We currently support HTTP PATCH with the LDPatch and SPARQL Update formats. PATCH requests must have a content type header specifying `text/ldpatch` or `application/sparql-update`. `400 Bad Request` is given if the respective engine determines that the request body is malformed.
 
 ----
 

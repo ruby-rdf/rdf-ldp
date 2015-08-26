@@ -372,9 +372,9 @@ module RDF::LDP
     end
 
     ##
-    # @return [String] the Accept-Post headers
+    # @return [String] the Accept-Patch headers
     def accept_patch
-      'text/ldpatch'
+      respond_to?(:patch_types, true) ? patch_types.keys.join(',') : ''
     end
 
     ##
