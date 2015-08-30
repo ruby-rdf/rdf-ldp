@@ -63,12 +63,17 @@ use Rack::LDP::Errors
 use Rack::LDP::Responses
 use Rack::LDP::Requests
 
+# Setup a repository and an initial container:
+#
+#   - You probably want some persistent repository implementation. The example uses an in-memory repository.
+#   - You may not need an initial "base" container, if you handle create on PUT requests.
+#
+repository = RDF::Repository.new 
+RDF::LDP::Container.new(RDF::URI('http://localhost:9292/'), repository)
+  .create('', 'text/plain') if repository.empty?
+
 app = proc do |env|
-  # define interactions here; respond with instances of `RDF::LDP::Resource`
-  # subclasses, as desired. They do the work, and `Rack::LDP` middleware
-  # interprets their responses for the server.
-  #
-  # see app/lamprey.rb for examples in Sinatra.
+  [200, {}, RDF::LDP::Resource.find(RDF::URI(env['REQUEST_URI']), repository)]
 end
 
 run app
@@ -87,8 +92,3 @@ License
 ========
 
 This software is released under a public domain waiver (Unlicense).
-
-  
-
-
-
