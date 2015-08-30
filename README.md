@@ -3,9 +3,13 @@ RDF::LDP
 
 [![Build Status](https://travis-ci.org/ruby-rdf/rdf-ldp.svg?branch=develop)](https://travis-ci.org/ruby-rdf/rdf-ldp)
 
+Server-side support for Linked Data Platform (LDP) with RDF.rb. To get started
+with LDP, see the [LDP Primer](https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-primer/ldp-primer.html).
+
 This software ships with the following libraries:
 
-  - `RDF::LDP` --- contains the domain model for LDP Resources.
+  - `RDF::LDP` --- contains the domain model and behavior for LDP Resources and
+  interaction models.
   - `Rack::LDP` --- a suite of Rack middleware for creating LDP servers based on
   `RDF::LDP`.
   - Lamprey --- a basic LDP server implemented with `Rack::LDP`.
@@ -15,18 +19,22 @@ Lamprey
 
 Lamprey is a basic LDP server. To start it, use:
 
-```
-bundle exec ruby app/lamprey.rb
-
-# At v0.3.0, and after, do:
-
-gem install rdf-ldp
-lamprey
+```sh
+$ gem install rdf-ldp
+$ lamprey
 ```
 
-An `ldp:BasicContainer` will be created at the address of your first
-`GET` request. Note that if that request is made to the server root,
-Sinatra will assume a trailing slash.
+Lamprey currently uses an in-memory repository, and is therefore not a
+persistent datastore out of the box. Backends are swappable, using any
+`RDF::Repository` implementation with named graph (`#context`) support. We are
+working to complete a recommended, default backend and introduce startup
+configuration. See [/CONSTRAINED_BY.md](/CONSTRAINED_BY.md) and
+[/IMPLEMENTATION.md](/IMPLEMENTATION.md) for details.
+
+An `ldp:BasicContainer` will be created at the address of your first `GET`
+request if the backend store is empty. _Note that if that request is made to the
+server root, Sinatra will assume a trailing slash_. You can also create an
+initial container (or other resource) with HTTP `PUT`.
 
 ```bash
 $ curl -i http://localhost:4567
@@ -45,13 +53,17 @@ Content-Length: 0
 Connection: Keep-Alive
 ```
 
+See 
+
 Rack::LDP
 ==========
 
-Setting up a Custom Server with Rackup
----------------------------------------
+Setting up a Custom Server
+--------------------------
 
-You can quickly create your own server with any framework supporting [Rack](https://github.com/rack/). The simplest way to do this is with [Rackup](https://github.com/rack/rack/wiki/(tutorial)-rackup-howto).
+You can quickly create your own server with any framework supporting
+[Rack](https://github.com/rack/). The simplest way to do this is with
+[Rackup](https://github.com/rack/rack/wiki/(tutorial)-rackup-howto).
 
 ```ruby
 # ./config.ru
@@ -75,10 +87,9 @@ RDF::LDP::Container.new(RDF::URI('http://localhost:9292/'), repository)
   .create('', 'text/plain') if repository.empty?
 
 app = proc do |env|
-  # Return a Rack response, giving an `RDF::LDP::Resource`-like object as the
-  # body. The `RDF::LDP` middleware marhalls the request to the body, builds the
-  # response, and handles conneg for RDF serializations (when the body is an
-  # `RDF::LDP::RDFSource`.
+  # Return a Rack response, giving an `RDF::LDP::Resource`-like object as the body.
+  # The `Rack::LDP` middleware marhsalls the request to the resource, builds the response,
+  # and handles conneg for RDF serializations (when the body is an `RDF::LDP::RDFSource`).
   #
   # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Response
   
@@ -86,6 +97,12 @@ app = proc do |env|
 end
 
 run app
+```
+
+And run your server with: 
+
+```sh
+$ rackup
 ```
 
 Compliance
