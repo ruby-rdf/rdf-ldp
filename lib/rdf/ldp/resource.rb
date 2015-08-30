@@ -310,7 +310,7 @@ module RDF::LDP
       raise Gone if destroyed?
       begin
         send(method.to_sym.downcase, status, headers, env)
-      rescue NotImplementedError => e
+      rescue NotImplementedError, NoMethodError => e
         raise MethodNotAllowed, method 
       end
     end

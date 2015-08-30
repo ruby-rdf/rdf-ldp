@@ -90,6 +90,13 @@ shared_examples 'a Resource' do
         .to raise_error(RDF::LDP::MethodNotAllowed)
     end
 
+    it 'raises MethodNotAllowed when method is not present' do
+      allow(subject).to receive(:no_method)
+                         .and_raise NoMethodError
+      expect { subject.request(:no_method, 200, {}, {}) }
+        .to raise_error(RDF::LDP::MethodNotAllowed)
+    end
+
     it 'responds to :GET' do
       expect { subject.request(:GET, 200, {}, {}) }.not_to raise_error
     end
