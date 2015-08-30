@@ -65,14 +65,23 @@ use Rack::LDP::Requests
 
 # Setup a repository and an initial container:
 #
-#   - You probably want some persistent repository implementation. The example uses an in-memory repository.
-#   - You may not need an initial "base" container, if you handle create on PUT requests.
+#   - You probably want some persistent repository implementation. The example
+#     uses an in-memory repository.
+#   - You may not need an initial "base" container, if you handle create on PUT
+#     requests.
 #
 repository = RDF::Repository.new 
 RDF::LDP::Container.new(RDF::URI('http://localhost:9292/'), repository)
   .create('', 'text/plain') if repository.empty?
 
 app = proc do |env|
+  # Return a Rack response, giving an `RDF::LDP::Resource`-like object as the
+  # body. The `RDF::LDP` middleware marhalls the request to the body, builds the
+  # response, and handles conneg for RDF serializations (when the body is an
+  # `RDF::LDP::RDFSource`.
+  #
+  # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Response
+  
   [200, {}, RDF::LDP::Resource.find(RDF::URI(env['REQUEST_URI']), repository)]
 end
 
