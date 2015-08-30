@@ -226,7 +226,8 @@ module RDF::LDP
     # Finds an {RDF::Reader} appropriate for the given content_type and attempts
     # to parse the graph string.
     #
-    # @param [IO, File, String] graph  an input stream to parse
+    # @param [IO, File, String] input  a (Rack) input stream IO object or String
+    #   to parse
     # @param [#to_s] content_type  the content type for the reader
     #
     # @return [RDF::Enumerable] the statements in the resulting graph
@@ -235,11 +236,15 @@ module RDF::LDP
     #
     # @todo handle cases where no content type is given? Does RDF::Reader have 
     #   tools to help us here?
-    def parse_graph(graph, content_type)
+    #
+    # @see http://www.rubydoc.info/github/rack/rack/file/SPEC#The_Input_Stream 
+    #   for documentation on input streams in the Rack SPEC
+    def parse_graph(input, content_type)
       reader = RDF::Reader.for(content_type: content_type.to_s)
       raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
+      input = input.read if input.respond_to? :read
       begin
-        RDF::Graph.new << reader.new(graph, base_uri: subject_uri)
+        RDF::Graph.new << reader.new(input, base_uri: subject_uri)
       rescue RDF::ReaderError => e
         raise RDF::LDP::BadRequest, e.message
       end  

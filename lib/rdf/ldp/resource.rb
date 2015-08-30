@@ -302,7 +302,7 @@ module RDF::LDP
     # @param [Hash<String, String>] headers  a hash mapping HTTP headers 
     #   built for the response to their contents; these headers should be sent 
     #   back to the caller or altered, as appropriate.
-    # @param [] env  the Rack env for the request
+    # @param [Hash] env  the Rack env for the request
     #
     # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response 
     #   array.

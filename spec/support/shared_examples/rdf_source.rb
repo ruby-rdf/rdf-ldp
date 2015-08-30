@@ -32,13 +32,20 @@ shared_examples 'an RDFSource' do
         end
       end
  
-     it 'parses turtle' do
+      it 'parses turtle' do
         expect(subject.send(:parse_graph, graph.dump(:ttl), 'text/turtle'))
           .to be_isomorphic_with graph
       end
 
       it 'parses ntriples' do
         expect(subject.send(:parse_graph, graph.dump(:ntriples), 'text/plain'))
+          .to be_isomorphic_with graph
+      end
+
+      it 'parses rack input' do
+        rack_io = double('Rack Input Stream')
+        allow(rack_io).to receive(:read).and_return(graph.dump(:ntriples))
+        expect(subject.send(:parse_graph, rack_io, 'text/plain'))
           .to be_isomorphic_with graph
       end
     end
