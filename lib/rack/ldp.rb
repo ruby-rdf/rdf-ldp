@@ -112,8 +112,13 @@ module Rack
     # Specializes {Rack::LinkedData::ContentNegotiation}, making the default 
     # return type 'text/turtle'
     class ContentNegotiation < Rack::LinkedData::ContentNegotiation
+      DEFAULT_PREFIXES = 
+        Hash[*RDF::Vocabulary.map { |v| [v.__prefix__, v.to_uri] }.flatten]
+        .freeze
+
       def initialize(app, options = {})
         options[:default] ||= 'text/turtle'
+        options[:prefixes] ||= DEFAULT_PREFIXES
         super
       end
     end

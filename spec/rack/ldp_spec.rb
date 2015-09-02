@@ -124,6 +124,16 @@ describe 'middleware' do
         conneg = described_class.new(app, default: ctype)
         expect(conneg.options[:default]).to eq ctype
       end
+
+      it 'sets prefixes' do
+        expect(subject.options[:prefixes]).to include({ rdf: RDF.to_uri })
+      end
+
+      it 'accepts overrides to default content type' do
+        prefix = { moomin: RDF::URI('http://ex.org/moomin') }
+        conneg = described_class.new(app, prefixes: prefix)
+        expect(conneg.options[:prefixes]).to eq prefix
+      end
     end
   end
 end
