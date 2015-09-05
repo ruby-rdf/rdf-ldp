@@ -146,7 +146,7 @@ shared_examples 'a Resource' do
       end
 
       it 'has Last-Modified' do
-        expect(headers['Last-Modified']).to eq subject.last_modified
+        expect(headers['Last-Modified']).to eq subject.last_modified.httpdate
       end
 
       it 'has Allow' do
