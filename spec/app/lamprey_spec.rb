@@ -47,6 +47,21 @@ describe 'lamprey' do
           expect(last_response.header['Link'])
             .not_to include 'http://www.w3.org/ns/ldp#BasicContainer'
         end
+
+        it 'responds conditionally on ETag' do
+          get @uri
+          get @uri, '', 'HTTP_IF_NONE_MATCH' => last_response.header['ETag']
+
+          expect(last_response.body).to be_empty
+        end
+
+        it 'responds conditionally on Last-Modified' do
+          get @uri
+          time = last_response.header['Last-Modified']
+          get @uri, '', 'HTTP_IF_MODIFIED_SINCE' => time
+                                                   
+          expect(last_response.body).to be_empty
+        end
       end
     end
 

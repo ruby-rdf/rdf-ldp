@@ -395,7 +395,7 @@ module RDF::LDP
       headers['ETag'] ||= tag if tag
 
       modified = last_modified
-      headers['Last-Modified'] ||= modified if modified
+      headers['Last-Modified'] ||= modified.httpdate if modified
 
       headers
     end

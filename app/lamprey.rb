@@ -6,6 +6,7 @@ class RDF::Lamprey < Sinatra::Base
   use Rack::LDP::ContentNegotiation
   use Rack::LDP::Errors
   use Rack::LDP::Responses
+  use Rack::ConditionalGet
   use Rack::LDP::Requests
   
   # Set defaults in case user has not configured values
@@ -15,7 +16,7 @@ class RDF::Lamprey < Sinatra::Base
 
   get '/*' do
     RDF::LDP::Container.new(RDF::URI(request.url), settings.repository)
-      .create('', 'text/plain') if settings.repository.empty?
+      .create('', 'text/plain') if settings.repository.empty?    
     RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
   end
 
