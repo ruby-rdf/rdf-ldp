@@ -62,6 +62,16 @@ shared_examples 'a Container' do
       expect(subject.remove_containment_triple(resource).graph)
         .not_to include subject.make_containment_triple(resource)
     end
+
+    it 'updates last_modified for container' do
+      expect { subject.remove_containment_triple(resource) }
+        .to change { subject.last_modified }
+    end
+
+    it 'updates etag for container' do
+      expect { subject.remove_containment_triple(resource) }
+        .to change { subject.etag }
+    end
   end
 
   describe '#make_containment_triple' do
@@ -188,6 +198,16 @@ shared_examples 'a Container' do
       it 'adds containment statement to resource' do
         expect { subject.request(:POST, 200, {}, env) }
           .to change { subject.containment_triples.count }.from(0).to(1)
+      end
+
+      it 'updates last_modified for container' do
+        expect { subject.request(:POST, 200, {}, env) }
+          .to change { subject.last_modified }
+      end
+
+      it 'updates etag for container' do
+        expect { subject.request(:POST, 200, {}, env) }
+          .to change { subject.etag }
       end
 
       context 'with Container interaction model' do
