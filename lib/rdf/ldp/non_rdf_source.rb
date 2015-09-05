@@ -57,8 +57,8 @@ module RDF::LDP
     ##
     # @see RDF::LDP::Resource#update
     def update(input, c_type)
-      super
       storage.io { |io| IO.copy_stream(input.binmode, io) }
+      super
       self.content_type = c_type
       self
     end
@@ -71,10 +71,6 @@ module RDF::LDP
     def destroy
       storage.delete
       super
-    end
-
-    def etag
-      "#{Digest::SHA1.base64digest(storage.io.read)}"
     end
 
     ##

@@ -84,6 +84,19 @@ shared_examples 'a Resource' do
     end
   end
 
+  describe '#etag' do
+    before { subject.create(StringIO.new(''), 'text/plain') }
+    
+    it 'has an etag' do
+      expect(subject.etag).to be_a String
+    end
+
+    it 'updates etag on change' do
+      expect { subject.update(StringIO.new(''), 'text/plain') }
+        .to change { subject.etag }
+    end
+  end
+
   describe '#last_modified' do
     before do
       subject.metagraph.update([subject.subject_uri, 

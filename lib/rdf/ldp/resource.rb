@@ -219,8 +219,21 @@ module RDF::LDP
       !(@metagraph.query([subject_uri, RDF.type, RDF::OWL.Nothing]).empty?)
     end
 
+    ##
+    # Returns an Etag. This may be a strong or a weak ETag.
+    #
+    # @return [String] an HTTP Etag 
+    #
+    # @note these etags are strong if (and only if) all software that updates
+    #   the resource also updates the ETag
+    #
+    # @see http://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
+    # @see http://www.w3.org/TR/ldp#h-ldpr-put-precond  LDP ETag clause for PUT
+    # @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.3 
+    #   description of strong vs. weak validators
     def etag
-      nil
+      return nil unless exists?
+      "\"#{subject_uri}#{last_modified.iso8601(6)}\""
     end
 
     ##
