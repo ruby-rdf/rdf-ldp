@@ -1,3 +1,5 @@
+require 'timecop'
+
 shared_examples 'a Resource' do
   describe '.to_uri' do
     it { expect(described_class.to_uri).to be_a RDF::URI }
@@ -10,6 +12,8 @@ shared_examples 'a Resource' do
   it { is_expected.to respond_to :container? }
   it { is_expected.to respond_to :rdf_source? }
   it { is_expected.to respond_to :non_rdf_source? }
+
+  it { subject.send(:set_last_modified) }
 
   describe '#allowed_methods' do
     it 'responds to all methods returned' do
@@ -26,6 +30,16 @@ shared_examples 'a Resource' do
   describe '#create' do
     it 'accepts two args' do
       expect(described_class.instance_method(:create).arity).to eq 2
+    end
+
+    describe 'modified time' do
+      before { Timecop.freeze }
+      after  { Timecop.return }
+
+      it 'sets last_modified' do
+        subject.create(StringIO.new(''), 'text/turtle')
+        expect(subject.last_modified).to eq DateTime.now
+      end
     end
 
     it 'adds a type triple to metagraph' do
@@ -70,6 +84,20 @@ shared_examples 'a Resource' do
     end
   end
 
+  describe '#last_modified' do
+    before do
+      subject.metagraph.update([subject.subject_uri, 
+                                RDF::DC.modified, 
+                                datetime])
+    end
+
+    let(:datetime) { DateTime.now }
+
+    it 'returns date in `dc:modified`' do
+      expect(subject.last_modified).to eq datetime
+    end
+  end
+
   describe '#to_response' do
     it 'returns an object that responds to #each' do
       expect(subject.to_response).to respond_to :each
@@ -94,6 +122,27 @@ shared_examples 'a Resource' do
                          .and_raise NoMethodError
       expect { subject.request(:no_method, 200, {}, {}) }
         .to raise_error(RDF::LDP::MethodNotAllowed)
+    end
+
+    describe 'HTTP headers' do
+      before { subject.create(StringIO.new(''), 'text/turtle') }
+      let(:headers) { subject.request(:GET, 200, {}, {})[1] }
+      
+      it 'has ETag' do
+        expect(headers['ETag']).to eq subject.etag
+      end
+
+      it 'has Last-Modified' do
+        expect(headers['Last-Modified']).to eq subject.last_modified
+      end
+
+      it 'has Allow' do
+        expect(headers['Allow']).to be_a String
+      end
+
+      it 'has Link' do
+        expect(headers['Link']).to be_a String
+      end
     end
 
     it 'responds to :GET' do

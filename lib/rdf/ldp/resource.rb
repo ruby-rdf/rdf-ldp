@@ -166,7 +166,8 @@ module RDF::LDP
     # @return [RDF::LDP::Resource] self
     def create(input, content_type)
       raise Conflict if exists?
-      metagraph << RDF::Statement(subject_uri, RDF.type, self.class.to_uri)
+      set_interaction_model
+      set_last_modified
       self
     end
 
@@ -183,7 +184,9 @@ module RDF::LDP
     #
     # @return [RDF::LDP::Resource] self
     def update(input, content_type)
-      raise NotImplementedError
+      return create(input, content_type) unless exists?
+      set_last_modified
+      self
     end
 
     ##
@@ -198,7 +201,9 @@ module RDF::LDP
     # namespace and class represeting deletion status as a stateful property.
     def destroy
       containers.each { |con| con.remove(self) if con.container? }
-      @metagraph << RDF::Statement(subject_uri, RDF.type, RDF::OWL.Nothing)
+      @metagraph << RDF::Statement(subject_uri, 
+                                   RDF.type, 
+                                   RDF::OWL.Nothing)
       self
     end
 
@@ -216,6 +221,17 @@ module RDF::LDP
 
     def etag
       nil
+    end
+
+    ##
+    # @return [DateTime] the time this resource was last modified
+    #
+    # @todo handle cases where there is more than one RDF::DC.modified.
+    #    check for the most recent date
+    def last_modified
+      results = @metagraph.query([subject_uri, RDF::DC.modified, :time])
+      return nil if results.empty?
+      results.first.object.object
     end
 
     ##
@@ -361,7 +377,12 @@ module RDF::LDP
       headers['Accept-Post'] = accept_post   if respond_to?(:post, true)
       headers['Accept-Patch'] = accept_patch if respond_to?(:patch, true)
 
-      headers['ETag'] ||= etag if etag
+      tag = etag
+      headers['ETag'] ||= tag if tag
+
+      modified = last_modified
+      headers['Last-Modified'] ||= modified if modified
+
       headers
     end
 
@@ -399,6 +420,18 @@ module RDF::LDP
     # @return [String] a string to insert into a Link header
     def link_type_header(uri)
       "<#{uri}>;rel=\"type\""
+    end
+
+    ##
+    # Sets the last modified date/time to now
+    def set_last_modified
+      metagraph.update([subject_uri, RDF::DC.modified, DateTime.now])
+    end
+
+    ##
+    # Sets the last modified date/time to the URI for this resource's class
+    def set_interaction_model
+      metagraph << RDF::Statement(subject_uri, RDF.type, self.class.to_uri)
     end
   end
 end

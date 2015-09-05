@@ -57,6 +57,7 @@ module RDF::LDP
     ##
     # @see RDF::LDP::Resource#update
     def update(input, c_type)
+      super
       storage.io { |io| IO.copy_stream(input.binmode, io) }
       self.content_type = c_type
       self

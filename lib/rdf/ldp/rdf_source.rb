@@ -95,7 +95,7 @@ module RDF::LDP
     #
     # @return [RDF::LDP::Resource] self
     def update(input, content_type, &block)
-      return create(input, content_type) unless exists?
+      super
       statements = parse_graph(input, content_type)
       yield statements if block_given?
       graph.clear!
@@ -220,7 +220,6 @@ module RDF::LDP
       raise PreconditionFailed.new('Etag invalid') if 
         env.has_key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
     end
-
 
     ##
     # Finds an {RDF::Reader} appropriate for the given content_type and attempts
