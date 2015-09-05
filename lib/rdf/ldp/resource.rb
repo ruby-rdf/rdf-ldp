@@ -202,8 +202,8 @@ module RDF::LDP
     def destroy
       containers.each { |con| con.remove(self) if con.container? }
       @metagraph << RDF::Statement(subject_uri, 
-                                   RDF.type, 
-                                   RDF::OWL.Nothing)
+                                   RDF::PROV.invalidatedAtTime,
+                                   DateTime.now)
       self
     end
 
@@ -216,7 +216,8 @@ module RDF::LDP
     ##
     # @return [Boolean] true if resource has been destroyed
     def destroyed?
-      !(@metagraph.query([subject_uri, RDF.type, RDF::OWL.Nothing]).empty?)
+      times = @metagraph.query([subject_uri, RDF::PROV.invalidatedAtTime, nil])
+      !(times.empty?)
     end
 
     ##
