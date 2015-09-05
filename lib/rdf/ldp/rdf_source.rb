@@ -68,8 +68,8 @@ module RDF::LDP
     #
     # @return [RDF::LDP::Resource] self
     def create(input, content_type, &block)
+      statements = parse_graph(input, content_type) unless exists?
       super
-      statements = parse_graph(input, content_type)
       yield statements if block_given?
       graph << statements
       self
@@ -95,8 +95,8 @@ module RDF::LDP
     #
     # @return [RDF::LDP::Resource] self
     def update(input, content_type, &block)
-      super
       statements = parse_graph(input, content_type)
+      super
       yield statements if block_given?
       graph.clear!
       graph << statements
@@ -171,6 +171,7 @@ module RDF::LDP
       raise UnsupportedMediaType unless method
 
       send(method, env['rack.input'], graph)
+      set_last_modified
       [200, update_headers(headers), self]
     end
    
@@ -183,19 +184,15 @@ module RDF::LDP
     end
    
     def ld_patch(input, graph)
-      begin
-        LD::Patch.parse(input).execute(graph)
-      rescue LD::Patch::Error => e
-        raise BadRequest, e.message
-      end
+      LD::Patch.parse(input).execute(graph)
+    rescue LD::Patch::Error => e
+      raise BadRequest, e.message
     end
 
     def sparql_update(input, graph)
-      begin
-        SPARQL.execute(input, graph, update: true)
-      rescue SPARQL::MalformedQuery => e
-        raise BadRequest, e.message
-      end
+      SPARQL.execute(input, graph, update: true)
+    rescue SPARQL::MalformedQuery => e
+      raise BadRequest, e.message
     end
 
     ##

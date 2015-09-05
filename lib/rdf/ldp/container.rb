@@ -127,6 +127,7 @@ module RDF::LDP
       graph.clear!
       graph << temp_graph.statements
 
+      set_last_modified
       [200, update_headers(headers), self]
     end
 

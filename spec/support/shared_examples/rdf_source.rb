@@ -77,6 +77,12 @@ shared_examples 'an RDFSource' do
     let(:subject) { described_class.new(RDF::URI('http://ex.org/m')) }
     let(:graph) { RDF::Graph.new }
     
+    it 'does not create when graph fails to parse' do
+      begin; subject.create(graph.dump(:ttl), 'text/moomin'); rescue; end
+
+      expect(subject).not_to exist
+    end
+    
     it 'returns itself' do
       expect(subject.create(graph.dump(:ttl), 'text/turtle')).to eq subject
     end
@@ -121,9 +127,17 @@ shared_examples 'an RDFSource' do
           .to change { subject.etag }
       end
 
-      it 'raises UnsupportedMediaType' do
-        expect { subject.update(graph.dump(:ttl), 'text/moomin') }
-          .to raise_error RDF::LDP::UnsupportedMediaType
+      context 'with bad media type' do
+        it 'raises UnsupportedMediaType' do
+          expect { subject.update(graph.dump(:ttl), 'text/moomin') }
+            .to raise_error RDF::LDP::UnsupportedMediaType
+        end
+
+        it 'does not update #last_modified' do
+          modified = subject.last_modified 
+          begin; subject.update(graph.dump(:ttl), 'text/moomin'); rescue; end
+          expect(subject.last_modified).to eq modified
+        end
       end
     end
 
