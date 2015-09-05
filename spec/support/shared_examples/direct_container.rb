@@ -37,6 +37,16 @@ shared_examples 'a DirectContainer' do
           .to have_statement subject.make_membership_triple(resource_uri)
       end
 
+      it 'updates last_modified for membership resource' do
+        expect { subject.add(resource_uri).graph }
+          .to change { subject.last_modified }
+      end
+
+      it 'updates etag for for membership resource' do
+        expect { subject.add(resource_uri).graph }
+          .to change { subject.etag }
+      end
+
       it 'adds membership triple to custom membership resource' do
         repo = RDF::Repository.new
         subject = described_class.new(uri, repo)

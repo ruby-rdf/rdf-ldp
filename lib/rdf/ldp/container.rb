@@ -91,6 +91,7 @@ module RDF::LDP
     # @return [Container] self
     def add_containment_triple(resource)
       graph << make_containment_triple(resource)
+      set_last_modified
       self
     end
 
@@ -101,6 +102,7 @@ module RDF::LDP
     # @return [Container] self
     def remove_containment_triple(resource)
       graph.delete(make_containment_triple(resource))
+      set_last_modified
       self
     end
 

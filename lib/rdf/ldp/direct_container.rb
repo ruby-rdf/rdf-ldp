@@ -152,7 +152,7 @@ module RDF::LDP
       end
 
       yield(membership_resource, triple, resource) if block_given?
-
+      membership_resource.send(:set_last_modified)
       self
     end
   end
