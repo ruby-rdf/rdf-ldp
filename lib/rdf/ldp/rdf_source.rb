@@ -24,10 +24,6 @@ module RDF::LDP
   #   of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
 
-    # @!attribute [rw] graph
-    #   a graph representing the current persistent state of the resource.
-    attr_accessor :graph
-
     class << self
       ##
       # @return [RDF::URI] uri with lexical representation 
@@ -42,9 +38,17 @@ module RDF::LDP
     ##
     # @see RDF::LDP::Resource#initialize
     def initialize(subject_uri, data = RDF::Repository.new)
-      @graph = RDF::Graph.new(subject_uri, data: data)
+      @subject_uri = subject_uri
+      @data = data
       super
       self
+    end
+
+    ##
+    # @return [RDF::Graph] a graph representing the current persistent state of 
+    #   the resource.
+    def graph
+      @graph ||= RDF::Graph.new(@subject_uri, data: @data)
     end
 
     ##

@@ -237,6 +237,11 @@ shared_examples 'an RDFSource' do
           .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
       end
 
+      it 'does not call the graph' do
+        expect(subject).not_to receive(:graph)
+        subject.request(:GET, 200, {'abc' => 'def'}, {})
+      end
+
       it 'returns 410 GONE when destroyed' do
         allow(subject).to receive(:destroyed?).and_return true
         expect { subject.request(:GET, 200, {'abc' => 'def'}, {}) }
