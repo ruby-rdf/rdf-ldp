@@ -17,7 +17,8 @@ Gem::Specification.new do |gem|
   gem.email              = 'public-rdf-ruby@w3.org'
 
   gem.platform           = Gem::Platform::RUBY
-  gem.files              = %w(AUTHORS CREDITS CHANGELOG.md README.md IMPLEMENTATION.md UNLICENSE VERSION) + Dir.glob('lib/**/*.rb')
+  gem.files              = %w(AUTHORS CREDITS CHANGELOG.md README.md IMPLEMENTATION.md UNLICENSE VERSION) + 
+                           Dir.glob('lib/**/*.rb') + Dir.glob('app/**/*.rb')
   gem.bindir             = %q(bin)
   gem.executables        = %w(lamprey)
   gem.default_executable = gem.executables.first
@@ -27,18 +28,18 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 1.9.2'
   gem.requirements               = []
 
-  gem.add_runtime_dependency     'rack'
+  gem.add_runtime_dependency     'rack', '~> 1.6'
   gem.add_runtime_dependency     'rdf', '~> 1.1'
-  gem.add_runtime_dependency     'ld-patch', '~>0.1'
-  gem.add_runtime_dependency     'rdf-vocab'
-  gem.add_runtime_dependency     'rack-linkeddata'
+  gem.add_runtime_dependency     'ld-patch', '~> 0.1'
+  gem.add_runtime_dependency     'rdf-vocab', '~> 0.8.4'
+  gem.add_runtime_dependency     'rack-linkeddata', '~> 1.1'
 
   gem.add_runtime_dependency     'rdf-turtle', '~> 1.1'
-  gem.add_runtime_dependency     'json-ld'
+  gem.add_runtime_dependency     'json-ld', '~> 1.1'
 
-  gem.add_runtime_dependency     'sinatra'
+  gem.add_runtime_dependency     'sinatra', '~> 1.4'
 
-  gem.add_runtime_dependency     'link_header'
+  gem.add_runtime_dependency     'link_header', '~> 0.0.8'
 
   gem.add_development_dependency 'rdf-spec',    '~> 1.1', '>= 1.1.13'
   gem.add_development_dependency 'rdf-rdfxml',  '~> 1.1'
@@ -46,7 +47,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rdf-xsd',     '~> 1.1'
   gem.add_development_dependency 'rest-client', '~> 1.7'
   gem.add_development_dependency 'rspec',       '~> 3.0'
-  gem.add_development_dependency 'rack-test'
+  gem.add_development_dependency 'rack-test',   '~> 0.6'
   gem.add_development_dependency 'rspec-its',   '~> 1.0'
   gem.add_development_dependency 'timecop',     '~> 0.8'
   gem.add_development_dependency 'webmock',     '~> 1.17'

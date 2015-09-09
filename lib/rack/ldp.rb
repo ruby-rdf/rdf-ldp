@@ -1,7 +1,7 @@
 require 'rack'
 begin
   require 'linkeddata'
-rescue LoadError => e
+rescue LoadError
   require 'rdf/turtle'
   require 'json/ld'
 end

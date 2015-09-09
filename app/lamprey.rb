@@ -31,7 +31,7 @@ class RDF::Lamprey < Sinatra::Base
   put '/*' do
     begin
       RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
-    rescue RDF::LDP::NotFound => e
+    rescue RDF::LDP::NotFound
       model = request.env.fetch('HTTP_LINK', '')
       RDF::LDP::Resource.interaction_model(model)
         .new(RDF::URI(request.url), settings.repository)
