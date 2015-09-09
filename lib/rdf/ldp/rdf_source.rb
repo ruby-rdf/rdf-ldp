@@ -213,7 +213,7 @@ module RDF::LDP
       raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
       input = input.read if input.respond_to? :read
       begin
-        RDF::Graph.new << reader.new(input, base_uri: subject_uri)
+        RDF::Graph.new << reader.new(input, base_uri: subject_uri, validate: true)
       rescue RDF::ReaderError => e
         raise RDF::LDP::BadRequest, e.message
       end  
