@@ -112,7 +112,7 @@ module RDF::LDP
     #
     # @see RDF::LDP::Resource#destroy
     def destroy
-      @graph.clear
+      graph.clear
       super
     end
 
