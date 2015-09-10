@@ -121,6 +121,18 @@ module Rack
         options[:prefixes] ||= DEFAULT_PREFIXES.dup
         super
       end
+
+      ##
+      # The default LinkedData Conneg doesn't support wildcard operators. We 
+      # patch in support for 'text/*' manually, giving Turtle. This should be 
+      # considered helpful by LDP clients.
+      # 
+      # @see Rack::LinkedData::ContentNegotiation#find_writer_for_content_type
+      def find_writer_for_content_type(content_type)
+        return [RDF::Writer.for(:ttl), 'text/turtle'] if 
+          content_type == 'text/*'
+        super
+      end
     end
   end
 end
