@@ -42,6 +42,15 @@ describe 'lamprey' do
           end
         end
 
+        it 'gets json-ld' do
+          get @uri, '', 'HTTP_ACCEPT' => 'application/ld+json'
+          returned = RDF::Reader.for(:jsonld).new(last_response.body).statements.to_a
+
+          graph.statements.each do |s|
+            expect(returned).to include s
+          end
+        end
+
         it 'is not a container' do
           get @uri
           expect(last_response.header['Link'])

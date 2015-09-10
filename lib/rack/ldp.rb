@@ -118,7 +118,7 @@ module Rack
 
       def initialize(app, options = {})
         options[:default] ||= 'text/turtle'
-        options[:prefixes] ||= DEFAULT_PREFIXES
+        options[:prefixes] ||= DEFAULT_PREFIXES.dup
         super
       end
     end
