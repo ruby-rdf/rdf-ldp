@@ -340,7 +340,7 @@ module RDF::LDP
       raise Gone if destroyed?
       begin
         send(method.to_sym.downcase, status, headers, env)
-      rescue NotImplementedError, NoMethodError => e
+      rescue NotImplementedError => e
         raise MethodNotAllowed, method 
       end
     end
@@ -372,6 +372,36 @@ module RDF::LDP
     # Process & generate response for DELETE requests.
     def delete(status, headers, env)
       [204, headers, destroy]
+    end
+
+    ##
+    # @abstract implement in subclasses as needed to support HTTP PATCH
+    def patch(*)
+      raise NotImplementedError
+    end
+
+    ##
+    # @abstract implement in subclasses as needed to support HTTP POST
+    def post(*)
+      raise NotImplementedError
+    end
+
+    ##
+    # @abstract implement in subclasses as needed to support HTTP PUT
+    def put(*)
+      raise NotImplementedError
+    end
+
+    ##
+    # @abstract HTTP TRACE is not expected to be supported
+    def trace(*)
+      raise NotImplementedError
+    end
+
+    ##
+    # @abstract HTTP CONNECT is not expected to be supported
+    def connect(*)
+      raise NotImplementedError
     end
 
     ##
