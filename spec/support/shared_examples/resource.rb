@@ -129,12 +129,25 @@ shared_examples 'a Resource' do
       expect { subject.request(:not_implemented, 200, {}, {}) }
         .to raise_error(RDF::LDP::MethodNotAllowed)
     end
+    
+    [:GET, :OPTIONS, :HEAD].each do |method|
+      it "responds to #{method}" do
+        expect(subject.request(method, 200, {}, {}).size).to eq 3
+      end
+    end
 
-    it 'raises MethodNotAllowed when method is not present' do
-      allow(subject).to receive(:no_method)
-                         .and_raise NoMethodError
-      expect { subject.request(:no_method, 200, {}, {}) }
-        .to raise_error(RDF::LDP::MethodNotAllowed)
+    [:PATCH, :POST, :PUT, :DELETE, :TRACE, :CONNECT].each do |method|
+      it "responds to or errors on #{method}" do
+        env = { 'CONTENT_TYPE' => 'text/plain',
+                'rack.input'   => StringIO.new('input') }
+        
+        begin
+          response = subject.request(method, 200, {}, env)
+          expect(response.size).to eq 3
+        rescue => e
+          expect(e).to be_a RDF::LDP::RequestError
+        end
+      end
     end
 
     describe 'HTTP headers' do
