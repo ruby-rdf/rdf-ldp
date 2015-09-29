@@ -234,7 +234,7 @@ module RDF::LDP
     #   description of strong vs. weak validators
     def etag
       return nil unless exists?
-      "\"#{subject_uri}#{last_modified.iso8601(6)}\""
+      "W/\"#{last_modified.new_offset(0).iso8601(9)}\""
     end
 
     ##
