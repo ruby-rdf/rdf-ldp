@@ -17,7 +17,7 @@ module RDF::LDP
   #   a definition of NonRDFSource in LDP
   class NonRDFSource < Resource
     # Use DC elements format
-    FORMAT_TERM = RDF::DC11.format
+    FORMAT_TERM = RDF::Vocab::DC11.format
     DESCRIBED_BY_TERM = RDF::URI('http://www.w3.org/2007/05/powder-s#describedby')
     
     ##
@@ -50,7 +50,7 @@ module RDF::LDP
       storage.io { |io| IO.copy_stream(input.binmode, io) }
       super
       self.content_type = c_type
-      RDFSource.new(description_uri, @data).create('', 'text/plain')
+      RDFSource.new(description_uri, @data).create('', 'application/n-triples')
       self
     end
 

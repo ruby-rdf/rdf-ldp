@@ -210,7 +210,7 @@ module RDF::LDP
     ##
     # @return [Boolean] true if the resource exists within the repository
     def exists?
-      @data.has_context? metagraph.context
+      @data.has_graph? metagraph.graph_name
     end
 
     ##

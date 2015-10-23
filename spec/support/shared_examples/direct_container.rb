@@ -30,7 +30,7 @@ shared_examples 'a DirectContainer' do
     end
 
     context 'when the membership resource exists' do
-      before { subject.create('', 'text/plain') }
+      before { subject.create('', 'application/n-triples') }
 
       it 'adds membership triple to membership resource' do
         expect(subject.add(resource_uri).graph)
@@ -53,8 +53,8 @@ shared_examples 'a DirectContainer' do
         mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'), 
                                          repo)
 
-        subject.create('', 'text/plain')
-        mem_rs.create('', 'text/plain')
+        subject.create('', 'application/n-triples')
+        mem_rs.create('', 'application/n-triples')
         
         subject.graph << RDF::Statement(subject.subject_uri,
                                         RDF::Vocab::LDP.membershipResource,
@@ -80,7 +80,7 @@ shared_examples 'a DirectContainer' do
         container = described_class.new(uri, repo)
         nr = RDF::LDP::NonRDFSource.new('http://example.org/moomin_file',
                                         repo)
-        nr.create(StringIO.new(''), 'text/plain')
+        nr.create(StringIO.new(''), 'application/n-triples')
         container.graph << RDF::Statement(subject.subject_uri,
                                           RDF::Vocab::LDP.membershipResource,
                                           nr.to_uri)
@@ -116,7 +116,7 @@ shared_examples 'a DirectContainer' do
     end
 
     context 'when the membership resource exists' do
-      before { subject.create('', 'text/plain') }
+      before { subject.create('', 'application/n-triples') }
 
       it 'removes membership triple to membership resource' do
         subject.graph << subject.make_membership_triple(resource_uri)

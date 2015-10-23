@@ -28,7 +28,7 @@ describe RDF::LDP::DirectContainer do
     end
 
     context 'when the membership resource exists' do
-      before { subject.create('', 'text/plain') }
+      before { subject.create('', 'application/n-triples') }
 
       it 'adds membership triple to membership resource' do
         expect(subject.add(resource_uri).graph)
@@ -41,8 +41,8 @@ describe RDF::LDP::DirectContainer do
         mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'), 
                                          repo)
 
-        subject.create('', 'text/plain')
-        mem_rs.create('', 'text/plain')
+        subject.create('', 'application/n-triples')
+        mem_rs.create('', 'application/n-triples')
         
         subject.graph << RDF::Statement(subject.subject_uri,
                                         RDF::Vocab::LDP.membershipResource,

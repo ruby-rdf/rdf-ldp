@@ -73,7 +73,7 @@ shared_examples 'an IndirectContainer' do
       end
 
       context 'when the container exists' do
-        before { subject.create('', 'text/plain') }
+        before { subject.create('', 'application/n-triples') }
 
         it 'adds membership triple' do
           subject.add(contained_resource)
@@ -110,7 +110,7 @@ shared_examples 'an IndirectContainer' do
           end
 
           it 'adds triple to membership resource' do
-            contained_resource.create('', 'text/plain')
+            contained_resource.create('', 'application/n-triples')
             subject.add(contained_resource)
             expect(contained_resource.graph.statements)
               .to include RDF::Statement(contained_resource.to_uri,
@@ -119,7 +119,7 @@ shared_examples 'an IndirectContainer' do
           end
 
           it 'removes triple from membership resource' do
-            contained_resource.create('', 'text/plain')
+            contained_resource.create('', 'application/n-triples')
             subject.add(contained_resource)
             subject.remove(contained_resource)
             expect(contained_resource.graph.statements)

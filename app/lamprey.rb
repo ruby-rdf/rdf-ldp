@@ -16,7 +16,7 @@ class RDF::Lamprey < Sinatra::Base
 
   get '/*' do
     RDF::LDP::Container.new(RDF::URI(request.url), settings.repository)
-      .create('', 'text/plain') if settings.repository.empty?    
+      .create('', 'text/turtle') if settings.repository.empty?    
     RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
   end
 

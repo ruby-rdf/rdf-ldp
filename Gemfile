@@ -5,6 +5,7 @@ gemspec
 gem 'pry'
 
 group :develop do
+  gem 'rdf',            git: "git://github.com/ruby-rdf/rdf.git", branch: "develop"
   gem 'ld-patch',       git: "git://github.com/gkellogg/ld-patch.git", branch: "develop"
   gem "rdf-spec",       git: "git://github.com/ruby-rdf/rdf-spec.git", branch: "develop"
   gem 'linkeddata',     git: "git://github.com/ruby-rdf/linkeddata.git", branch: "develop"

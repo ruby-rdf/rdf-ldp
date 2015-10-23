@@ -43,7 +43,7 @@ shared_examples 'a Resource' do
     end
 
     it 'adds a type triple to metagraph' do
-      subject.create(StringIO.new(''), 'text/plain')
+      subject.create(StringIO.new(''), 'application/n-triples')
       expect(subject.metagraph)
         .to have_statement RDF::Statement(subject.subject_uri, 
                                           RDF.type, 
@@ -51,13 +51,13 @@ shared_examples 'a Resource' do
     end
 
     it 'marks resource as existing' do
-      expect { subject.create(StringIO.new(''), 'text/plain') }
+      expect { subject.create(StringIO.new(''), 'application/n-triples') }
         .to change { subject.exists? }.from(false).to(true)
     end
 
     it 'raises Conlict when already exists' do
-      subject.create(StringIO.new(''), 'text/plain')
-      expect { subject.create(StringIO.new(''), 'text/plain') }
+      subject.create(StringIO.new(''), 'application/n-triples')
+      expect { subject.create(StringIO.new(''), 'application/n-triples') }
         .to raise_error RDF::LDP::Conflict
     end
   end
@@ -80,19 +80,19 @@ shared_examples 'a Resource' do
     end
 
     it 'has the metagraph name for the resource' do
-      expect(subject.metagraph.context).to eq subject.subject_uri / '#meta'
+      expect(subject.metagraph.graph_name).to eq subject.subject_uri / '#meta'
     end
   end
 
   describe '#etag' do
-    before { subject.create(StringIO.new(''), 'text/plain') }
+    before { subject.create(StringIO.new(''), 'application/n-triples') }
     
     it 'has an etag' do
       expect(subject.etag).to be_a String
     end
 
     it 'updates etag on change' do
-      expect { subject.update(StringIO.new(''), 'text/plain') }
+      expect { subject.update(StringIO.new(''), 'application/n-triples') }
         .to change { subject.etag }
     end
   end
@@ -138,7 +138,7 @@ shared_examples 'a Resource' do
 
     [:PATCH, :POST, :PUT, :DELETE, :TRACE, :CONNECT].each do |method|
       it "responds to or errors on #{method}" do
-        env = { 'CONTENT_TYPE' => 'text/plain',
+        env = { 'CONTENT_TYPE' => 'application/n-triples',
                 'rack.input'   => StringIO.new('input') }
         
         begin
