@@ -1,5 +1,6 @@
 require "bundler/setup"
 require 'rdf/isomorphic'
+require 'linkeddata'
 require 'rdf/ldp'
 require 'rdf/spec'
 require 'rdf/spec/matchers'

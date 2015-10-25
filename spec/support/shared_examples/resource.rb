@@ -100,7 +100,7 @@ shared_examples 'a Resource' do
   describe '#last_modified' do
     before do
       subject.metagraph.update([subject.subject_uri, 
-                                RDF::DC.modified, 
+                                RDF::Vocab::DC.modified, 
                                 datetime])
     end
 

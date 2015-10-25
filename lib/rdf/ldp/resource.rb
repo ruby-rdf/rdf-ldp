@@ -202,7 +202,7 @@ module RDF::LDP
     def destroy
       containers.each { |con| con.remove(self) if con.container? }
       @metagraph << RDF::Statement(subject_uri, 
-                                   RDF::PROV.invalidatedAtTime,
+                                   RDF::Vocab::PROV.invalidatedAtTime,
                                    DateTime.now)
       self
     end
@@ -216,7 +216,7 @@ module RDF::LDP
     ##
     # @return [Boolean] true if resource has been destroyed
     def destroyed?
-      times = @metagraph.query([subject_uri, RDF::PROV.invalidatedAtTime, nil])
+      times = @metagraph.query([subject_uri, RDF::Vocab::PROV.invalidatedAtTime, nil])
       !(times.empty?)
     end
 
@@ -243,7 +243,7 @@ module RDF::LDP
     # @todo handle cases where there is more than one RDF::DC.modified.
     #    check for the most recent date
     def last_modified
-      results = @metagraph.query([subject_uri, RDF::DC.modified, :time])
+      results = @metagraph.query([subject_uri, RDF::Vocab::DC.modified, :time])
       return nil if results.empty?
       results.first.object.object
     end
@@ -469,7 +469,7 @@ module RDF::LDP
     ##
     # Sets the last modified date/time to now
     def set_last_modified
-      metagraph.update([subject_uri, RDF::DC.modified, DateTime.now])
+      metagraph.update([subject_uri, RDF::Vocab::DC.modified, DateTime.now])
     end
 
     ##

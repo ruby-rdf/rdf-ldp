@@ -291,7 +291,7 @@ shared_examples 'a Container' do
         before do
           graph << RDF::Statement(uri, RDF::DC.title, 'moomin')
           graph << RDF::Statement(RDF::Node.new, RDF.type, RDF::FOAF.Person)
-          graph << RDF::Statement(RDF::Node.new, RDF::DC.creator, 'tove')
+          graph << RDF::Statement(RDF::Node.new, RDF::Vocab::DC.creator, 'tove')
         end
 
         it 'parses graph into created resource' do
