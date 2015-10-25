@@ -35,14 +35,22 @@ module RDF::LDP
 
     ##
     # @see RDFSource#create
-    def create(input, content_type)
-      super { |statements| validate_triples!(statements) }
+    def create(input, content_type, &block)
+      super do |transaction| 
+        validate_triples!(transaction)
+        yield transaction if block_given?
+      end
+      self
     end
     
     ##
     # @see RDFSource#update
-    def update(input, content_type)
-      super { |statements| validate_triples!(statements) }
+    def update(input, content_type, &block)
+      super do |transaction| 
+        validate_triples!(transaction)
+        yield transaction if block_given?
+      end
+      self
     end
 
     ##
@@ -50,9 +58,11 @@ module RDF::LDP
     # membership triples as appropriate for the container type.
     #
     # @param [RDF::Term] a new member for this container
+    # @param transaction [RDF::Transaction] an active transaction as context for
+    #   the addition
     # @return [Container] self
-    def add(resource)
-      add_containment_triple(resource.to_uri)
+    def add(resource, transaction = nil)
+      add_containment_triple(resource.to_uri, transaction)
     end
 
     ##
@@ -60,9 +70,11 @@ module RDF::LDP
     # membership triples as appropriate for the container type.
     #
     # @param [RDF::Term] a new member for this container
+    # @param transaction [RDF::Transaction] an active transaction as context for
+    #   the removal
     # @return [Container] self
-    def remove(resource)
-      remove_containment_triple(resource.to_uri)
+    def remove(resource, transaction = nil)
+      remove_containment_triple(resource.to_uri, transaction)
     end
 
     ##
@@ -87,22 +99,26 @@ module RDF::LDP
     ##
     # Adds a containment triple for `resource` to the container's `#graph`.
     #
-    # @param [RDF::Term] a new member for this container
+    # @param resource [RDF::Term] a new member for this container
+    # @param transaction [RDF::Transaction] 
     # @return [Container] self
-    def add_containment_triple(resource)
-      graph << make_containment_triple(resource)
-      set_last_modified
+    def add_containment_triple(resource, transaction = nil)
+      target = transaction || graph
+      target << make_containment_triple(resource)
+      set_last_modified(transaction)
       self
     end
 
     ##
     # Remove a containment triple for `resource` to the container's `#graph`.
     #
-    # @param [RDF::Term] a member to remove from this container
+    # @param resource [RDF::Term] a member to remove from this container
+    # @param transaction [RDF::Transaction] 
     # @return [Container] self
-    def remove_containment_triple(resource)
-      graph.delete(make_containment_triple(resource))
-      set_last_modified
+    def remove_containment_triple(resource, transaction = nil)
+      target = transaction || graph
+      target.delete(make_containment_triple(resource))
+      set_last_modified(transaction)
       self
     end
 
@@ -111,7 +127,8 @@ module RDF::LDP
     #
     # @return [RDF::URI] the containment triple
     def make_containment_triple(resource)
-      RDF::Statement(subject_uri, RDF::Vocab::LDP.contains, resource)
+      RDF::Statement(subject_uri, RDF::Vocab::LDP.contains, resource, 
+                     graph_name: subject_uri)
     end
 
     private
@@ -125,7 +142,7 @@ module RDF::LDP
       temp_graph = RDF::Graph.new << graph.statements
       send(method, env['rack.input'], temp_graph)
 
-      validate_triples!(temp_graph)
+      validate_statements!(temp_graph)
       graph.clear!
       graph << temp_graph.statements
 
@@ -152,14 +169,43 @@ module RDF::LDP
       id = (subject_uri / slug).canonicalize
 
       created = klass.new(id, @data)
-                .create(env['rack.input'], env['CONTENT_TYPE'])
+                          
+      created.create(env['rack.input'], env['CONTENT_TYPE']) do |transaction|
+        add(created, transaction)
+      end
       
-      add(created)
       headers['Location'] = created.subject_uri.to_s
       [201, created.send(:update_headers, headers), created]
     end
 
-    def validate_triples!(statements)
+    def validate_triples!(transaction)
+      existing_triples = containment_triples.to_a
+      
+      inserts = transaction.inserts.select do |st|
+        st.subject == subject_uri && st.predicate == RDF::Vocab::LDP.contains
+      end
+
+      inserts.each do |statement|
+        existing_triples.delete(statement) do 
+          raise Conflict.new('Attempted to write unacceptable LDP ' \
+                             "containment-triple: #{statement}") 
+        end
+      end
+
+      deletes = transaction.deletes.select do |st| 
+        st.subject == subject_uri && 
+          predicate == RDF::Vocab::LDP.contains && 
+          !inserts.include?(st)
+      end
+      
+      deletes = deletes + existing_triples
+      
+      raise Conflict.new('Cannot remove containment triples in updates. ' \
+                         "Attepted to remove #{deletes}") unless
+        deletes.empty?
+    end
+
+    def validate_statements!(statements)
       existing_triples = containment_triples.to_a
       statements.query(subject: subject_uri, 
                        predicate: RDF::Vocab::LDP.contains) do |statement|

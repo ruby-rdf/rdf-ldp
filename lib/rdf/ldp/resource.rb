@@ -159,15 +159,22 @@ module RDF::LDP
     #   input. This MAY be used as a content type for the created Resource 
     #   (especially for `LDP::NonRDFSource`s).
     #
+    # @yield gives an in-progress transaction (changeset)
+    # @yieldparam [RDF::Transaction] 
+    # @return [RDF::LDP::Resource] self
+    #
     # @raise [RDF::LDP::RequestError] when creation fails. May raise various 
     #   subclasses for the appropriate response codes.
     # @raise [RDF::LDP::Conflict] when the resource exists
-    #
-    # @return [RDF::LDP::Resource] self
-    def create(input, content_type)
+    def create(input, content_type, &block)
       raise Conflict if exists?
-      set_interaction_model
-      set_last_modified
+
+      @data.transaction do |transaction|
+        set_interaction_model(transaction)
+        yield transaction if block_given?
+        set_last_modified(transaction)
+      end
+
       self
     end
 
@@ -183,9 +190,12 @@ module RDF::LDP
     #   subclasses for the appropriate response codes.
     #
     # @return [RDF::LDP::Resource] self
-    def update(input, content_type)
-      return create(input, content_type) unless exists?
-      set_last_modified
+    def update(input, content_type, &block)
+      return create(input, content_type, &block) unless exists?
+      @data.transaction do |transaction|
+        yield transaction if block_given?
+        set_last_modified(transaction)
+      end
       self
     end
 
@@ -199,18 +209,22 @@ module RDF::LDP
     # 
     # @todo Use of owl:Nothing is probably problematic. Define an internal 
     # namespace and class represeting deletion status as a stateful property.
-    def destroy
-      containers.each { |con| con.remove(self) if con.container? }
-      @metagraph << RDF::Statement(subject_uri, 
-                                   RDF::Vocab::PROV.invalidatedAtTime,
-                                   DateTime.now)
+    def destroy(&block)
+      @data.transaction do |transaction|
+        containers.each { |c| c.remove(self, transaction) if c.container? }
+        transaction << RDF::Statement(subject_uri, 
+                                      RDF::Vocab::PROV.invalidatedAtTime,
+                                      DateTime.now,
+                                      graph_name: metagraph_name)
+        yield if block_given?
+      end
       self
     end
 
     ##
     # @return [Boolean] true if the resource exists within the repository
     def exists?
-      @data.has_graph? metagraph.graph_name
+      @exists ||= @data.has_graph? metagraph.graph_name
     end
 
     ##
@@ -468,14 +482,33 @@ module RDF::LDP
 
     ##
     # Sets the last modified date/time to now
-    def set_last_modified
-      metagraph.update([subject_uri, RDF::Vocab::DC.modified, DateTime.now])
+    def set_last_modified(transaction = nil)
+      if transaction
+        # transactions do not support updates or pattern deletes, so we must
+        # ask the Repository for the current last_modified to delete the statement
+        # transactionally
+        modified = last_modified
+        transaction.delete RDF::Statement(subject_uri, 
+                                          RDF::Vocab::DC.modified, 
+                                          modified,
+                                          graph_name: metagraph_name) if modified
+
+        transaction.insert RDF::Statement(subject_uri, 
+                                          RDF::Vocab::DC.modified, 
+                                          DateTime.now,
+                                          graph_name: metagraph_name)
+      else
+        metagraph.update([subject_uri, RDF::Vocab::DC.modified, DateTime.now])
+      end  
     end
 
     ##
     # Sets the last modified date/time to the URI for this resource's class
-    def set_interaction_model
-      metagraph << RDF::Statement(subject_uri, RDF.type, self.class.to_uri)
+    def set_interaction_model(transaction)
+      transaction.insert(RDF::Statement(subject_uri, 
+                                        RDF.type, 
+                                        self.class.to_uri,
+                                        graph_name: metagraph.graph_name))
     end
   end
 end

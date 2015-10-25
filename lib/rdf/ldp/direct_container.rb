@@ -36,11 +36,14 @@ module RDF::LDP
     # membership triple to the memebership resource.
     #
     # @see RDF::LDP::Container#add
-    def add(resource)
-      process_membership_resource(resource) do |membership, triple|
-        super
-        membership.graph << triple
+    def add(resource, transaction = nil)
+      target = transaction || graph
+      process_membership_resource(resource) do |membership, quad, resource|
+        super(resource, transaction)
+        target = transaction || membership.graph
+        target << quad
       end
+      self
     end
 
     ##
@@ -48,11 +51,13 @@ module RDF::LDP
     # removes membership triple to the memebership resource.
     #
     # @see RDF::LDP::Container#remove
-    def remove(resource)
-      process_membership_resource(resource) do |membership, triple|
-        super
-        membership.graph.delete(triple)
+    def remove(resource, transaction = nil)
+      process_membership_resource(resource) do |membership, quad, resource|
+        super(resource, transaction)
+        target = transaction || membership.graph
+        target.delete(quad)
       end
+      self
     end
 
     ##
@@ -142,7 +147,7 @@ module RDF::LDP
     end
 
     def process_membership_resource(resource, &block)
-      triple = make_membership_triple(resource.to_uri)
+      statement = make_membership_triple(resource.to_uri)
 
       begin
         membership_rs = membership_resource
@@ -151,9 +156,8 @@ module RDF::LDP
                                 "#{membership_constant_uri} does not exist")
       end
 
-      yield(membership_resource, triple, resource) if block_given?
-      membership_resource.send(:set_last_modified)
-      self
+      statement.graph_name = membership_rs.subject_uri
+      yield(membership_rs, statement, resource) if block_given?
     end
   end
 end
