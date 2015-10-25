@@ -13,7 +13,7 @@ shared_examples 'an RDFSource' do
     end
 
     it 'raises BadRequest if graph cannot be parsed' do
-      expect { subject.send(:parse_graph, 'graph', 'text/plain') }
+      expect { subject.send(:parse_graph, 'graph', 'application/n-triples') }
         .to raise_error RDF::LDP::BadRequest
     end
 
@@ -38,14 +38,14 @@ shared_examples 'an RDFSource' do
       end
 
       it 'parses ntriples' do
-        expect(subject.send(:parse_graph, graph.dump(:ntriples), 'text/plain'))
+        expect(subject.send(:parse_graph, graph.dump(:ntriples), 'application/n-triples'))
           .to be_isomorphic_with graph
       end
 
       it 'parses rack input' do
         rack_io = double('Rack Input Stream')
         allow(rack_io).to receive(:read).and_return(graph.dump(:ntriples))
-        expect(subject.send(:parse_graph, rack_io, 'text/plain'))
+        expect(subject.send(:parse_graph, rack_io, 'application/n-triples'))
           .to be_isomorphic_with graph
       end
     end
@@ -85,6 +85,11 @@ shared_examples 'an RDFSource' do
     
     it 'returns itself' do
       expect(subject.create(graph.dump(:ttl), 'text/turtle')).to eq subject
+    end
+
+    it 'yields a changeset' do
+      expect { |b| subject.create(graph.dump(:ttl), 'text/turtle', &b) }
+        .to yield_with_args(an_instance_of(RDF::Transaction))
     end
 
     it 'interprets NULL URI as this resource' do
@@ -127,6 +132,11 @@ shared_examples 'an RDFSource' do
           .to change { subject.etag }
       end
 
+      it 'yields a changeset' do
+        expect { |b| subject.update(graph.dump(:ttl), content_type, &b) }
+          .to yield_with_args(an_instance_of(RDF::Transaction))
+      end
+
       context 'with bad media type' do
         it 'raises UnsupportedMediaType' do
           expect { subject.update(graph.dump(:ttl), 'text/moomin') }
@@ -144,7 +154,7 @@ shared_examples 'an RDFSource' do
     include_examples 'updating rdf_sources' 
 
     context 'when it exists' do
-      before { subject.create('', 'text/plain') }
+      before { subject.create('', 'application/n-triples') }
 
       include_examples 'updating rdf_sources' 
     end
@@ -226,7 +236,7 @@ shared_examples 'an RDFSource' do
 
   describe '#to_response' do
     it 'gives the graph minus context' do
-      expect(subject.to_response.context).to eq nil
+      expect(subject.to_response.graph_name).to eq nil
     end
   end
 
@@ -250,7 +260,7 @@ shared_examples 'an RDFSource' do
     end
 
     context 'with :DELETE' do
-      before { subject.create('', 'text/plain') }
+      before { subject.create('', 'application/n-triples') }
 
       it 'returns 204' do
         expect(subject.request(:DELETE, 200, {}, {}).first).to eq 204
@@ -272,7 +282,7 @@ shared_examples 'an RDFSource' do
       let(:graph) { RDF::Graph.new }
       let(:env) do
         { 'rack.input' => graph.dump(:ntriples),
-          'CONTENT_TYPE' => 'text/plain' }
+          'CONTENT_TYPE' => 'application/n-triples' }
       end
 
       it 'creates the resource' do
@@ -291,7 +301,7 @@ shared_examples 'an RDFSource' do
       end
 
       context 'when subject exists' do
-        before { subject.create('', 'text/plain') }
+        before { subject.create('', 'application/n-triples') }
         
         it 'responds 200' do
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env))

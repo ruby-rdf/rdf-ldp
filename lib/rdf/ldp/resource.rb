@@ -19,14 +19,15 @@ module RDF::LDP
   # from, and may conflict with, other RDF and non-RDF information about the 
   # resource (e.g. representations suitable for a response body). Metagraph 
   # contains a canonical `rdf:type` statement, which specifies the resource's 
-  # interaction model. If the resource is deleted, a flag in metagraph 
-  # indicates this.
+  # interaction model and a (dcterms:modified) last-modified date. If the 
+  # resource is deleted, a (prov:invalidatedAt) flag in metagraph indicates 
+  # this.
   # 
   # The contents of `#metagraph` should not be confused with LDP 
   # server-managed-triples, Those triples are included in the state of the 
   # resource as represented by the response body. `#metagraph` is invisible to
   # the client except where a subclass mirrors its contents in the body.
-  #
+  # 
   # @example creating a new Resource
   #   repository = RDF::Repository.new
   #   resource = RDF::LDP::Resource.new('http://example.org/moomin', repository)
@@ -36,14 +37,55 @@ module RDF::LDP
   #
   #   resource.exists? # => true
   #   resource.metagraph.dump :ttl
-  #   # => "<http://example.org/moomin> a <http://www.w3.org/ns/ldp#Resource> ."
+  #   # => "<http://example.org/moomin> a <http://www.w3.org/ns/ldp#Resource>;
+  #           <http://purl.org/dc/terms/modified> "2015-10-25T14:24:56-07:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ."
+  #
+  # @example updating a Resource updates the `#last_modified` date
+  #   resource.last_modified
+  #   # => #<DateTime: 2015-10-25T14:32:01-07:00 ((2457321j,77521s,571858283n),-25200s,2299161j)>
+  #   resource.update('blah', 'text/plain')
+  #   resource.last_modified
+  #   # => #<DateTime: 2015-10-25T14:32:04-07:00 ((2457321j,77524s,330658065n),-25200s,2299161j)>
+  #   
+  # @example destroying a Resource
+  #   resource.exists? # => true
+  #   resource.destroyed? # => false
+  #
+  #   resource.destroy
+  #
+  #   resource.exists? # => true
+  #   resource.destroyed? # => true
+  #
+  # Rack (via `RDF::LDP::Rack`) uses the `#request` method to dispatch requests and
+  # interpret responses. Disallowed HTTP methods result in 
+  # `RDF::LDP::MethodNotAllowed`. Individual Resources populate `Link`, `Allow`, 
+  # `ETag`, `Last-Modified`, and `Accept-*` headers as required by LDP. All 
+  # subclasses (MUST) return `self` as the Body, and respond to `#each`/
+  # `#respond_to` with the intended body.
+  #
+  # @example using HTTP request methods to get a Rack response 
+  #   resource.request(:get, 200, {}, {})
+  #   # => [200,
+  #         {"Link"=>"<http://www.w3.org/ns/ldp#Resource>;rel=\"type\"",
+  #          "Allow"=>"GET, DELETE, OPTIONS, HEAD",
+  #          "Accept-Post"=>"",
+  #          "Accept-Patch"=>"",
+  #          "ETag"=>"W/\"2015-10-25T21:39:13.111500405+00:00\"",
+  #          "Last-Modified"=>"Sun, 25 Oct 2015 21:39:13 GMT"},
+  #         #<RDF::LDP::Resource:0x00564f4a646028
+  #           @data=#<RDF::Repository:0x2b27a5391708()>,
+  #           @exists=true,
+  #           @metagraph=#<RDF::Graph:0x2b27a5322538(http://example.org/moomin#meta)>,
+  #           @subject_uri=#<RDF::URI:0x2b27a5322fec URI:http://example.org/moomin>>]
+  #
+  #   resource.request(:put, 200, {}, {}) # RDF::LDP::MethodNotAllowed: put
   #
   # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource for a 
   #   definition of 'Resource' in LDP
   class Resource
     # @!attribute [r] subject_uri
-    #   an rdf term
+    #   an rdf term identifying the `Resource`
     attr_reader :subject_uri
 
     # @!attribute [rw] metagraph
@@ -159,15 +201,23 @@ module RDF::LDP
     #   input. This MAY be used as a content type for the created Resource 
     #   (especially for `LDP::NonRDFSource`s).
     #
+    # @yield gives a transaction (changeset) to collect changes to graph,
+    #  metagraph and other resources' (e.g. containers) graphs
+    # @yieldparam tx [RDF::Transaction]
+    # @return [RDF::LDP::Resource] self
+    #
     # @raise [RDF::LDP::RequestError] when creation fails. May raise various 
     #   subclasses for the appropriate response codes.
     # @raise [RDF::LDP::Conflict] when the resource exists
-    #
-    # @return [RDF::LDP::Resource] self
-    def create(input, content_type)
+    def create(input, content_type, &block)
       raise Conflict if exists?
-      set_interaction_model
-      set_last_modified
+
+      @data.transaction do |transaction|
+        set_interaction_model(transaction)
+        yield transaction if block_given?
+        set_last_modified(transaction)
+      end
+
       self
     end
 
@@ -179,13 +229,19 @@ module RDF::LDP
     # @param [#to_s] content_type  a MIME content_type used to interpret the
     #   input.
     #
+    # @yield gives a transaction (changeset) to collect changes to graph,
+    #  metagraph and other resources' (e.g. containers) graphs
+    # @yieldparam tx [RDF::Transaction]
+    # @return [RDF::LDP::Resource] self
+    #
     # @raise [RDF::LDP::RequestError] when update fails. May raise various 
     #   subclasses for the appropriate response codes.
-    #
-    # @return [RDF::LDP::Resource] self
-    def update(input, content_type)
-      return create(input, content_type) unless exists?
-      set_last_modified
+    def update(input, content_type, &block)
+      return create(input, content_type, &block) unless exists?
+      @data.transaction do |transaction|
+        yield transaction if block_given?
+        set_last_modified(transaction)
+      end
       self
     end
 
@@ -195,28 +251,40 @@ module RDF::LDP
     # This adds a statment to the metagraph expressing that the resource has 
     # been deleted
     #
+    # @yield gives a transaction (changeset) to collect changes to graph,
+    #  metagraph and other resources' (e.g. containers) graphs
+    # @yieldparam tx [RDF::Transaction]
     # @return [RDF::LDP::Resource] self
     # 
     # @todo Use of owl:Nothing is probably problematic. Define an internal 
     # namespace and class represeting deletion status as a stateful property.
-    def destroy
-      containers.each { |con| con.remove(self) if con.container? }
-      @metagraph << RDF::Statement(subject_uri, 
-                                   RDF::PROV.invalidatedAtTime,
-                                   DateTime.now)
+    def destroy(&block)
+      @data.transaction do |transaction|
+        containers.each { |c| c.remove(self, transaction) if c.container? }
+        transaction << RDF::Statement(subject_uri, 
+                                      RDF::Vocab::PROV.invalidatedAtTime,
+                                      DateTime.now,
+                                      graph_name: metagraph_name)
+        yield if block_given?
+      end
       self
     end
 
     ##
+    # Gives the status of the resource's existance.
+    #
+    # @note destroyed resources continue to exist in the sense represeted by 
+    #   this method. 
+    #
     # @return [Boolean] true if the resource exists within the repository
     def exists?
-      @data.has_context? metagraph.context
+      @data.has_graph? metagraph.graph_name
     end
 
     ##
     # @return [Boolean] true if resource has been destroyed
     def destroyed?
-      times = @metagraph.query([subject_uri, RDF::PROV.invalidatedAtTime, nil])
+      times = @metagraph.query([subject_uri, RDF::Vocab::PROV.invalidatedAtTime, nil])
       !(times.empty?)
     end
 
@@ -243,7 +311,7 @@ module RDF::LDP
     # @todo handle cases where there is more than one RDF::DC.modified.
     #    check for the most recent date
     def last_modified
-      results = @metagraph.query([subject_uri, RDF::DC.modified, :time])
+      results = @metagraph.query([subject_uri, RDF::Vocab::DC.modified, :time])
       return nil if results.empty?
       results.first.object.object
     end
@@ -468,14 +536,33 @@ module RDF::LDP
 
     ##
     # Sets the last modified date/time to now
-    def set_last_modified
-      metagraph.update([subject_uri, RDF::DC.modified, DateTime.now])
+    def set_last_modified(transaction = nil)
+      if transaction
+        # transactions do not support updates or pattern deletes, so we must
+        # ask the Repository for the current last_modified to delete the statement
+        # transactionally
+        modified = last_modified
+        transaction.delete RDF::Statement(subject_uri, 
+                                          RDF::Vocab::DC.modified, 
+                                          modified,
+                                          graph_name: metagraph_name) if modified
+
+        transaction.insert RDF::Statement(subject_uri, 
+                                          RDF::Vocab::DC.modified, 
+                                          DateTime.now,
+                                          graph_name: metagraph_name)
+      else
+        metagraph.update([subject_uri, RDF::Vocab::DC.modified, DateTime.now])
+      end  
     end
 
     ##
     # Sets the last modified date/time to the URI for this resource's class
-    def set_interaction_model
-      metagraph << RDF::Statement(subject_uri, RDF.type, self.class.to_uri)
+    def set_interaction_model(transaction)
+      transaction.insert(RDF::Statement(subject_uri, 
+                                        RDF.type, 
+                                        self.class.to_uri,
+                                        graph_name: metagraph.graph_name))
     end
   end
 end

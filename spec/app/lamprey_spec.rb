@@ -29,7 +29,7 @@ describe 'lamprey' do
           
           graph_str = graph.dump(:ntriples)
 
-          post '/', graph_str, 'CONTENT_TYPE' => 'text/plain'
+          post '/', graph_str, 'CONTENT_TYPE' => 'application/n-triples'
           @uri = last_response.header['Location']
         end
         
@@ -101,7 +101,7 @@ describe 'lamprey' do
 
       context 'existing resource' do
         before do
-          post '/', '', 'CONTENT_TYPE' => 'text/plain', 'HTTP_SLUG' => 'moomin'
+          post '/', '', 'CONTENT_TYPE' => 'application/n-triples', 'HTTP_SLUG' => 'moomin'
         end
 
         it 'has Allow for resource type' do
@@ -114,7 +114,7 @@ describe 'lamprey' do
 
     describe 'PATCH' do
       it 'returns 415 for unsupported media type' do
-        patch '/', '', 'CONTENT_TYPE' => 'text/plain'
+        patch '/', '', 'CONTENT_TYPE' => 'application/n-triples'
         expect(last_response.status).to eq 415
       end
 
@@ -139,18 +139,18 @@ describe 'lamprey' do
       end
 
       it 'gives a 201 status code' do
-        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/plain'
+        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/turtle'
         expect(last_response.status).to eq 201
       end
 
       it 'gives an ETag for the new resource' do
-        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/plain'
+        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/turtle'
         expect(last_response.status).to eq 201
       end
 
       it 'responds with the graph' do
         graph_str = graph.dump(:ntriples)
-        post '/', graph_str, 'CONTENT_TYPE' => 'text/plain'
+        post '/', graph_str, 'CONTENT_TYPE' => 'application/n-triples'
         returned = RDF::Reader.for(:ttl).new(last_response.body).statements.to_a
 
         graph.statements.each do |s|
@@ -159,7 +159,7 @@ describe 'lamprey' do
       end
 
       it 'gives a location header' do
-        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/plain'
+        post '/', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/turtle'
         expect(last_response.header['Location'])
           .to start_with 'http://example.org/'
       end
@@ -167,7 +167,7 @@ describe 'lamprey' do
       context 'with Slug' do
         it 'accepts a Slug' do
           post '/', graph.dump(:ttl), 
-               'CONTENT_TYPE' => 'text/plain', 
+               'CONTENT_TYPE' => 'text/turtle', 
                'HTTP_SLUG' => 'moominpapa'
           expect(last_response.header['Location'])
             .to eq 'http://example.org/moominpapa'
@@ -175,14 +175,14 @@ describe 'lamprey' do
 
         it 'rejects slugs with #' do
           post '/', graph.dump(:ttl), 
-               'CONTENT_TYPE' => 'text/plain', 
+               'CONTENT_TYPE' => 'text/turtle', 
                'HTTP_SLUG' => 'moomin#papa'
           expect(last_response.status).to eq 406
         end
 
         it 'gives Conflict if slug is taken' do
           post '/', graph.dump(:ttl), 
-               'CONTENT_TYPE' => 'text/plain', 
+               'CONTENT_TYPE' => 'text/turtle', 
                'HTTP_SLUG' => 'moomin'
           expect(last_response.status).to eq 409
         end
@@ -195,12 +195,12 @@ describe 'lamprey' do
       context 'with existing resource' do
         before do
           post '/', graph.dump(:ttl), 
-               'CONTENT_TYPE' => 'text/plain', 
+               'CONTENT_TYPE' => 'text/turtle', 
                'HTTP_SLUG' => 'moomin'
         end
 
         it 'returns an etag' do
-          put '/moomin', '', 'CONTENT_TYPE' => 'text/plain'
+          put '/moomin', '', 'CONTENT_TYPE' => 'text/turtle'
           expect(last_response.header['Etag']).to be_a String
         end
         
@@ -217,12 +217,12 @@ describe 'lamprey' do
       
       context 'creating a resource' do
         it 'returns 201' do
-          put '/put_source', '', 'CONTENT_TYPE' => 'text/plain'
+          put '/put_source', '', 'CONTENT_TYPE' => 'text/turtle'
           expect(last_response.status).to eq 201
         end
 
         it 'creates an RDFSource' do
-          put '/put_rdf_source', '', 'CONTENT_TYPE' => 'text/plain'
+          put '/put_rdf_source', '', 'CONTENT_TYPE' => 'text/turtle'
 
           links = LinkHeader.parse(last_response.header['Link']).links
           expect(links.map(&:href))
@@ -232,7 +232,7 @@ describe 'lamprey' do
         end
 
         it 'creates an BasicContainer when using Container model' do
-          put '/put_container', '', 'CONTENT_TYPE' => 'text/plain', 
+          put '/put_container', '', 'CONTENT_TYPE' => 'text/turtle', 
               'HTTP_LINK' => "#{RDF::Vocab::LDP.Container.to_base};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
@@ -243,7 +243,7 @@ describe 'lamprey' do
         end
 
         it 'creates an BasicContainer when using BasicContainer model' do
-          put '/put_container', '', 'CONTENT_TYPE' => 'text/plain', 
+          put '/put_container', '', 'CONTENT_TYPE' => 'text/turtle', 
               'HTTP_LINK' => "#{RDF::Vocab::LDP.BasicContainer.to_base};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
@@ -256,7 +256,7 @@ describe 'lamprey' do
         it 'creates an DirectContainer' do
           uri = RDF::Vocab::LDP.DirectContainer.to_base
 
-          put '/put_direct_container', '', 'CONTENT_TYPE' => 'text/plain', 
+          put '/put_direct_container', '', 'CONTENT_TYPE' => 'text/turtle', 
               'HTTP_LINK' => "#{uri};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
@@ -269,7 +269,7 @@ describe 'lamprey' do
         it 'creates an IndirectContainer' do
           uri = RDF::Vocab::LDP.IndirectContainer.to_base
 
-          put '/put_indirect_container', '', 'CONTENT_TYPE' => 'text/plain', 
+          put '/put_indirect_container', '', 'CONTENT_TYPE' => 'text/turtle', 
               'HTTP_LINK' => "#{uri};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
@@ -281,7 +281,7 @@ describe 'lamprey' do
 
         it 'creates a NonRDFSource' do
           uri = RDF::Vocab::LDP.NonRDFSource.to_base
-          put '/put_nonrdf_source', '', 'CONTENT_TYPE' => 'text/plain', 
+          put '/put_nonrdf_source', '', 'CONTENT_TYPE' => 'text/turtle', 
               'HTTP_LINK' => "#{uri};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
