@@ -87,6 +87,11 @@ shared_examples 'an RDFSource' do
       expect(subject.create(graph.dump(:ttl), 'text/turtle')).to eq subject
     end
 
+    it 'yields a changeset' do
+      expect { |b| subject.create(graph.dump(:ttl), 'text/turtle', &b) }
+        .to yield_with_args(an_instance_of(RDF::Transaction))
+    end
+
     it 'interprets NULL URI as this resource' do
       graph << RDF::Statement(RDF::URI(), RDF::DC.title, 'moomin')
 
@@ -125,6 +130,11 @@ shared_examples 'an RDFSource' do
       it 'changes etag' do
         expect { subject.update(graph.dump(:ttl), content_type) }
           .to change { subject.etag }
+      end
+
+      it 'yields a changeset' do
+        expect { |b| subject.update(graph.dump(:ttl), content_type, &b) }
+          .to yield_with_args(an_instance_of(RDF::Transaction))
       end
 
       context 'with bad media type' do

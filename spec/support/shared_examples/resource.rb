@@ -50,9 +50,19 @@ shared_examples 'a Resource' do
                                           described_class.to_uri)
     end
 
+    it 'yields a changeset' do
+      expect { |b| subject.create(StringIO.new(''), 'application/n-triples', &b) }
+        .to yield_with_args(an_instance_of(RDF::Transaction))
+    end
+
     it 'marks resource as existing' do
       expect { subject.create(StringIO.new(''), 'application/n-triples') }
         .to change { subject.exists? }.from(false).to(true)
+    end
+
+    it 'returns self' do
+      expect(subject.create(StringIO.new(''), 'application/n-triples'))
+        .to eq subject
     end
 
     it 'raises Conlict when already exists' do
@@ -65,6 +75,16 @@ shared_examples 'a Resource' do
   describe '#update' do
     it 'accepts two args' do
       expect(described_class.instance_method(:update).arity).to eq 2
+    end
+    
+    it 'returns self' do
+      expect(subject.update(StringIO.new(''), 'application/n-triples'))
+        .to eq subject
+    end
+
+    it 'yields a changeset' do
+      expect { |b| subject.update(StringIO.new(''), 'application/n-triples', &b) }
+        .to yield_with_args(an_instance_of(RDF::Transaction))
     end
   end
 
