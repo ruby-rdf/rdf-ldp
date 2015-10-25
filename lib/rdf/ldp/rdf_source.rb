@@ -9,16 +9,21 @@ module RDF::LDP
   #   - a `#graph` representing the "entire persistent state"
   #   - a `#metagraph` containing internal properties of the RDFSource
   #
-  # Persistence schemes must be able to reconstruct both `#graph` and 
-  # `#metagraph` accurately and separately (e.g. by saving them as distinct
-  # named graphs). Statements in `#metagraph` are considered canonical for the
-  # purposes of server-side operations; in the `RDF::LDP` core, this means they
-  # determine interaction model.
+  # Repository implementations must be able to reconstruct both `#graph` and 
+  # `#metagraph` accurately and separately (e.g., by saving them as distinct
+  # named graphs).
+  # 
+  # The implementations of `#create` and `#update` in `RDF::LDP::Resource` are 
+  # overloaded to handle the edits to `#graph` within the same transaction as 
+  # the base `#metagraph` updates. `#to_response` is overloaded to return an 
+  # unnamed `RDF::Graph`, to be transformed into an HTTP Body by
+  # `Rack::LDP::ContentNegotiation`.
   #
-  # Note that the contents of `#metagraph`'s are *not* the same as 
-  # LDP-server-managed triples. `#metagraph` contains statements internal 
-  # properties of the RDFSource which are necessary for the server's management
-  # purposes, but MAY be absent from the representation of its state in `#graph`.
+  # @note the contents of `#metagraph`'s are *not* the same as 
+  # LDP-server-managed triples. `#metagraph` contains internal properties of the
+  # RDFSource which are necessary for the server's management purposes, but MAY
+  # be absent from (or in conflict with) the representation of its state in 
+  # `#graph`.
   # 
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source definition 
   #   of ldp:RDFSource in the LDP specification
@@ -54,14 +59,34 @@ module RDF::LDP
     ##
     # Creates the RDFSource, populating its graph from the input given
     #
+    # @example
+    #   repository = RDF::Repository.new
+    #   ldprs = RDF::LDP::RDFSource.new('http://example.org/moomin', repository)
+    #   ldprs.create('<http://ex.org/1> <http://ex.org/prop> "moomin" .', 'text/turtle')
+    #
     # @param [IO, File, #to_s] input  input (usually from a Rack env's 
     #   `rack.input` key) used to determine the Resource's initial state.
     # @param [#to_s] content_type  a MIME content_type used to read the graph.
     #
-    # @yield gives the new contents of `graph` to the caller's block before 
-    #   altering the state of the resource. This is useful when validation is
-    #   required or triples are to be added by a subclass.
-    # @yieldparam [RDF::Enumerable] the contents parsed from input.
+    # @yield gives an in-progress transaction (changeset) to collect changes to 
+    #   graph, metagraph and other resources' (e.g. containers) graphs. 
+    # @yieldparam tx [RDF::Transaction] a transaction targeting `#graph` as the 
+    #   default graph name
+    #
+    # @example altering changes before execution with block syntax
+    #   content = '<http://ex.org/1> <http://ex.org/prop> "moomin" .'
+    #
+    #   ldprs.create(content, 'text/turtle') do |tx|
+    #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom'])
+    #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom', RDF::URI('g')])
+    #   end
+    #
+    # @example validating changes before execution with block syntax
+    #   content = '<http://ex.org/1> <http://ex.org/prop> "moomin" .'
+    #
+    #   ldprs.create(content, 'text/turtle') do |tx|
+    #     raise "cannot delete triples on create!" unless tx.deletes.empty?
+    #   end
     #
     # @raise [RDF::LDP::RequestError] 
     # @raise [RDF::LDP::UnsupportedMediaType] if no reader can be found for the 
@@ -89,10 +114,18 @@ module RDF::LDP
     # @param [#to_s] content_type  a MIME content_type used to interpret the
     #   input.
     #
-    # @yield gives the new contents of `graph` to the caller's block before 
-    #   altering the state of the resource. This is useful when validation is
-    #   required or triples are to be added by a subclass.
-    # @yieldparam [RDF::Enumerable] the triples parsed from input.
+    # @yield gives an in-progress transaction (changeset) to collect changes to 
+    #   graph, metagraph and other resources' (e.g. containers) graphs. 
+    # @yieldparam tx [RDF::Transaction] a transaction targeting `#graph` as the 
+    #   default graph name
+    #
+    # @example altering changes before execution with block syntax
+    #   content = '<http://ex.org/1> <http://ex.org/prop> "moomin" .'
+    #
+    #   ldprs.update(content, 'text/turtle') do |tx|
+    #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom'])
+    #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom', RDF::URI('g')])
+    #   end
     #
     # @raise [RDF::LDP::RequestError] 
     # @raise [RDF::LDP::UnsupportedMediaType] if no reader can be found for the 
@@ -137,6 +170,8 @@ module RDF::LDP
 
     ##
     # Process & generate response for PUT requsets.
+    #
+    # @note patch is currently not transactional.
     #
     # @raise [RDF::LDP::UnsupportedMediaType] when a media type other than 
     #   LDPatch is used

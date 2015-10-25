@@ -34,6 +34,10 @@ module RDF::LDP
     end
 
     ##
+    # Create with validation as required for the LDP container.
+    #
+    # @raise [RDF::LDP::Conflict] if the create inserts triples that are not 
+    #   allowed by LDP for the container type
     # @see RDFSource#create
     def create(input, content_type, &block)
       super do |transaction| 
@@ -44,6 +48,10 @@ module RDF::LDP
     end
     
     ##
+    # Updates with validation as required for the LDP container.
+    #
+    # @raise [RDF::LDP::Conflict] if the update edits triples that are not 
+    #   allowed by LDP for the container type
     # @see RDFSource#update
     def update(input, content_type, &block)
       super do |transaction| 
@@ -57,6 +65,10 @@ module RDF::LDP
     # Adds a member `resource` to the container. Handles containment and 
     # membership triples as appropriate for the container type.
     #
+    # If a transaction is passed as the second argument, the additon of the 
+    # containment triple is completed when the transaction closes; otherwise it is 
+    # handled atomically.
+    #
     # @param [RDF::Term] a new member for this container
     # @param transaction [RDF::Transaction] an active transaction as context for
     #   the addition
@@ -68,6 +80,10 @@ module RDF::LDP
     ##
     # Removes a member `resource` from the container. Handles containment and
     # membership triples as appropriate for the container type.
+    #
+    # If a transaction is passed as the second argument, the removal of the 
+    # containment triple is completed when the transaction closes; otherwise it is 
+    # handled atomically.
     #
     # @param [RDF::Term] a new member for this container
     # @param transaction [RDF::Transaction] an active transaction as context for
@@ -89,15 +105,15 @@ module RDF::LDP
     # @param [RDF::Statement] statement
     #
     # @return [Boolean] true if the containment triple exists
-    #
-    # @todo for some reason `#include?` doesn't work! figure out why, this is 
-    #   clumsy.
     def has_containment_triple?(statement)
-      !(containment_triples.select { |t| statement == t }.empty?)
+      !(containment_triples.find { |t| statement == t }.nil?)
     end
 
     ##
     # Adds a containment triple for `resource` to the container's `#graph`.
+    #
+    # If a transaction is passed as the second argument, the triple is added to
+    # the transaction's inserts; otherwise it is added directly to `#graph`.
     #
     # @param resource [RDF::Term] a new member for this container
     # @param transaction [RDF::Transaction] 
@@ -112,6 +128,9 @@ module RDF::LDP
     ##
     # Remove a containment triple for `resource` to the container's `#graph`.
     #
+    # If a transaction is passed as the second argument, the triple is added to
+    # the transaction's deletes; otherwise it is deleted directly from `#graph`.
+    #
     # @param resource [RDF::Term] a member to remove from this container
     # @param transaction [RDF::Transaction] 
     # @return [Container] self
@@ -123,9 +142,10 @@ module RDF::LDP
     end
 
     ##
-    # @param [RDF::Term] a member for this container
+    # @param [RDF::Term] a member to be represented in the containment triple
     #
-    # @return [RDF::URI] the containment triple
+    # @return [RDF::URI] the containment triple, with a graph_name pointing 
+    #   to `#graph`
     def make_containment_triple(resource)
       RDF::Statement(subject_uri, RDF::Vocab::LDP.contains, resource, 
                      graph_name: subject_uri)
@@ -205,6 +225,8 @@ module RDF::LDP
         deletes.empty?
     end
 
+    ##
+    # supports Patch.
     def validate_statements!(statements)
       existing_triples = containment_triples.to_a
       statements.query(subject: subject_uri, 
