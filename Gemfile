@@ -2,8 +2,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'pry'
-
 group :develop do
   gem 'rdf',                git: "git://github.com/ruby-rdf/rdf.git", branch: "develop"
   gem 'ld-patch',           git: "git://github.com/gkellogg/ld-patch.git", branch: "develop"
@@ -24,6 +22,10 @@ group :develop do
   gem 'sparql-client',      git: "git://github.com/ruby-rdf/sparql-client.git", branch: "develop"
   gem 'sxp',                git: "git://github.com/gkellogg/sxp-ruby.git"
   gem 'rest-client-components'
+
+  gem 'rdf-blazegraph',     git: 'git://github.com/no-reply/rdf-blazegraph.git', branch: 'develop'
+  
+  gem 'pry'
 end
 
 group :debug do
@@ -33,7 +35,6 @@ group :debug do
   gem "debugger", :platforms => :mri_19
   gem "byebug", :platforms => :mri
   gem "ruby-debug", :platforms => :jruby
-  gem "pry", :platforms => :rbx
   gem 'guard-rspec'
 end
 
