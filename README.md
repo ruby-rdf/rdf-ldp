@@ -53,8 +53,6 @@ Content-Length: 0
 Connection: Keep-Alive
 ```
 
-See 
-
 Rack::LDP
 ==========
 

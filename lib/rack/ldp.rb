@@ -11,7 +11,7 @@ require 'rdf/ldp'
 
 module Rack
   ##
-  # Provides Rack middleware for handling Linked Data Platform  requirements
+  # Provides Rack middleware for handling Linked Data Platform requirements
   # when passed {RDF::LDP::Resource} and its subclasses as response objects.
   #
   # Response objects that are not an {RDF::LDP::Resource} are passed over 
@@ -20,16 +20,17 @@ module Rack
   #
   # The suite can be mix-and-matched as needed. This allows easy swap in of 
   # custom handlers for parts of the behavior. It is recommended that you use
-  # {Rack::LDP::ContentNegotiation}, {Rack::LDP::Errors}, and 
-  # {Rack::LDP::Responses} as the outer three services. With these in place,
-  # you can handle requests as needed in your application, giving responses
-  # conforming to the core {RDF::LDP::Resource} interface.
+  # {Rack::LDP::ContentNegotiation}, {Rack::LDP::Errors}, {Rack::LDP::Responses}
+  # and {Rack::LDP::Reousets} as the outer middleware layers. With these in 
+  # place, you can handle requests as needed in your application, giving 
+  # responses conforming to the core {RDF::LDP::Resource} interface.
   #
   # @example
   #   run Rack:;Builder.new do
   #     use Rack::LDP::ContentNegotiation
   #     use Rack::LDP::Errors
   #     use Rack::LDP::Responses
+  #     use Rack::LDP::Requests
   #     # ...
   #   end
   # 
@@ -110,7 +111,9 @@ module Rack
 
     ##
     # Specializes {Rack::LinkedData::ContentNegotiation}, making the default 
-    # return type 'text/turtle'
+    # return type 'text/turtle'.
+    #
+    # @see Rack::LinkedData::ContentNegotiation}, making
     class ContentNegotiation < Rack::LinkedData::ContentNegotiation
       DEFAULT_PREFIXES = 
         Hash[*RDF::Vocabulary.map { |v| [v.__prefix__, v.to_uri] }.flatten]
