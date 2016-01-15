@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.requirements               = []
 
   gem.add_runtime_dependency     'rack', '~> 1.6'
-  gem.add_runtime_dependency     'rdf', '~> 1.1'
+  gem.add_runtime_dependency     'rdf', '~> 1.99'
   gem.add_runtime_dependency     'rdf-turtle', '~> 1.1', '>= 1.1.8'
   gem.add_runtime_dependency     'ld-patch', '~> 0.1'
   gem.add_runtime_dependency     'rdf-vocab', '~> 0.8.4'
