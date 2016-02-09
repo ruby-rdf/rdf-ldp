@@ -28,7 +28,7 @@ describe RDF::LDP::IndirectContainer do
       expect { subject.inserted_content_relation }
         .to change { subject.graph.statements }
              .to(contain_exactly(RDF::Statement(subject.subject_uri,
-                                        RDF::Vocab::LDP.indirectContentRelation,
+                                        RDF::Vocab::LDP.insertedContentRelation,
                                         RDF::Vocab::LDP.MemberSubject)))
     end
   end

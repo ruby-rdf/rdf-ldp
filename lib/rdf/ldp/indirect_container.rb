@@ -45,7 +45,7 @@ module RDF::LDP
       case statements.count
       when 0
         graph << RDF::Statement(subject_uri, 
-                                RDF::Vocab::LDP.indirectContentRelation, 
+                                RDF::Vocab::LDP.insertedContentRelation, 
                                 RDF::Vocab::LDP.MemberSubject)
         RDF::Vocab::LDP.MemberSubject
       when 1
@@ -62,7 +62,7 @@ module RDF::LDP
     def inserted_content_statements
       graph.statements.select do |st| 
         st.subject == subject_uri && 
-          st.predicate == RDF::Vocab::LDP.indirectContentRelation
+          st.predicate == RDF::Vocab::LDP.insertedContentRelation
       end
     end
     

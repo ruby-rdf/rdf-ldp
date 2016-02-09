@@ -8,7 +8,7 @@ shared_examples 'an IndirectContainer' do
 
     let(:inserted_content_statement) do
       RDF::Statement(subject.subject_uri, 
-                     RDF::Vocab::LDP.indirectContentRelation,
+                     RDF::Vocab::LDP.insertedContentRelation,
                      relation_predicate)
     end
   end
