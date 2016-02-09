@@ -66,8 +66,8 @@ shared_examples 'a Resource' do
     it 'adds a type triple to metagraph' do
       subject.create(StringIO.new(''), 'application/n-triples')
       expect(subject.metagraph)
-        .to have_statement RDF::Statement(subject.subject_uri, 
-                                          RDF.type, 
+        .to have_statement RDF::Statement(subject.subject_uri,
+                                          RDF.type,
                                           described_class.to_uri)
     end
 
@@ -97,7 +97,7 @@ shared_examples 'a Resource' do
     it 'accepts two args' do
       expect(described_class.instance_method(:update).arity).to eq 2
     end
-    
+
     it 'returns self' do
       expect(subject.update(StringIO.new(''), 'application/n-triples'))
         .to eq subject
@@ -127,7 +127,7 @@ shared_examples 'a Resource' do
 
   describe '#etag' do
     before { subject.create(StringIO.new(''), 'application/n-triples') }
-    
+
     it 'has an etag' do
       expect(subject.etag).to be_a String
     end
@@ -181,7 +181,7 @@ shared_examples 'a Resource' do
       expect { subject.request(:not_implemented, 200, {}, {}) }
         .to raise_error(RDF::LDP::MethodNotAllowed)
     end
-    
+
     [:GET, :OPTIONS, :HEAD].each do |method|
       it "responds to #{method}" do
         expect(subject.request(method, 200, {}, {}).size).to eq 3
@@ -192,7 +192,7 @@ shared_examples 'a Resource' do
       it "responds to or errors on #{method}" do
         env = { 'CONTENT_TYPE' => 'application/n-triples',
                 'rack.input'   => StringIO.new('input') }
-        
+
         begin
           response = subject.request(method, 200, {}, env)
           expect(response.size).to eq 3
@@ -205,7 +205,7 @@ shared_examples 'a Resource' do
     describe 'HTTP headers' do
       before { subject.create(StringIO.new(''), 'text/turtle') }
       let(:headers) { subject.request(:GET, 200, {}, {})[1] }
-      
+
       it 'has ETag' do
         expect(headers['ETag']).to eq subject.etag
       end
