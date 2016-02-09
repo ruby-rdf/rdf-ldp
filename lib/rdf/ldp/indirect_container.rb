@@ -60,10 +60,8 @@ module RDF::LDP
     private
 
     def inserted_content_statements
-      graph.statements.select do |st| 
-        st.subject == subject_uri && 
-          st.predicate == RDF::Vocab::LDP.insertedContentRelation
-      end
+      graph.query([subject_uri, RDF::Vocab::LDP.insertedContentRelation, nil])
+        .statements
     end
     
     def process_membership_resource(resource, &block)
