@@ -133,8 +133,8 @@ module RDF::LDP
     end
 
     def member_relation_statements
-      graph.statements.select do |st| 
-        st.subject == subject_uri && RELATION_TERMS.include?(st.predicate)
+      graph.query([subject_uri, nil, nil]).select do |st|
+        RELATION_TERMS.include?(st.predicate)
       end
     end
 
