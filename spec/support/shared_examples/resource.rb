@@ -15,6 +15,27 @@ shared_examples 'a Resource' do
 
   it { subject.send(:set_last_modified) }
 
+  describe '#exists?' do
+    it 'does not exist' do
+      expect(subject).not_to exist
+    end
+
+    context 'while existing' do
+      before { subject.create(StringIO.new(''), 'application/n-triples') }
+
+      subject          { described_class.new(uri, repository) }
+      let(:repository) { RDF::Repository.new }
+
+      it 'exists' do
+        expect(subject).to exist
+      end
+
+      it 'is different from same URI with trailing /' do
+        expect(described_class.new(uri + '/', repository)).not_to exist
+      end
+    end
+  end
+
   describe '#allowed_methods' do
     it 'responds to all methods returned' do
       subject.allowed_methods.each do |method|

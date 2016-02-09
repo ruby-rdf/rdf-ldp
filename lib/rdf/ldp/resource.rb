@@ -125,7 +125,7 @@ module RDF::LDP
       #   usually of a subclass 
       #   from the interaction models.
       def find(uri, data)
-        graph = RDF::Graph.new(uri / '#meta', data: data)
+        graph = RDF::Graph.new(metagraph_name(uri), data: data)
         raise NotFound if graph.empty?
 
         rdf_class = graph.query([uri, RDF.type, :o]).first
@@ -166,6 +166,14 @@ module RDF::LDP
         end
 
         INTERACTION_MODELS[match] || RDFSource
+      end
+
+      ##
+      # Build a graph name URI for the uri passed in
+      #
+      # @param uri [RDF::URI]
+      def metagraph_name(uri)
+        uri + '#meta'
       end
     end
 
@@ -475,7 +483,7 @@ module RDF::LDP
     ##
     # @return [RDF::URI] the name for this resource's metagraph
     def metagraph_name
-      subject_uri / '#meta'
+      self.class.metagraph_name(subject_uri)
     end
 
     ##
