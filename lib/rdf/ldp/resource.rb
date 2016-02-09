@@ -2,7 +2,7 @@ require 'link_header'
 
 module RDF::LDP
   ##
-  # The base class for all LDP Resources. 
+  # The base class for all LDP Resources.
   #
   # The internal state of a Resource is specific to a given persistent datastore
   # (an `RDF::Repository` passed to the initilazer) and is managed through an
@@ -11,23 +11,23 @@ module RDF::LDP
   #   - a `#subject_uri` identifying the Resource.
   #   - a `#metagraph` containing server-internal properties of the Resource.
   #
-  # Resources also define a basic set of CRUD operations, identity and current 
-  # state, and a `#to_response`/`#each` method used by Rack & `Rack::LDP` to 
-  # generate an appropriate HTTP response body. 
+  # Resources also define a basic set of CRUD operations, identity and current
+  # state, and a `#to_response`/`#each` method used by Rack & `Rack::LDP` to
+  # generate an appropriate HTTP response body.
   #
-  # `#metagraph' holds internal properites used by the server. It is distinct 
-  # from, and may conflict with, other RDF and non-RDF information about the 
-  # resource (e.g. representations suitable for a response body). Metagraph 
-  # contains a canonical `rdf:type` statement, which specifies the resource's 
-  # interaction model and a (dcterms:modified) last-modified date. If the 
-  # resource is deleted, a (prov:invalidatedAt) flag in metagraph indicates 
+  # `#metagraph' holds internal properites used by the server. It is distinct
+  # from, and may conflict with, other RDF and non-RDF information about the
+  # resource (e.g. representations suitable for a response body). Metagraph
+  # contains a canonical `rdf:type` statement, which specifies the resource's
+  # interaction model and a (dcterms:modified) last-modified date. If the
+  # resource is deleted, a (prov:invalidatedAt) flag in metagraph indicates
   # this.
-  # 
-  # The contents of `#metagraph` should not be confused with LDP 
-  # server-managed-triples, Those triples are included in the state of the 
+  #
+  # The contents of `#metagraph` should not be confused with LDP
+  # server-managed-triples, Those triples are included in the state of the
   # resource as represented by the response body. `#metagraph` is invisible to
   # the client except where a subclass mirrors its contents in the body.
-  # 
+  #
   # @example creating a new Resource
   #   repository = RDF::Repository.new
   #   resource = RDF::LDP::Resource.new('http://example.org/moomin', repository)
@@ -46,7 +46,7 @@ module RDF::LDP
   #   resource.update('blah', 'text/plain')
   #   resource.last_modified
   #   # => #<DateTime: 2015-10-25T14:32:04-07:00 ((2457321j,77524s,330658065n),-25200s,2299161j)>
-  #   
+  #
   # @example destroying a Resource
   #   resource.exists? # => true
   #   resource.destroyed? # => false
@@ -57,13 +57,13 @@ module RDF::LDP
   #   resource.destroyed? # => true
   #
   # Rack (via `RDF::LDP::Rack`) uses the `#request` method to dispatch requests and
-  # interpret responses. Disallowed HTTP methods result in 
-  # `RDF::LDP::MethodNotAllowed`. Individual Resources populate `Link`, `Allow`, 
-  # `ETag`, `Last-Modified`, and `Accept-*` headers as required by LDP. All 
+  # interpret responses. Disallowed HTTP methods result in
+  # `RDF::LDP::MethodNotAllowed`. Individual Resources populate `Link`, `Allow`,
+  # `ETag`, `Last-Modified`, and `Accept-*` headers as required by LDP. All
   # subclasses (MUST) return `self` as the Body, and respond to `#each`/
   # `#respond_to` with the intended body.
   #
-  # @example using HTTP request methods to get a Rack response 
+  # @example using HTTP request methods to get a Rack response
   #   resource.request(:get, 200, {}, {})
   #   # => [200,
   #         {"Link"=>"<http://www.w3.org/ns/ldp#Resource>;rel=\"type\"",
@@ -81,7 +81,7 @@ module RDF::LDP
   #   resource.request(:put, 200, {}, {}) # RDF::LDP::MethodNotAllowed: put
   #
   # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource for a 
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource for a
   #   definition of 'Resource' in LDP
   class Resource
     # @!attribute [r] subject_uri
@@ -91,14 +91,14 @@ module RDF::LDP
     # @!attribute [rw] metagraph
     #   a graph representing the server-internal state of the resource
     attr_accessor :metagraph
-                          
+
     class << self
       ##
-      # @return [RDF::URI] uri with lexical representation 
+      # @return [RDF::URI] uri with lexical representation
       #   'http://www.w3.org/ns/ldp#Resource'
       #
       # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource
-      def to_uri 
+      def to_uri
         RDF::Vocab::LDP.Resource
       end
 
@@ -113,41 +113,41 @@ module RDF::LDP
       end
 
       ##
-      # Finds an existing resource and 
-      # 
+      # Finds an existing resource and
+      #
       # @param [RDF::URI] uri  the URI for the resource to be found
-      # @param [RDF::Repository] data  a repostiory instance in which to find 
+      # @param [RDF::Repository] data  a repostiory instance in which to find
       #   the resource.
       #
       # @raise [RDF::LDP::NotFound] when the resource doesn't exist
       #
       # @return [RDF::LDP::Resource] a resource instance matching the given URI;
-      #   usually of a subclass 
+      #   usually of a subclass
       #   from the interaction models.
       def find(uri, data)
-        graph = RDF::Graph.new(uri / '#meta', data: data)
+        graph = RDF::Graph.new(metagraph_name(uri), data: data)
         raise NotFound if graph.empty?
 
         rdf_class = graph.query([uri, RDF.type, :o]).first
         klass = INTERACTION_MODELS[rdf_class.object] if rdf_class
         klass ||= RDFSource
-        
-        klass.new(uri, data) 
+
+        klass.new(uri, data)
       end
 
       ##
       # Retrieves the correct interaction model from the Link headers.
       #
       # Headers are handled intelligently, e.g. if a client sends a request with
-      # Resource, RDFSource, and BasicContainer headers, the server gives a 
-      # BasicContainer. An error is thrown if the headers contain conflicting 
+      # Resource, RDFSource, and BasicContainer headers, the server gives a
+      # BasicContainer. An error is thrown if the headers contain conflicting
       # types (i.e. NonRDFSource and another Resource class).
       #
-      # @param [String] link_header  a string containing Link headers from an 
+      # @param [String] link_header  a string containing Link headers from an
       #   HTTP request (Rack env)
-      # 
-      # @return [Class] a subclass of {RDF::LDP::Resource} matching the 
-      #   requested interaction model; 
+      #
+      # @return [Class] a subclass of {RDF::LDP::Resource} matching the
+      #   requested interaction model;
       def interaction_model(link_header)
         models = LinkHeader.parse(link_header)
                  .links.select { |link| link['rel'].downcase == 'type' }
@@ -155,9 +155,9 @@ module RDF::LDP
 
         return RDFSource if models.empty?
         match = INTERACTION_MODELS.keys.reverse.find { |u| models.include? u }
-        
+
         if match == RDF::LDP::NonRDFSource.to_uri
-          raise NotAcceptable if 
+          raise NotAcceptable if
             models.include?(RDF::LDP::RDFSource.to_uri) ||
             models.include?(RDF::LDP::Container.to_uri) ||
             models.include?(RDF::LDP::DirectContainer.to_uri) ||
@@ -167,21 +167,29 @@ module RDF::LDP
 
         INTERACTION_MODELS[match] || RDFSource
       end
+
+      ##
+      # Build a graph name URI for the uri passed in
+      #
+      # @param uri [RDF::URI]
+      def metagraph_name(uri)
+        uri + '#meta'
+      end
     end
 
     ##
     # @param [RDF::URI, #to_s] subject_uri  the uri that identifies the Resource
-    # @param [RDF::Repository] data  the repository where the resource's RDF 
-    #   data (i.e. `metagraph`) is stored; defaults to an in-memory 
+    # @param [RDF::Repository] data  the repository where the resource's RDF
+    #   data (i.e. `metagraph`) is stored; defaults to an in-memory
     #   RDF::Repository specific to this Resource.
     #
     # @yield [RDF::Resource] Gives itself to the block
     #
-    # @example 
+    # @example
     #   RDF::Resource.new('http://example.org/moomin')
     #
     # @example with a block
-    #   RDF::Resource.new('http://example.org/moomin') do |resource| 
+    #   RDF::Resource.new('http://example.org/moomin') do |resource|
     #     resource.metagraph << RDF::Statement(...)
     #   end
     #
@@ -195,10 +203,10 @@ module RDF::LDP
     ##
     # @abstract creates the resource
     #
-    # @param [IO, File] input  input (usually from a Rack env's 
+    # @param [IO, File] input  input (usually from a Rack env's
     #   `rack.input` key) used to determine the Resource's initial state.
     # @param [#to_s] content_type  a MIME content_type used to interpret the
-    #   input. This MAY be used as a content type for the created Resource 
+    #   input. This MAY be used as a content type for the created Resource
     #   (especially for `LDP::NonRDFSource`s).
     #
     # @yield gives a transaction (changeset) to collect changes to graph,
@@ -206,7 +214,7 @@ module RDF::LDP
     # @yieldparam tx [RDF::Transaction]
     # @return [RDF::LDP::Resource] self
     #
-    # @raise [RDF::LDP::RequestError] when creation fails. May raise various 
+    # @raise [RDF::LDP::RequestError] when creation fails. May raise various
     #   subclasses for the appropriate response codes.
     # @raise [RDF::LDP::Conflict] when the resource exists
     def create(input, content_type, &block)
@@ -224,7 +232,7 @@ module RDF::LDP
     ##
     # @abstract update the resource
     #
-    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    # @param [IO, File, #to_s] input  input (usually from a Rack env's
     #   `rack.input` key) used to determine the Resource's new state.
     # @param [#to_s] content_type  a MIME content_type used to interpret the
     #   input.
@@ -234,7 +242,7 @@ module RDF::LDP
     # @yieldparam tx [RDF::Transaction]
     # @return [RDF::LDP::Resource] self
     #
-    # @raise [RDF::LDP::RequestError] when update fails. May raise various 
+    # @raise [RDF::LDP::RequestError] when update fails. May raise various
     #   subclasses for the appropriate response codes.
     def update(input, content_type, &block)
       return create(input, content_type, &block) unless exists?
@@ -248,20 +256,20 @@ module RDF::LDP
     ##
     # Mark the resource as destroyed.
     #
-    # This adds a statment to the metagraph expressing that the resource has 
+    # This adds a statment to the metagraph expressing that the resource has
     # been deleted
     #
     # @yield gives a transaction (changeset) to collect changes to graph,
     #  metagraph and other resources' (e.g. containers) graphs
     # @yieldparam tx [RDF::Transaction]
     # @return [RDF::LDP::Resource] self
-    # 
-    # @todo Use of owl:Nothing is probably problematic. Define an internal 
+    #
+    # @todo Use of owl:Nothing is probably problematic. Define an internal
     # namespace and class represeting deletion status as a stateful property.
     def destroy(&block)
       @data.transaction do |transaction|
         containers.each { |c| c.remove(self, transaction) if c.container? }
-        transaction << RDF::Statement(subject_uri, 
+        transaction << RDF::Statement(subject_uri,
                                       RDF::Vocab::PROV.invalidatedAtTime,
                                       DateTime.now,
                                       graph_name: metagraph_name)
@@ -273,8 +281,8 @@ module RDF::LDP
     ##
     # Gives the status of the resource's existance.
     #
-    # @note destroyed resources continue to exist in the sense represeted by 
-    #   this method. 
+    # @note destroyed resources continue to exist in the sense represeted by
+    #   this method.
     #
     # @return [Boolean] true if the resource exists within the repository
     def exists?
@@ -291,14 +299,14 @@ module RDF::LDP
     ##
     # Returns an Etag. This may be a strong or a weak ETag.
     #
-    # @return [String] an HTTP Etag 
+    # @return [String] an HTTP Etag
     #
     # @note these etags are strong if (and only if) all software that updates
     #   the resource also updates the ETag
     #
     # @see http://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
     # @see http://www.w3.org/TR/ldp#h-ldpr-put-precond  LDP ETag clause for PUT
-    # @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.3 
+    # @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.3
     #   description of strong vs. weak validators
     def etag
       return nil unless exists?
@@ -306,13 +314,21 @@ module RDF::LDP
     end
 
     ##
-    # @return [DateTime] the time this resource was last modified
+    # @return [DateTime] the time this resource was last modified; `nil` if the
+    #   resource doesn't exist and has no modified date
+    # @raise [RDF::LDP::RequestError] when the resource exists but is missing a
+    #   `last_modified'
     #
     # @todo handle cases where there is more than one RDF::DC.modified.
     #    check for the most recent date
     def last_modified
       results = @metagraph.query([subject_uri, RDF::Vocab::DC.modified, :time])
-      return nil if results.empty?
+
+      if results.empty?
+        return nil unless exists?
+        raise(RequestError, "Missing dc:modified date for #{subject_uri}")
+      end
+
       results.first.object.object
     end
 
@@ -320,7 +336,7 @@ module RDF::LDP
     # @param [String] tag  a tag to compare to `#etag`
     # @return [Boolean] whether the given tag matches `#etag`
     def match?(tag)
-      tag == etag 
+      tag == etag
     end
 
     ##
@@ -332,7 +348,7 @@ module RDF::LDP
     ##
     # @return [Array<Symbol>] a list of HTTP methods allowed by this resource.
     def allowed_methods
-      [:GET, :POST, :PUT, :DELETE, :PATCH, :OPTIONS, :HEAD].select do |m| 
+      [:GET, :POST, :PUT, :DELETE, :PATCH, :OPTIONS, :HEAD].select do |m|
         respond_to?(m.downcase, true)
       end
     end
@@ -370,10 +386,10 @@ module RDF::LDP
     end
 
     ##
-    # Runs the request and returns the object's desired HTTP response body, 
-    # conforming to the Rack interfare. 
+    # Runs the request and returns the object's desired HTTP response body,
+    # conforming to the Rack interfare.
     #
-    # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body 
+    # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body
     #   for Rack body documentation
     def to_response
       []
@@ -382,55 +398,55 @@ module RDF::LDP
 
     ##
     # Build the response for the HTTP `method` given.
-    # 
+    #
     # The method passed in is symbolized, downcased, and sent to `self` with the
     # other three parameters.
     #
     # Request methods are expected to return an Array appropriate for a Rack
-    # response; to return this object (e.g. for a sucessful GET) the response 
+    # response; to return this object (e.g. for a sucessful GET) the response
     # may be `[status, headers, self]`.
     #
-    # If the method given is unimplemented, we understand it to require an HTTP 
+    # If the method given is unimplemented, we understand it to require an HTTP
     # 405 response, and throw the appropriate error.
     #
-    # @param [#to_sym] method  the HTTP request method of the response; this 
+    # @param [#to_sym] method  the HTTP request method of the response; this
     #   message will be downcased and sent to the object.
-    # @param [Fixnum] status  an HTTP response code; this status should be sent 
+    # @param [Fixnum] status  an HTTP response code; this status should be sent
     #   back to the caller or altered, as appropriate.
-    # @param [Hash<String, String>] headers  a hash mapping HTTP headers 
-    #   built for the response to their contents; these headers should be sent 
+    # @param [Hash<String, String>] headers  a hash mapping HTTP headers
+    #   built for the response to their contents; these headers should be sent
     #   back to the caller or altered, as appropriate.
     # @param [Hash] env  the Rack env for the request
     #
-    # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response 
+    # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response
     #   array.
     def request(method, status, headers, env)
       raise Gone if destroyed?
       begin
         send(method.to_sym.downcase, status, headers, env)
       rescue NotImplementedError => e
-        raise MethodNotAllowed, method 
+        raise MethodNotAllowed, method
       end
     end
 
     private
 
     ##
-    # Generate response for GET requests. Returns existing status and headers, 
+    # Generate response for GET requests. Returns existing status and headers,
     # with `self` as the body.
     def get(status, headers, env)
       [status, update_headers(headers), self]
     end
 
     ##
-    # Generate response for HEAD requsets. Adds appropriate headers and returns 
+    # Generate response for HEAD requsets. Adds appropriate headers and returns
     # an empty body.
     def head(status, headers, env)
       [status, update_headers(headers), []]
     end
 
     ##
-    # Generate response for OPTIONS requsets. Adds appropriate headers and 
+    # Generate response for OPTIONS requsets. Adds appropriate headers and
     # returns an empty body.
     def options(status, headers, env)
       [status, update_headers(headers), []]
@@ -475,16 +491,16 @@ module RDF::LDP
     ##
     # @return [RDF::URI] the name for this resource's metagraph
     def metagraph_name
-      subject_uri / '#meta'
+      self.class.metagraph_name(subject_uri)
     end
 
     ##
     # @param [Hash<String, String>] headers
     # @return [Hash<String, String>] the updated headers
     def update_headers(headers)
-      headers['Link'] = 
+      headers['Link'] =
         ([headers['Link']] + link_headers).compact.join(",")
-      
+
       headers['Allow'] = allowed_methods.join(', ')
       headers['Accept-Post'] = accept_post   if respond_to?(:post, true)
       headers['Accept-Patch'] = accept_patch if respond_to?(:patch, true)
@@ -511,7 +527,7 @@ module RDF::LDP
     end
 
     ##
-    # @return [Array<String>] an array of link headers to add to the 
+    # @return [Array<String>] an array of link headers to add to the
     #   existing ones
     #
     # @see http://www.w3.org/TR/ldp/#h-ldpr-gen-linktypehdr
@@ -542,25 +558,25 @@ module RDF::LDP
         # ask the Repository for the current last_modified to delete the statement
         # transactionally
         modified = last_modified
-        transaction.delete RDF::Statement(subject_uri, 
-                                          RDF::Vocab::DC.modified, 
+        transaction.delete RDF::Statement(subject_uri,
+                                          RDF::Vocab::DC.modified,
                                           modified,
                                           graph_name: metagraph_name) if modified
 
-        transaction.insert RDF::Statement(subject_uri, 
-                                          RDF::Vocab::DC.modified, 
+        transaction.insert RDF::Statement(subject_uri,
+                                          RDF::Vocab::DC.modified,
                                           DateTime.now,
                                           graph_name: metagraph_name)
       else
         metagraph.update([subject_uri, RDF::Vocab::DC.modified, DateTime.now])
-      end  
+      end
     end
 
     ##
     # Sets the last modified date/time to the URI for this resource's class
     def set_interaction_model(transaction)
-      transaction.insert(RDF::Statement(subject_uri, 
-                                        RDF.type, 
+      transaction.insert(RDF::Statement(subject_uri,
+                                        RDF.type,
                                         self.class.to_uri,
                                         graph_name: metagraph.graph_name))
     end
