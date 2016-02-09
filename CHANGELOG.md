@@ -1,3 +1,9 @@
+0.5.1
+-----
+ - Fixes inserted content relation interpretations.
+ - Uses RDF::Graph#query for better perfomance on Direct & Indirect
+ Containers
+ 
 0.5.0
 -----
  - Fixes error that caused resources to be misidentified when trailing
