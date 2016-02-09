@@ -314,13 +314,21 @@ module RDF::LDP
     end
 
     ##
-    # @return [DateTime] the time this resource was last modified
+    # @return [DateTime] the time this resource was last modified; `nil` if the
+    #   resource doesn't exist and has no modified date
+    # @raise [RDF::LDP::RequestError] when the resource exists but is missing a
+    #   `last_modified'
     #
     # @todo handle cases where there is more than one RDF::DC.modified.
     #    check for the most recent date
     def last_modified
       results = @metagraph.query([subject_uri, RDF::Vocab::DC.modified, :time])
-      return nil if results.empty?
+
+      if results.empty?
+        return nil unless exists?
+        raise(RequestError, "Missing dc:modified date for #{subject_uri}")
+      end
+
       results.first.object.object
     end
 

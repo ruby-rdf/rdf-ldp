@@ -139,16 +139,27 @@ shared_examples 'a Resource' do
   end
 
   describe '#last_modified' do
-    before do
-      subject.metagraph.update([subject.subject_uri, 
-                                RDF::Vocab::DC.modified, 
-                                datetime])
+    it 'returns nil when no dc:modified triple is present' do
+      expect(subject.last_modified).to be_nil
     end
 
-    let(:datetime) { DateTime.now }
+    it 'raises an error when exists without dc:modified triple is present' do
+      allow(subject).to receive(:exists?).and_return true
+      expect { subject.last_modified }.to raise_error RDF::LDP::RequestError
+    end
 
-    it 'returns date in `dc:modified`' do
-      expect(subject.last_modified).to eq datetime
+    context 'with dc:modified triple' do
+      before do
+        subject.metagraph.update([subject.subject_uri,
+                                  RDF::Vocab::DC.modified,
+                                  datetime])
+      end
+
+      let(:datetime) { DateTime.now }
+
+      it 'returns date in `dc:modified`' do
+        expect(subject.last_modified).to eq datetime
+      end
     end
   end
 
