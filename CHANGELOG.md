@@ -1,3 +1,20 @@
+0.5.0
+-----
+ - Fixes error that caused resources to be misidentified when trailing
+ slashes are present.
+ - Returns a 500 error and a useful message when `last_modified` is
+ missing.
+
+0.4.0
+-----
+ - Adds Last-Modified and updates ETag strategy to weak etags based on
+ that date.
+ - Destroys resources with an internal `prov:invalidatedAtTime`.
+ - Adds conditional GET support.
+ - Handles RDFSource responses more efficiently, avoiding loading the
+ graph for HEAD & OPTIONS requests.
+ - More efficient update/delete with RDF::Transactions.
+ - Uses default prefixes from RDF.rb in responses.
 
 0.3.0
 ------
