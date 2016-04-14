@@ -71,9 +71,9 @@ shared_examples 'a Resource' do
                                           described_class.to_uri)
     end
 
-    it 'yields a changeset' do
+    it 'yields a transaction' do
       expect { |b| subject.create(StringIO.new(''), 'application/n-triples', &b) }
-        .to yield_with_args(an_instance_of(RDF::Transaction))
+        .to yield_with_args(be_kind_of(RDF::Transaction))
     end
 
     it 'marks resource as existing' do
@@ -105,7 +105,7 @@ shared_examples 'a Resource' do
 
     it 'yields a changeset' do
       expect { |b| subject.update(StringIO.new(''), 'application/n-triples', &b) }
-        .to yield_with_args(an_instance_of(RDF::Transaction))
+        .to yield_with_args(be_kind_of(RDF::Transaction))
     end
   end
 
@@ -190,8 +190,9 @@ shared_examples 'a Resource' do
 
     [:PATCH, :POST, :PUT, :DELETE, :TRACE, :CONNECT].each do |method|
       it "responds to or errors on #{method}" do
+        g = RDF::Graph.new << [RDF::Node.new, RDF.type, 'moomin']
         env = { 'CONTENT_TYPE' => 'application/n-triples',
-                'rack.input'   => StringIO.new('input') }
+                'rack.input'   => StringIO.new(g.dump(:ntriples)) }
 
         begin
           response = subject.request(method, 200, {}, env)

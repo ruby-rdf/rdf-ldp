@@ -29,6 +29,17 @@ module RDF::LDP
     end
 
     ##
+    # @see Container#create
+    def create(input, content_type, &block)
+      super
+      graph.insert RDF::Statement(subject_uri, 
+                                  RDF::Vocab::LDP.insertedContentRelation, 
+                                  RDF::Vocab::LDP.MemberSubject) if
+        inserted_content_statements.empty?
+      self
+    end
+
+    ##
     # Gives the inserted content relation for the indirect container. If none is
     # present in the container state, we add `ldp:MemberSubject`, effectively 
     # treating this LDP-IC as an LDP-DC.
@@ -42,19 +53,11 @@ module RDF::LDP
     # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
     def inserted_content_relation
       statements = inserted_content_statements
-      case statements.count
-      when 0
-        graph << RDF::Statement(subject_uri, 
-                                RDF::Vocab::LDP.insertedContentRelation, 
-                                RDF::Vocab::LDP.MemberSubject)
-        RDF::Vocab::LDP.MemberSubject
-      when 1
-        statements.first.object
-      else
-        raise NotAcceptable.new('An LDP-IC MUST have exactly ' \
-                                'one inserted content relation triple; found ' \
-                                "#{statements.count}.")
-      end
+      return statements.first.object if statements.count == 1
+
+      raise NotAcceptable.new('An LDP-IC MUST have exactly ' \
+                              'one inserted content relation triple; found ' \
+                              "#{statements.count}.")
     end
 
     private
@@ -76,17 +79,12 @@ module RDF::LDP
       raise NotAcceptable.new("#{resource.to_uri} is an LDP-NR; cannot add " \
                               'it to an IndirectContainer with a content ' \
                               'relation.') if resource.non_rdf_source?
-                              
-      resource
 
       statements = resource.graph.query([resource.subject_uri, predicate, :o])
-      case statements.count
-      when 1
-        statements.first.object
-      else
-        raise NotAcceptable.new("#{statements.count} inserted content" \
-                                "#{predicate} found on #{resource.to_uri}")
-      end
+      return statements.first.object if statements.count == 1
+
+      raise NotAcceptable.new("#{statements.count} inserted content" \
+                              "#{predicate} found on #{resource.to_uri}")
     end
   end
 end

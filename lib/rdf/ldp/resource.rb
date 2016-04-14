@@ -125,7 +125,7 @@ module RDF::LDP
       #   usually of a subclass
       #   from the interaction models.
       def find(uri, data)
-        graph = RDF::Graph.new(metagraph_name(uri), data: data)
+        graph = RDF::Graph.new(graph_name: metagraph_name(uri), data: data)
         raise NotFound if graph.empty?
 
         rdf_class = graph.query([uri, RDF.type, :o]).first
@@ -196,7 +196,7 @@ module RDF::LDP
     def initialize(subject_uri, data = RDF::Repository.new)
       @subject_uri = RDF::URI(subject_uri)
       @data = data
-      @metagraph = RDF::Graph.new(metagraph_name, data: data)
+      @metagraph = RDF::Graph.new(graph_name: metagraph_name, data: data)
       yield self if block_given?
     end
 
@@ -220,7 +220,7 @@ module RDF::LDP
     def create(input, content_type, &block)
       raise Conflict if exists?
 
-      @data.transaction do |transaction|
+      @data.transaction(mutable: true) do |transaction|
         set_interaction_model(transaction)
         yield transaction if block_given?
         set_last_modified(transaction)
@@ -246,7 +246,7 @@ module RDF::LDP
     #   subclasses for the appropriate response codes.
     def update(input, content_type, &block)
       return create(input, content_type, &block) unless exists?
-      @data.transaction do |transaction|
+      @data.transaction(mutable: true) do |transaction|
         yield transaction if block_given?
         set_last_modified(transaction)
       end
@@ -267,13 +267,13 @@ module RDF::LDP
     # @todo Use of owl:Nothing is probably problematic. Define an internal
     # namespace and class represeting deletion status as a stateful property.
     def destroy(&block)
-      @data.transaction do |transaction|
+      @data.transaction(mutable: true) do |transaction|
         containers.each { |c| c.remove(self, transaction) if c.container? }
-        transaction << RDF::Statement(subject_uri,
+        transaction.insert RDF::Statement(subject_uri,
                                       RDF::Vocab::PROV.invalidatedAtTime,
                                       DateTime.now,
                                       graph_name: metagraph_name)
-        yield if block_given?
+        yield transaction if block_given?
       end
       self
     end

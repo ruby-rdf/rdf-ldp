@@ -8,12 +8,14 @@ describe RDF::LDP::DirectContainer do
 
   describe '#membership_constant_uri' do
     it 'defaults to #subject_uri' do
+      subject.create('', 'application/n-triples')
       expect(subject.membership_constant_uri).to eq subject.subject_uri
     end
   end
 
   describe '#membership_predicate' do
     it 'defaults to ldp:member' do
+      subject.create('', 'application/n-triples')
       expect(subject.membership_predicate).to eq RDF::Vocab::LDP.member
     end
   end
@@ -41,12 +43,12 @@ describe RDF::LDP::DirectContainer do
         mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'), 
                                          repo)
 
-        subject.create('', 'application/n-triples')
+        g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
+                                             RDF::Vocab::LDP.membershipResource,
+                                             mem_rs.subject_uri)
+
+        subject.create(g.dump(:ntriples), 'application/n-triples')
         mem_rs.create('', 'application/n-triples')
-        
-        subject.graph << RDF::Statement(subject.subject_uri,
-                                        RDF::Vocab::LDP.membershipResource,
-                                        mem_rs.subject_uri)
 
         subject.add(resource_uri)
 
@@ -55,10 +57,15 @@ describe RDF::LDP::DirectContainer do
       end
 
       it 'adds membership triple to membership resource with #fragment' do
+        repo = RDF::Repository.new
+        subject = described_class.new(uri, repo)
+
         mem_rs = subject.subject_uri / '#membership'
-        subject.graph << RDF::Statement(subject.subject_uri,
+        g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
                                         RDF::Vocab::LDP.membershipResource,
                                         mem_rs)
+
+        subject.create(g.dump(:ntriples), 'application/n-triples')
         expect(subject.add(resource_uri).graph)
           .to have_statement subject.make_membership_triple(resource_uri)
       end
@@ -82,10 +89,10 @@ describe RDF::LDP::DirectContainer do
         it 'raises an error' do
           subject.graph << RDF::Statement(subject.subject_uri,
                                           RDF::Vocab::LDP.hasMemberRelation,
-                                          RDF::DC.creator)
+                                          RDF::Vocab::DC.creator)
           subject.graph << RDF::Statement(subject.subject_uri,
                                           RDF::Vocab::LDP.hasMemberRelation,
-                                          RDF::DC.contributor)
+                                          RDF::Vocab::DC.contributor)
 
           expect { subject.add(resource_uri) }
             .to raise_error RDF::LDP::RequestError

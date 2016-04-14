@@ -31,7 +31,7 @@ Sending a PUT request to a non-existant Resource creates a Resource at that URI 
 
 ### Membership URI/Predicate
 
-The LDP specification requires the presence of _exactly one_ membership-constant-uri and membership predicate for each Direct Container. We do not impose this requirement on creation or update of a container. Attempts to POST to a Direct Container missing one of these triples will cause the defaults to be added and used for that request. Attempts to POST to a Direct Container with more than one of either of these triples will fail with `Not Allowed`. The defaults are:
+The LDP specification requires the presence of _exactly one_ membership-constant-uri and membership predicate for each Direct Container. We impose this requirement on creation by adding a default values if one is not present. Attempts to POST to a Direct Container missing one of these triples, or with more than one value for either, will fail with `Not Allowed`. The defaults are:
 
   - membership-constant-uri: the container itself as 
   - membership-predicate: `ldp:member`
@@ -40,7 +40,7 @@ We allow the user to edit the relevant triples at their own discretion (effectiv
 
 ### Inserted Content Relations
 
-Indirect Containers are required to have _exactly one_ `ldp:insertedContentRelation`. We do not impose this requirement on creation or update of an Indirect Container. Attepts to POST to an Indirect Container missing this triple will cause `ldp:MemberRelation` to be added to its RDF representation and used for that request. Attempts to POST to an Indirect Container with more than one inserted content relation will fail with `Not Allowed`.
+Indirect Containers are required to have _exactly one_ `ldp:insertedContentRelation`. We do not impose this requirement on creation by adding a default of `ldp:MemberRelation` if one is not present. This requirement is not enforced on update of an Indirect Container. Attempts to POST to an Indirect Container missing this triple or with more than one inserted content relation will fail with `Not Allowed`.
 
 For Indirect Contianers with an `ldp:insertedContentRelation` other than `ldp:MemberRelation`, attempts to POST a resource (including an LDP-NR) without the expected content relation triple will fail with `Not Allowed`. This behavior also applies to LDP-RSs with multiple content relation triples.
 

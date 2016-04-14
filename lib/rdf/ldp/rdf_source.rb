@@ -53,7 +53,7 @@ module RDF::LDP
     # @return [RDF::Graph] a graph representing the current persistent state of 
     #   the resource.
     def graph
-      @graph ||= RDF::Graph.new(@subject_uri, data: @data)
+      @graph ||= RDF::Graph.new(graph_name: @subject_uri, data: @data)
     end
 
     ##
@@ -98,9 +98,8 @@ module RDF::LDP
     # @return [RDF::LDP::Resource] self
     def create(input, content_type, &block)
       super do |transaction|
-        transaction.graph_name = subject_uri
         statements = parse_graph(input, content_type)
-        transaction << statements
+        transaction.insert(statements)
         yield transaction if block_given?
       end
     end
@@ -134,12 +133,10 @@ module RDF::LDP
     # @return [RDF::LDP::Resource] self
     def update(input, content_type, &block)
       super do |transaction|
-        transaction.graph_name = subject_uri
-        transaction << parse_graph(input, content_type)
+        transaction.delete(RDF::Statement(nil, nil, nil, graph_name: subject_uri))
+        transaction.insert parse_graph(input, content_type)
         yield transaction if block_given?
-        graph.clear
       end
-
       self
     end
 
@@ -148,8 +145,8 @@ module RDF::LDP
     #
     # @see RDF::LDP::Resource#destroy
     def destroy(&block)
-      super do |_|
-        graph.clear
+      super do |tx| 
+        tx.delete(RDF::Statement(nil, nil, nil, graph_name: subject_uri))
       end
     end
 
@@ -242,17 +239,17 @@ module RDF::LDP
     #
     # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
     #
-    # @todo handle cases where no content type is given? Does RDF::Reader have 
-    #   tools to help us here?
-    #
     # @see http://www.rubydoc.info/github/rack/rack/file/SPEC#The_Input_Stream 
     #   for documentation on input streams in the Rack SPEC
     def parse_graph(input, content_type)
       reader = RDF::Reader.for(content_type: content_type.to_s)
       raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
+
       input = input.read if input.respond_to? :read
+
       begin
-        RDF::Graph.new << reader.new(input, base_uri: subject_uri, validate: true)
+        RDF::Graph.new(graph_name: subject_uri, data: RDF::Repository.new) << 
+          reader.new(input, base_uri: subject_uri, validate: true)
       rescue RDF::ReaderError => e
         raise RDF::LDP::BadRequest, e.message
       end  

@@ -32,7 +32,22 @@ module RDF::LDP
     end
 
     ##
-    # Adds a member `resource` to the container. Handles containment and adds 
+    # @see Container#create
+    def create(input, content_type, &block)
+      super
+      # insert relation triples after the transaction, since we can't guarantee
+      # snapshot access.
+      #
+      # @todo consider just raising an error instead.
+      graph.insert(default_member_relation_statement) if
+        member_relation_statements.empty?
+      graph.insert(default_membership_resource_statement) if
+        membership_resource_statements.empty?
+      self
+    end
+
+    ##
+    # Adds a member `resource` to the container. Handles containment and adds
     # membership triple to the memebership resource.
     #
     # @see RDF::LDP::Container#add
@@ -41,7 +56,7 @@ module RDF::LDP
       process_membership_resource(resource) do |membership, quad, resource|
         super(resource, transaction)
         target = transaction || membership.graph
-        target << quad
+        target.insert(quad)
       end
       self
     end
@@ -71,19 +86,10 @@ module RDF::LDP
     # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
     def membership_constant_uri
       statements = membership_resource_statements
-      case statements.count
-        when 0
-          graph << RDF::Statement(subject_uri, 
-                                  RDF::Vocab::LDP.membershipResource, 
-                                  subject_uri)
-          subject_uri
-        when 1
-          statements.first.object
-        else
-          raise NotAcceptable.new('An LDP-DC MUST have exactly ' \
-                                  'one membership resource; found ' \
-                                  "#{statements}.")
-      end
+      return statements.first.object if statements.count == 1
+
+      raise NotAcceptable.new('An LDP-DC MUST have exactly one membership ' \
+                              "resource; found #{statements.count}.")
     end
 
     ##
@@ -97,19 +103,10 @@ module RDF::LDP
     # @see http://www.w3.org/TR/ldp/#dfn-membership-predicate
     def membership_predicate
       statements = member_relation_statements
-      case statements.count
-      when 0
-        graph << RDF::Statement(subject_uri, 
-                                RELATION_TERMS.first, 
-                                RDF::Vocab::LDP.member)
-        RDF::Vocab::LDP.member
-      when 1
-        statements.first.object
-      else
-        raise NotAcceptable.new('An LDP-DC MUST have exactly ' \
-                                'one member relation triple; found ' \
-                                "#{statements.count}.")
-      end
+      return statements.first.object if statements.count == 1
+
+      raise NotAcceptable.new('An LDP-DC MUST have exactly one member ' \
+                              "relation triple; found #{statements.count}.")
     end
 
     ##
@@ -158,6 +155,16 @@ module RDF::LDP
 
       statement.graph_name = membership_rs.subject_uri
       yield(membership_rs, statement, resource) if block_given?
+    end
+
+    def default_membership_resource_statement
+      RDF::Statement(subject_uri, 
+                     RDF::Vocab::LDP.membershipResource, 
+                     subject_uri)
+    end
+    
+    def default_member_relation_statement
+      RDF::Statement(subject_uri, RELATION_TERMS.first, RDF::Vocab::LDP.member)
     end
   end
 end

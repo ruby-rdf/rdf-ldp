@@ -18,17 +18,19 @@ shared_examples 'an RDFSource' do
     end
 
     describe 'parsing the graph' do
-      let(:graph) { RDF::Graph.new }
+      let(:graph) { RDF::Repository.new }
 
       before do
         graph << RDF::Statement(RDF::URI('http://ex.org/moomin'), 
                                 RDF.type, 
-                                RDF::FOAF.Person)
+                                RDF::Vocab::FOAF.Person,
+                                graph_name: subject.subject_uri)
 
         10.times do
           graph << RDF::Statement(RDF::Node.new,
-                                  RDF::DC.creator, 
-                                  RDF::Node.new)
+                                  RDF::Vocab::DC.creator, 
+                                  RDF::Node.new,
+                                  graph_name: subject.subject_uri)
         end
       end
  
@@ -60,7 +62,7 @@ shared_examples 'an RDFSource' do
     let(:other) { described_class.new(RDF::URI('http://ex.org/blah')) }
 
     let(:statement) do
-      RDF::Statement(RDF::URI('http://ex.org/m'), RDF::DC.title, 'moomin')
+      RDF::Statement(RDF::URI('http://ex.org/m'), RDF::Vocab::DC.title, 'moomin')
     end
 
     it 'is the same for equal graphs' do
@@ -68,7 +70,7 @@ shared_examples 'an RDFSource' do
     end
 
     xit 'is different for different graphs' do
-      subject.graph << RDF::Statement(RDF::Node.new, RDF::DC.title, 'mymble')
+      subject.graph << RDF::Statement(RDF::Node.new, RDF::Vocab::DC.title, 'mymble')
       expect(subject.etag).not_to eq other.etag
     end
   end
@@ -87,35 +89,35 @@ shared_examples 'an RDFSource' do
       expect(subject.create(graph.dump(:ttl), 'text/turtle')).to eq subject
     end
 
-    it 'yields a changeset' do
+    it 'yields a transaction' do
       expect { |b| subject.create(graph.dump(:ttl), 'text/turtle', &b) }
-        .to yield_with_args(an_instance_of(RDF::Transaction))
+        .to yield_with_args(be_kind_of(RDF::Transaction))
     end
 
     it 'interprets NULL URI as this resource' do
-      graph << RDF::Statement(RDF::URI(), RDF::DC.title, 'moomin')
+      graph << RDF::Statement(RDF::URI(), RDF::Vocab::DC.title, 'moomin')
 
       expect(subject.create(graph.dump(:ttl), 'text/turtle').graph)
         .to have_statement RDF::Statement(subject.subject_uri, 
-                                          RDF::DC.title, 
+                                          RDF::Vocab::DC.title, 
                                           'moomin')
     end
 
     it 'interprets Relatives URI as this based on this resource' do
       graph << RDF::Statement(subject.subject_uri, 
-                              RDF::DC.isPartOf, 
+                              RDF::Vocab::DC.isPartOf, 
                               RDF::URI('#moomin'))
       
       expect(subject.create(graph.dump(:ttl), 'text/turtle').graph)
         .to have_statement RDF::Statement(subject.subject_uri,
-                                          RDF::DC.isPartOf, 
+                                          RDF::Vocab::DC.isPartOf, 
                                           subject.subject_uri / '#moomin')
     end
   end
 
   describe '#update' do
     let(:statement) do
-      RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+      RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
     end
 
     let(:graph) { RDF::Graph.new << statement }
@@ -132,9 +134,9 @@ shared_examples 'an RDFSource' do
           .to change { subject.etag }
       end
 
-      it 'yields a changeset' do
+      it 'yields a transaction' do
         expect { |b| subject.update(graph.dump(:ttl), content_type, &b) }
-          .to yield_with_args(an_instance_of(RDF::Transaction))
+          .to yield_with_args(be_kind_of(RDF::Transaction))
       end
 
       context 'with bad media type' do
@@ -181,7 +183,7 @@ shared_examples 'an RDFSource' do
       end
 
       it 'handles patch' do
-        statement = RDF::Statement(subject.subject_uri, RDF::FOAF.name, 'Moomin')
+        statement = RDF::Statement(subject.subject_uri, RDF::Vocab::FOAF.name, 'Moomin')
         patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
                 "Add { #{statement.subject.to_base} " \
                 "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
@@ -205,7 +207,7 @@ shared_examples 'an RDFSource' do
 
       it 'runs sparql update' do
         update = "INSERT DATA { #{subject.subject_uri.to_base} "\
-                 "#{RDF::DC.title.to_base} 'moomin' . }"
+                 "#{RDF::Vocab::DC.title.to_base} 'moomin' . }"
 
         env = { 'CONTENT_TYPE' => 'application/sparql-update',
                 'rack.input'   => update }
@@ -309,13 +311,13 @@ shared_examples 'an RDFSource' do
         end
 
         it 'replaces the graph with the input' do
-          graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
             .to change { subject.graph.statements.count }.to(1)
         end
 
         it 'updates the etag' do
-          graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
             .to change { subject.etag }
         end
@@ -332,7 +334,7 @@ shared_examples 'an RDFSource' do
         end
 
         it 'succeeds when giving correct Etag' do
-          graph << RDF::Statement(subject.subject_uri, RDF::DC.title, 'moomin')
+          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           env['HTTP_IF_MATCH'] = subject.etag
           expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.graph.statements.count }

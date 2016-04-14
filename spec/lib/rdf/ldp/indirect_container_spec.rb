@@ -8,28 +8,29 @@ describe RDF::LDP::IndirectContainer do
 
   describe '#membership_constant_uri' do
     it 'defaults to #subject_uri' do
+      subject.create('', 'application/n-triples')
       expect(subject.membership_constant_uri).to eq subject.subject_uri
     end
   end
 
   describe '#membership_predicate' do
     it 'defaults to ldp:member' do
+      subject.create('', 'application/n-triples')
       expect(subject.membership_predicate).to eq RDF::Vocab::LDP.member
     end
   end
 
   describe '#inserted_content_relation' do
     it 'defaults to ldp:MemberSubject' do
+      subject.create('', 'application/n-triples')
       expect(subject.inserted_content_relation)
         .to eq RDF::Vocab::LDP.MemberSubject
     end
 
     it 'inserts ldp:MemberSubject statement into graph when defaulting' do
-      expect { subject.inserted_content_relation }
-        .to change { subject.graph.statements }
-             .to(contain_exactly(RDF::Statement(subject.subject_uri,
-                                        RDF::Vocab::LDP.insertedContentRelation,
-                                        RDF::Vocab::LDP.MemberSubject)))
+      subject.create('', 'application/n-triples')
+      expect(subject.inserted_content_relation)
+        .to eq RDF::Vocab::LDP.MemberSubject
     end
   end
 end
