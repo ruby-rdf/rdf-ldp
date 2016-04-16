@@ -1,3 +1,10 @@
+0.6.0
+-----
+ - Upgrades to RDF.rb 2.0
+ - Adds true transaction scopes for POST & PUT requests
+ - Changes behavior of direct & indirect containers to add default
+   required triples on creation if none are supplied in the request.
+   
 0.5.1
 -----
  - Fixes inserted content relation interpretations.
