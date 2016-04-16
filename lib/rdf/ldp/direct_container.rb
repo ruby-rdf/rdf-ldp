@@ -32,17 +32,27 @@ module RDF::LDP
     end
 
     ##
+    # Creates and inserts default relation triples if none are given.
+    #
+    # @note the addition of default triples is handled in a separate 
+    #   transaction. It is possible for the second transaction to fail, causing
+    #   the resource to persist in an invalid state. It is also possible for a
+    #   read to occur between the two transactions.
+    # @todo Make atomic. Consider just raising an error instead of adding 
+    #   triples. There's a need to handle this issue for repositories with 
+    #   snapshot reads, as well as those without.
+    #
     # @see Container#create
     def create(input, content_type, &block)
       super
-      # insert relation triples after the transaction, since we can't guarantee
-      # snapshot access.
-      #
-      # @todo consider just raising an error instead.
-      graph.insert(default_member_relation_statement) if
-        member_relation_statements.empty?
-      graph.insert(default_membership_resource_statement) if
-        membership_resource_statements.empty?
+
+      graph.transaction(mutable: true) do |tx|
+        tx.insert(default_member_relation_statement) if
+          member_relation_statements.empty?
+        tx.insert(default_membership_resource_statement) if
+          membership_resource_statements.empty?
+      end
+
       self
     end
 

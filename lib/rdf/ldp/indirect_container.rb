@@ -29,13 +29,20 @@ module RDF::LDP
     end
 
     ##
-    # @see Container#create
+    # Creates and inserts default relation triples if none are given.
+    #
+    # @see DirectContainer#create for information about the behavior and 
+    #   transactionality of this method.
     def create(input, content_type, &block)
       super
-      graph.insert RDF::Statement(subject_uri, 
-                                  RDF::Vocab::LDP.insertedContentRelation, 
-                                  RDF::Vocab::LDP.MemberSubject) if
-        inserted_content_statements.empty?
+
+      graph.transaction(mutable: true) do |tx|
+        tx.insert RDF::Statement(subject_uri, 
+                                 RDF::Vocab::LDP.insertedContentRelation, 
+                                 RDF::Vocab::LDP.MemberSubject) if
+          inserted_content_statements.empty?
+      end
+
       self
     end
 
