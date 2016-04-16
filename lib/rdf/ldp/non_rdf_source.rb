@@ -102,7 +102,8 @@ module RDF::LDP
     # @return [StorageAdapter] the content type 
     def content_type=(content_type)
       metagraph.delete([subject_uri, FORMAT_TERM])
-      metagraph << RDF::Statement(subject_uri, RDF::DC11.format, content_type)
+      metagraph << 
+        RDF::Statement(subject_uri, RDF::Vocab::DC11.format, content_type)
     end
     
     ##

@@ -24,7 +24,7 @@ describe 'lamprey' do
 
         before do
           graph << RDF::Statement(RDF::URI('http://example.org/moomin'), 
-                                  RDF::DC.title,
+                                  RDF::Vocab::DC.title,
                                   'mummi')
           
           graph_str = graph.dump(:ntriples)
@@ -134,7 +134,7 @@ describe 'lamprey' do
 
       before do
         graph << RDF::Statement(RDF::URI('http://example.org/moomin'), 
-                                RDF::DC.title,
+                                RDF::Vocab::DC.title,
                                 'mummi')
       end
 
@@ -208,7 +208,7 @@ describe 'lamprey' do
           get '/moomin'
           etag = last_response.header['Etag']
           graph << RDF::Statement(RDF::Node.new,
-                                  RDF::DC.title,
+                                  RDF::Vocab::DC.title,
                                   'moomin')
           put '/moomin', graph.dump(:ttl), 'CONTENT_TYPE' => 'text/turtle'
           expect(last_response.header['Etag']).not_to eq etag

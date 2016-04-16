@@ -2,12 +2,13 @@ shared_examples 'an IndirectContainer' do
   it_behaves_like 'a DirectContainer'  
 
   shared_context 'with a relation' do
-    before { subject.graph << inserted_content_statement }
+    before { subject.create(graph.dump(:ntriples), 'application/n-triples') }
 
-    let(:relation_predicate) { RDF::DC.creator }
+    let(:graph) { RDF::Graph.new << inserted_content_statement }
+    let(:relation_predicate) { RDF::Vocab::DC.creator }
 
     let(:inserted_content_statement) do
-      RDF::Statement(subject.subject_uri, 
+      RDF::Statement(uri, 
                      RDF::Vocab::LDP.insertedContentRelation,
                      relation_predicate)
     end
@@ -15,19 +16,20 @@ shared_examples 'an IndirectContainer' do
   
   describe '#inserted_content_relation' do
     it 'returns a uri' do
+      subject.create('', 'application/n-triples')
       expect(subject.inserted_content_relation).to be_a RDF::URI
     end
 
     context 'with a relation' do
       include_context 'with a relation'
-
+    
       it 'gives the relation' do
         expect(subject.inserted_content_relation).to eq relation_predicate
       end
 
       it 'raises an error when more than one exists' do
         new_statement = inserted_content_statement.clone
-        new_statement.object = RDF::DC.relation
+        new_statement.object = RDF::Vocab::DC.relation
         subject.graph << new_statement
         expect { subject.inserted_content_relation }
           .to raise_error RDF::LDP::NotAcceptable
@@ -68,13 +70,12 @@ shared_examples 'an IndirectContainer' do
       end
       
       it 'when membership resource does not exist raises NotAcceptable' do
-        expect { subject.add(contained_resource) }
+        new_resource = described_class.new(uri / 'new', repo)
+        expect { new_resource.add(contained_resource) }
           .to raise_error RDF::LDP::NotAcceptable
       end
 
       context 'when the container exists' do
-        before { subject.create('', 'application/n-triples') }
-
         it 'adds membership triple' do
           subject.add(contained_resource)
           expect(subject.graph.statements)
@@ -99,13 +100,16 @@ shared_examples 'an IndirectContainer' do
       
         context 'with membership resource' do
           before do
-            subject.graph << RDF::Statement(subject.to_uri,
-                                            RDF::Vocab::LDP.membershipResource,
-                                            contained_resource.to_uri)
+            subject.graph
+              .delete([uri, RDF::Vocab::LDP.membershipResource, nil])
+            subject.graph << RDF::Statement(uri,
+                                    RDF::Vocab::LDP.membershipResource,
+                                    contained_resource.to_uri)
           end
           
           it 'raises error when resource does not exist' do
-            expect { subject.add(contained_resource) }
+            new_resource = described_class.new(uri / 'new', repo)
+            expect { new_resource.add(contained_resource) }
               .to raise_error RDF::LDP::NotAcceptable
           end
 

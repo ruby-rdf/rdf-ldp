@@ -12,10 +12,14 @@ describe RDF::LDP::Resource do
         .to raise_error RDF::LDP::NotFound
     end
     context 'when the resource exists' do
-      before { graph << RDF::Statement(uri, RDF::DC.title, 'snorkmaiden') }
+      before do
+        graph << RDF::Statement(uri, RDF::Vocab::DC.title, 'snorkmaiden')
+      end
 
       let(:repository) { RDF::Repository.new }
-      let(:graph) { RDF::Graph.new(uri / '#meta', data: repository) }
+      let(:graph) do
+        RDF::Graph.new(graph_name: uri / '#meta', data: repository)
+      end
 
       it 'gives an RDFSource when no class exists in interaction models' do
         expect(described_class.find(uri, repository))

@@ -120,7 +120,7 @@ module RDF::LDP
     # @return [Container] self
     def add_containment_triple(resource, transaction = nil)
       target = transaction || graph
-      target << make_containment_triple(resource)
+      target.insert make_containment_triple(resource)
       set_last_modified(transaction)
       self
     end
@@ -201,28 +201,18 @@ module RDF::LDP
     def validate_triples!(transaction)
       existing_triples = containment_triples.to_a
       
-      inserts = transaction.inserts.select do |st|
-        st.subject == subject_uri && st.predicate == RDF::Vocab::LDP.contains
+      tx_containment = transaction.query(subject: subject_uri, 
+                                         predicate: RDF::Vocab::LDP.contains)
+
+      tx_containment.each do |statement|
+        raise Conflict.new('Attempted to write unacceptable LDP ' \
+                           "containment-triple: #{statement}") unless
+          existing_triples.include?(statement) 
       end
 
-      inserts.each do |statement|
-        existing_triples.delete(statement) do 
-          raise Conflict.new('Attempted to write unacceptable LDP ' \
-                             "containment-triple: #{statement}") 
-        end
-      end
-
-      deletes = transaction.deletes.select do |st| 
-        st.subject == subject_uri && 
-          predicate == RDF::Vocab::LDP.contains && 
-          !inserts.include?(st)
-      end
-      
-      deletes = deletes + existing_triples
-      
+      deletes = existing_triples.reject { |st| tx_containment.include?(st) }
       raise Conflict.new('Cannot remove containment triples in updates. ' \
-                         "Attepted to remove #{deletes}") unless
-        deletes.empty?
+                         "Attepted to remove #{deletes}") unless deletes.empty?
     end
 
     ##

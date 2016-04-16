@@ -130,6 +130,7 @@ shared_examples 'a Container' do
       context 'when PUTing containment triples' do
         it 'when creating a resource raises a Conflict error' do
           graph << statement
+          
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
             .to raise_error RDF::LDP::Conflict
         end
@@ -155,7 +156,7 @@ shared_examples 'a Container' do
           graph << statement
           
           new_st = RDF::Statement(RDF::URI('http://example.org/new_moomin'), 
-                                  RDF::DC.title, 
+                                  RDF::Vocab::DC.title, 
                                   'moomin')
           graph << new_st
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).last.graph)
@@ -289,8 +290,8 @@ shared_examples 'a Container' do
       
       context 'with graph content' do
         before do
-          graph << RDF::Statement(uri, RDF::DC.title, 'moomin')
-          graph << RDF::Statement(RDF::Node.new, RDF.type, RDF::FOAF.Person)
+          graph << RDF::Statement(uri, RDF::Vocab::DC.title, 'moomin')
+          graph << RDF::Statement(RDF::Node.new, RDF.type, RDF::Vocab::FOAF.Person)
           graph << RDF::Statement(RDF::Node.new, RDF::Vocab::DC.creator, 'tove')
         end
 
@@ -306,7 +307,8 @@ shared_examples 'a Container' do
 
         context 'with quads' do
           let(:graph) do
-            RDF::Graph.new(subject.subject_uri, data: RDF::Repository.new)
+            RDF::Graph.new(graph_name: subject.subject_uri, 
+                           data: RDF::Repository.new)
           end
 
           let(:env) do

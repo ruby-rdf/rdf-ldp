@@ -11,13 +11,13 @@ shared_examples 'a DirectContainer' do
   let(:has_member_statement) do
     RDF::Statement(subject.subject_uri, 
                    RDF::Vocab::LDP.hasMemberRelation, 
-                   RDF::DC.hasPart)
+                   RDF::Vocab::DC.hasPart)
   end
 
   let(:is_member_of_statement) do
     RDF::Statement(subject.subject_uri, 
                    RDF::Vocab::LDP.isMemberOfRelation, 
-                   RDF::DC.isPartOf)
+                   RDF::Vocab::DC.isPartOf)
   end
 
   describe '#add' do
@@ -53,13 +53,13 @@ shared_examples 'a DirectContainer' do
         mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'), 
                                          repo)
 
-        subject.create('', 'application/n-triples')
-        mem_rs.create('', 'application/n-triples')
-        
-        subject.graph << RDF::Statement(subject.subject_uri,
+        g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
                                         RDF::Vocab::LDP.membershipResource,
                                         mem_rs.subject_uri)
 
+        subject.create(g.dump(:ntriples), 'application/n-triples')
+        mem_rs.create('', 'application/n-triples')
+        
         subject.add(resource_uri)
 
         expect(mem_rs.graph)
@@ -67,10 +67,16 @@ shared_examples 'a DirectContainer' do
       end
 
       it 'adds membership triple to membership resource with #fragment' do
+        repo = RDF::Repository.new
+        subject = described_class.new(uri, repo)
+
         mem_rs = subject.subject_uri / '#membership'
-        subject.graph << RDF::Statement(subject.subject_uri,
+
+        g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
                                         RDF::Vocab::LDP.membershipResource,
                                         mem_rs)
+
+        subject.create(g.dump(:ttl), 'application/n-triples')
         expect(subject.add(resource_uri).graph)
           .to have_statement subject.make_membership_triple(resource_uri)
       end
@@ -78,12 +84,16 @@ shared_examples 'a DirectContainer' do
       it 'adds membership triple to LDP-NR membership resource' do
         repo = RDF::Repository.new
         container = described_class.new(uri, repo)
+
         nr = RDF::LDP::NonRDFSource.new('http://example.org/moomin_file',
                                         repo)
+
+        g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
+                                             RDF::Vocab::LDP.membershipResource,
+                                             nr.to_uri)
+
+        container.create(g.dump(:ntriples), 'application/n-triples')
         nr.create(StringIO.new(''), 'application/n-triples')
-        container.graph << RDF::Statement(subject.subject_uri,
-                                          RDF::Vocab::LDP.membershipResource,
-                                          nr.to_uri)
 
         container.add(resource_uri)
         expect(nr.description.graph)
@@ -128,7 +138,8 @@ shared_examples 'a DirectContainer' do
   end
 
   describe '#membership_constant_uri' do
-    it 'defaults to #subject_uri' do
+    it 'when created defaults to #subject_uri' do
+      subject.create('', 'application/n-triples')
       expect(subject.membership_constant_uri).to eq subject.subject_uri
       expect(subject.graph)
         .to have_statement RDF::Statement(subject.subject_uri, 
@@ -160,20 +171,21 @@ shared_examples 'a DirectContainer' do
   end
 
   describe '#membership_predicate' do
-    it 'returns a uri' do
+    it 'when created returns a uri' do
+      subject.create('', 'application/n-triples')
       expect(subject.membership_predicate).to be_a RDF::URI
     end
 
     it 'gives assigned member relation predicate for hasMember' do
       subject.graph << has_member_statement
 
-      expect(subject.membership_predicate).to eq RDF::DC.hasPart
+      expect(subject.membership_predicate).to eq RDF::Vocab::DC.hasPart
     end
 
     it 'gives assigned member relation predicate for isMemberOf' do
       subject.graph << is_member_of_statement
 
-      expect(subject.membership_predicate).to eq RDF::DC.isPartOf
+      expect(subject.membership_predicate).to eq RDF::Vocab::DC.isPartOf
     end
 
     it 'raises an error if multiple relation predicates are present' do
@@ -187,7 +199,10 @@ shared_examples 'a DirectContainer' do
 
   describe '#make_membership_triple' do
     context 'with hasMember' do
-      before { subject.graph << has_member_statement }
+      before do
+        g = RDF::Graph.new << has_member_statement
+        subject.create(g.dump(:ntriples), 'application/n-triples')
+      end
 
       it 'is constant - predicate - derived' do
         expect(subject.make_membership_triple(uri))
@@ -198,7 +213,10 @@ shared_examples 'a DirectContainer' do
     end
 
     context 'with isMemberOf' do
-      before { subject.graph << is_member_of_statement }
+      before do
+        g = RDF::Graph.new << is_member_of_statement
+        subject.create(g.dump(:ntriples), 'application/n-triples')
+      end
 
       it 'is derived - predicate - constant' do
         expect(subject.make_membership_triple(uri))
