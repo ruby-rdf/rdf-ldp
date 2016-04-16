@@ -14,8 +14,10 @@ LDP Implementation Overview
  creation.
  - __4.2.1.3__: Etags are generated for all LDPRs and returned for all requests
  to the resource.
- - __4.2.1.4__: Link headers for the resquested resource are added by
- `Rack::LDP::Headers` middleware.
+ - __4.2.1.4__: Link headers for the __returned__ resource are added by
+ `Rack::LDP::Headers` middleware. The requirement to return Link headers for
+ the requested resource is ignored in the case of successful POST requests;
+ instead, the headers for the created resource are given.
  - __4.2.1.5__: Relative URI resolution in RDF graphs is handled with
  `RDF::Reader#base_uri`. This is tested for Turtle input.
  - __4.2.1.6__: Constraints are published in the {CONSTRAINED_BY.md} file in
