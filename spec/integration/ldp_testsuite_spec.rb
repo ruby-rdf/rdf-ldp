@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'faraday'
+
 require 'capybara_discoball'
 require 'ldp_testsuite_wrapper'
 require 'ldp_testsuite_wrapper/rspec'
