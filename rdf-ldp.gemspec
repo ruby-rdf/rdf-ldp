@@ -41,17 +41,21 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency     'link_header', '~> 0.0', '>= 0.0.8'
 
-  gem.add_development_dependency 'rdf-spec',    '~> 2.0'
-  gem.add_development_dependency 'rdf-rdfxml',  '~> 2.0'
-  gem.add_development_dependency 'rdf-rdfa',    '~> 2.0'
-  gem.add_development_dependency 'rdf-xsd',     '~> 2.0'
-  gem.add_development_dependency 'rest-client', '~> 1.7'
-  gem.add_development_dependency 'rspec',       '~> 3.0'
-  gem.add_development_dependency 'rack-test',   '~> 0.6'
-  gem.add_development_dependency 'rspec-its',   '~> 1.0'
-  gem.add_development_dependency 'timecop',     '~> 0.8'
-  gem.add_development_dependency 'webmock',     '~> 1.17'
-  gem.add_development_dependency 'yard',        '~> 0.8'
+  gem.add_development_dependency 'rdf-spec',              '~> 2.0'
+  gem.add_development_dependency 'rdf-rdfxml',            '~> 2.0'
+  gem.add_development_dependency 'rdf-rdfa',              '~> 2.0'
+  gem.add_development_dependency 'rdf-xsd',               '~> 2.0'
+  gem.add_development_dependency 'rest-client',           '~> 1.7'
+  gem.add_development_dependency 'rspec',                 '~> 3.0'
+  gem.add_development_dependency 'rack-test',             '~> 0.6'
+  gem.add_development_dependency 'rspec-its',             '~> 1.0'
+  gem.add_development_dependency 'timecop',               '~> 0.8'
+  gem.add_development_dependency 'webmock',               '~> 1.17'
+  gem.add_development_dependency 'yard',                  '~> 0.8'
+
+  gem.add_development_dependency 'faraday'
+  gem.add_development_dependency 'capybara_discoball'
+  gem.add_development_dependency 'ldp_testsuite_wrapper', '~> 0.0.4'
 
   gem.post_install_message       = nil
 end
