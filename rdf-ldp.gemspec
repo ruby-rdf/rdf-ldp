@@ -25,7 +25,7 @@ Gem::Specification.new do |gem|
   gem.require_paths      = %w(lib app)
   gem.has_rdoc           = false
 
-  gem.required_ruby_version      = '>= 1.9.2'
+  gem.required_ruby_version      = '>= 2.0.0'
   gem.requirements               = []
 
   gem.add_runtime_dependency     'rack', '~> 1.6'
