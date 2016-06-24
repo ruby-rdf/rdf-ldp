@@ -179,7 +179,7 @@ module RDF::LDP
 
       raise UnsupportedMediaType unless method
 
-      send(method, env['rack.input'], graph)
+      send(method, env['rack.input'].read, graph)
       set_last_modified
       [200, update_headers(headers), self]
     end
