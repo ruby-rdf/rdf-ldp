@@ -2,7 +2,7 @@ require 'rack/ldp'
 require 'sinatra/base'
 
 class RDF::Lamprey < Sinatra::Base
-
+  use Rack::Lint
   use Rack::LDP::ContentNegotiation
   use Rack::LDP::Errors
   use Rack::LDP::Responses
@@ -16,7 +16,7 @@ class RDF::Lamprey < Sinatra::Base
 
   get '/*' do
     RDF::LDP::Container.new(RDF::URI(request.url), settings.repository)
-      .create('', 'text/turtle') if settings.repository.empty?    
+      .create(StringIO.new, 'text/turtle') if settings.repository.empty?    
     RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
   end
 

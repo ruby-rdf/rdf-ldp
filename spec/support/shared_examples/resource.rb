@@ -21,7 +21,7 @@ shared_examples 'a Resource' do
     end
 
     context 'while existing' do
-      before { subject.create(StringIO.new(''), 'application/n-triples') }
+      before { subject.create(StringIO.new, 'application/n-triples') }
 
       subject          { described_class.new(uri, repository) }
       let(:repository) { RDF::Repository.new }
@@ -58,13 +58,13 @@ shared_examples 'a Resource' do
       after  { Timecop.return }
 
       it 'sets last_modified' do
-        subject.create(StringIO.new(''), 'text/turtle')
+        subject.create(StringIO.new, 'text/turtle')
         expect(subject.last_modified).to eq DateTime.now
       end
     end
 
     it 'adds a type triple to metagraph' do
-      subject.create(StringIO.new(''), 'application/n-triples')
+      subject.create(StringIO.new, 'application/n-triples')
       expect(subject.metagraph)
         .to have_statement RDF::Statement(subject.subject_uri,
                                           RDF.type,
@@ -72,23 +72,23 @@ shared_examples 'a Resource' do
     end
 
     it 'yields a transaction' do
-      expect { |b| subject.create(StringIO.new(''), 'application/n-triples', &b) }
+      expect { |b| subject.create(StringIO.new, 'application/n-triples', &b) }
         .to yield_with_args(be_kind_of(RDF::Transaction))
     end
 
     it 'marks resource as existing' do
-      expect { subject.create(StringIO.new(''), 'application/n-triples') }
+      expect { subject.create(StringIO.new, 'application/n-triples') }
         .to change { subject.exists? }.from(false).to(true)
     end
 
     it 'returns self' do
-      expect(subject.create(StringIO.new(''), 'application/n-triples'))
+      expect(subject.create(StringIO.new, 'application/n-triples'))
         .to eq subject
     end
 
     it 'raises Conlict when already exists' do
-      subject.create(StringIO.new(''), 'application/n-triples')
-      expect { subject.create(StringIO.new(''), 'application/n-triples') }
+      subject.create(StringIO.new, 'application/n-triples')
+      expect { subject.create(StringIO.new, 'application/n-triples') }
         .to raise_error RDF::LDP::Conflict
     end
   end
@@ -99,12 +99,12 @@ shared_examples 'a Resource' do
     end
 
     it 'returns self' do
-      expect(subject.update(StringIO.new(''), 'application/n-triples'))
+      expect(subject.update(StringIO.new, 'application/n-triples'))
         .to eq subject
     end
 
     it 'yields a changeset' do
-      expect { |b| subject.update(StringIO.new(''), 'application/n-triples', &b) }
+      expect { |b| subject.update(StringIO.new, 'application/n-triples', &b) }
         .to yield_with_args(be_kind_of(RDF::Transaction))
     end
   end
@@ -126,14 +126,14 @@ shared_examples 'a Resource' do
   end
 
   describe '#etag' do
-    before { subject.create(StringIO.new(''), 'application/n-triples') }
+    before { subject.create(StringIO.new, 'application/n-triples') }
 
     it 'has an etag' do
       expect(subject.etag).to be_a String
     end
 
     it 'updates etag on change' do
-      expect { subject.update(StringIO.new(''), 'application/n-triples') }
+      expect { subject.update(StringIO.new, 'application/n-triples') }
         .to change { subject.etag }
     end
   end
@@ -204,7 +204,7 @@ shared_examples 'a Resource' do
     end
 
     describe 'HTTP headers' do
-      before { subject.create(StringIO.new(''), 'text/turtle') }
+      before { subject.create(StringIO.new, 'text/turtle') }
       let(:headers) { subject.request(:GET, 200, {}, {})[1] }
 
       it 'has ETag' do

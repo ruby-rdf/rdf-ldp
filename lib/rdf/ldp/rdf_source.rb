@@ -98,8 +98,7 @@ module RDF::LDP
     # @return [RDF::LDP::Resource] self
     def create(input, content_type, &block)
       super do |transaction|
-        statements = parse_graph(input, content_type)
-        transaction.insert(statements)
+        transaction.insert(parse_graph(input, content_type))
         yield transaction if block_given?
       end
     end
@@ -137,7 +136,6 @@ module RDF::LDP
         transaction.insert parse_graph(input, content_type)
         yield transaction if block_given?
       end
-      self
     end
 
     ##
@@ -193,13 +191,13 @@ module RDF::LDP
     end
    
     def ld_patch(input, graph, &block)
-      LD::Patch.parse(input).execute(graph)
+      LD::Patch.parse(input.read).execute(graph)
     rescue LD::Patch::Error => e
       raise BadRequest, e.message
     end
 
     def sparql_update(input, graph)
-      SPARQL.execute(input, graph, update: true)
+      SPARQL.execute(input.read, graph, update: true)
     rescue SPARQL::MalformedQuery => e
       raise BadRequest, e.message
     end
@@ -245,11 +243,10 @@ module RDF::LDP
       reader = RDF::Reader.for(content_type: content_type.to_s)
       raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
 
-      input = input.read if input.respond_to? :read
-
       begin
+        input.rewind
         RDF::Graph.new(graph_name: subject_uri, data: RDF::Repository.new) << 
-          reader.new(input, base_uri: subject_uri, validate: true)
+          reader.new(input.read, base_uri: subject_uri, validate: true)
       rescue RDF::ReaderError => e
         raise RDF::LDP::BadRequest, e.message
       end  

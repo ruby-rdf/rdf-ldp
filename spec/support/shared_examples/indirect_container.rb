@@ -2,7 +2,10 @@ shared_examples 'an IndirectContainer' do
   it_behaves_like 'a DirectContainer'  
 
   shared_context 'with a relation' do
-    before { subject.create(graph.dump(:ntriples), 'application/n-triples') }
+    before do
+      subject.create(StringIO.new(graph.dump(:ntriples)), 
+                     'application/n-triples')
+    end
 
     let(:graph) { RDF::Graph.new << inserted_content_statement }
     let(:relation_predicate) { RDF::Vocab::DC.creator }
@@ -16,7 +19,7 @@ shared_examples 'an IndirectContainer' do
   
   describe '#inserted_content_relation' do
     it 'returns a uri' do
-      subject.create('', 'application/n-triples')
+      subject.create(StringIO.new, 'application/n-triples')
       expect(subject.inserted_content_relation).to be_a RDF::URI
     end
 
@@ -114,7 +117,7 @@ shared_examples 'an IndirectContainer' do
           end
 
           it 'adds triple to membership resource' do
-            contained_resource.create('', 'application/n-triples')
+            contained_resource.create(StringIO.new, 'application/n-triples')
             subject.add(contained_resource)
             expect(contained_resource.graph.statements)
               .to include RDF::Statement(contained_resource.to_uri,
@@ -123,7 +126,7 @@ shared_examples 'an IndirectContainer' do
           end
 
           it 'removes triple from membership resource' do
-            contained_resource.create('', 'application/n-triples')
+            contained_resource.create(StringIO.new, 'application/n-triples')
             subject.add(contained_resource)
             subject.remove(contained_resource)
             expect(contained_resource.graph.statements)
