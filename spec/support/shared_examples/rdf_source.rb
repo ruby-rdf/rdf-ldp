@@ -277,7 +277,7 @@ shared_examples 'an RDFSource' do
       end
 
       it 'returns an empty body' do
-        expect(subject.request(:DELETE, 200, {}, {}).last.to_response)
+        expect(subject.request(:DELETE, 200, {}, {}).last)
           .to be_empty
       end
 

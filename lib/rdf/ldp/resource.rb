@@ -457,7 +457,9 @@ module RDF::LDP
     ##
     # Process & generate response for DELETE requests.
     def delete(status, headers, env)
-      [204, headers, destroy]
+      destroy
+      headers.delete('Content-Type')
+      [204, headers, []]
     end
 
     ##
