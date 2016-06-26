@@ -47,7 +47,7 @@ module RDF::LDP
     #
     # @see RDF::LDP::Resource#create
     def create(input, c_type)
-      storage.io { |io| IO.copy_stream(input.binmode, io) }
+      storage.io { |io| IO.copy_stream(input, io) }
       super
       self.content_type = c_type
 
@@ -60,7 +60,7 @@ module RDF::LDP
     ##
     # @see RDF::LDP::Resource#update
     def update(input, c_type)
-      storage.io { |io| IO.copy_stream(input.binmode, io) }
+      storage.io { |io| IO.copy_stream(input, io) }
       super
       self.content_type = c_type
       self
@@ -183,7 +183,7 @@ module RDF::LDP
     #
     # @example writing to a `StorageAdapter`
     #   storage = StorageAdapter.new(an_nr_source)
-    #   storage.io { |io| io.write('moomin')
+    #   storage.io { |io| io.write('moomin') }
     #
     # Beyond this interface, implementations are permitted to behave as desired.
     # They may, for instance, reject undesirable content or alter the graph (or 

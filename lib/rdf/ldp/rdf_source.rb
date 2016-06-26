@@ -246,7 +246,7 @@ module RDF::LDP
       begin
         input.rewind
         RDF::Graph.new(graph_name: subject_uri, data: RDF::Repository.new) << 
-          reader.new(input, base_uri: subject_uri, validate: true)
+          reader.new(input.read, base_uri: subject_uri, validate: true)
       rescue RDF::ReaderError => e
         raise RDF::LDP::BadRequest, e.message
       end  
