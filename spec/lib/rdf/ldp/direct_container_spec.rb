@@ -8,14 +8,14 @@ describe RDF::LDP::DirectContainer do
 
   describe '#membership_constant_uri' do
     it 'defaults to #subject_uri' do
-      subject.create('', 'application/n-triples')
+      subject.create(StringIO.new, 'application/n-triples')
       expect(subject.membership_constant_uri).to eq subject.subject_uri
     end
   end
 
   describe '#membership_predicate' do
     it 'defaults to ldp:member' do
-      subject.create('', 'application/n-triples')
+      subject.create(StringIO.new, 'application/n-triples')
       expect(subject.membership_predicate).to eq RDF::Vocab::LDP.member
     end
   end
@@ -30,7 +30,7 @@ describe RDF::LDP::DirectContainer do
     end
 
     context 'when the membership resource exists' do
-      before { subject.create('', 'application/n-triples') }
+      before { subject.create(StringIO.new, 'application/n-triples') }
 
       it 'adds membership triple to membership resource' do
         expect(subject.add(resource_uri).graph)
@@ -47,8 +47,8 @@ describe RDF::LDP::DirectContainer do
                                              RDF::Vocab::LDP.membershipResource,
                                              mem_rs.subject_uri)
 
-        subject.create(g.dump(:ntriples), 'application/n-triples')
-        mem_rs.create('', 'application/n-triples')
+        subject.create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
+        mem_rs.create(StringIO.new, 'application/n-triples')
 
         subject.add(resource_uri)
 
@@ -65,7 +65,7 @@ describe RDF::LDP::DirectContainer do
                                         RDF::Vocab::LDP.membershipResource,
                                         mem_rs)
 
-        subject.create(g.dump(:ntriples), 'application/n-triples')
+        subject.create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
         expect(subject.add(resource_uri).graph)
           .to have_statement subject.make_membership_triple(resource_uri)
       end

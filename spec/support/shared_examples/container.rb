@@ -24,7 +24,7 @@ shared_examples 'a Container' do
 
   describe '#add' do
     let(:resource) { RDF::URI('http://ex.org/mymble') }
-    before { subject.create('', 'application/n-triples') }
+    before { subject.create(StringIO.new, 'application/n-triples') }
 
     it 'returns self' do
       expect(subject.add(resource)).to eq subject
@@ -118,7 +118,7 @@ shared_examples 'a Container' do
                 "Add { #{statement.subject.to_base} " \
                 "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
         env = { 'CONTENT_TYPE' => 'text/ldpatch',
-                'rack.input'   => patch }
+                'rack.input'   => StringIO.new(patch) }
 
         expect { subject.request(:patch, 200, {}, env) }
           .to raise_error RDF::LDP::Conflict
@@ -136,14 +136,14 @@ shared_examples 'a Container' do
         end
 
         it 'when resource exists raises a Conflict error' do
-          subject.create('', 'application/n-triples')
+          subject.create(StringIO.new, 'application/n-triples')
           graph << statement
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
             .to raise_error RDF::LDP::Conflict
         end
 
         it 'can put existing containment triple' do
-          subject.create('', 'application/n-triples')
+          subject.create(StringIO.new, 'application/n-triples')
           subject.graph << statement
           graph << statement
           expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
@@ -151,7 +151,7 @@ shared_examples 'a Container' do
         end
 
         it 'writes data when putting existing containment triple' do
-          subject.create('', 'application/n-triples')
+          subject.create(StringIO.new, 'application/n-triples')
           subject.graph << statement
           graph << statement
           
@@ -164,7 +164,7 @@ shared_examples 'a Container' do
         end
 
         it 'raises conflict error when without existing containment triples' do
-          subject.create('', 'application/n-triples')
+          subject.create(StringIO.new, 'application/n-triples')
           subject.graph << statement
           expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
             .to raise_error RDF::LDP::Conflict
@@ -175,7 +175,7 @@ shared_examples 'a Container' do
     context 'when POST is implemented', 
             if: described_class.private_method_defined?(:post) do
       let(:graph) { RDF::Graph.new }
-      before { subject.create('', 'application/n-triples') }
+      before { subject.create(StringIO.new, 'application/n-triples') }
 
       let(:env) do
         { 'rack.input' => StringIO.new(graph.dump(:ntriples)),

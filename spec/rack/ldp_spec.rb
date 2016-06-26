@@ -113,7 +113,7 @@ describe 'middleware' do
     let(:app) { double('rack application') }
 
     it { is_expected.to be_a Rack::LinkedData::ContentNegotiation }
-
+    
     describe '.new' do
       it 'sets default content-type to text/turtle' do
         expect(subject.options[:default]).to eq 'text/turtle'

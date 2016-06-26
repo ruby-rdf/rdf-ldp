@@ -50,7 +50,10 @@ module RDF::LDP
       storage.io { |io| IO.copy_stream(input.binmode, io) }
       super
       self.content_type = c_type
-      RDFSource.new(description_uri, @data).create('', 'application/n-triples')
+
+      RDFSource.new(description_uri, @data)
+        .create(StringIO.new, 'application/n-triples')
+
       self
     end
 

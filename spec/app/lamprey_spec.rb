@@ -6,7 +6,7 @@ require 'lamprey'
 describe 'lamprey' do
   include ::Rack::Test::Methods
   let(:app) { RDF::Lamprey }
-  
+
   describe 'base container /' do 
     describe 'GET' do
       it 'has default content type "text/turtle"' do
@@ -118,13 +118,25 @@ describe 'lamprey' do
         expect(last_response.status).to eq 415
       end
 
-      it 'returns 400 on improper document' do
+      it 'returns 400 on improper LDPatch document' do
         patch '/', '---blah---', 'CONTENT_TYPE' => 'text/ldpatch'
+        expect(last_response.status).to eq 400
+      end
+      
+      it 'returns 400 on improper SPARQL Update document' do
+        patch '/', '---blah---', 'CONTENT_TYPE' => 'application/sparql-update'
         expect(last_response.status).to eq 400
       end
 
       it 'returns 200 on valid LDPatch' do
         patch '/', '', 'CONTENT_TYPE' => 'text/ldpatch'
+        expect(last_response.status).to eq 200
+      end
+
+      it 'returns 200 on valid SPARQL Update' do
+        update = "INSERT DATA { _:blah #{RDF::Vocab::DC.title.to_base} " \
+                 "'moomin' . }"
+        patch '/', update, 'CONTENT_TYPE' => 'application/sparql-update'
         expect(last_response.status).to eq 200
       end
     end

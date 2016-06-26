@@ -246,10 +246,12 @@ module RDF::LDP
     #   subclasses for the appropriate response codes.
     def update(input, content_type, &block)
       return create(input, content_type, &block) unless exists?
+
       @data.transaction(mutable: true) do |transaction|
         yield transaction if block_given?
         set_last_modified(transaction)
       end
+
       self
     end
 
