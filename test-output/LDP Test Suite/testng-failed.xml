@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [LDP Test Suite]">
-  <parameter name="indirectContainer" value="http://127.0.0.1:39630/3595b33ffe011c8c63324ecee00e6ae1"/>
+  <parameter name="indirectContainer" value="http://127.0.0.1:45737/e5500ed7b5dac707bff36c7bb0de3f8a"/>
   <parameter name="output" value="report"/>
   <test name="W3C Linked Data Platform Tests(failed)">
     <groups>
