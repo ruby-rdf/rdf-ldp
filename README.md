@@ -82,7 +82,7 @@ use Rack::LDP::Requests
 #
 repository = RDF::Repository.new 
 RDF::LDP::Container.new(RDF::URI('http://localhost:9292/'), repository)
-  .create('', 'text/plain') if repository.empty?
+  .create(StringIO.new(''), 'text/plain') if repository.empty?
 
 app = proc do |env|
   # Return a Rack response, giving an `RDF::LDP::Resource`-like object as the body.
