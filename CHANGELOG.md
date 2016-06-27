@@ -1,3 +1,11 @@
+0.7.0
+-----
+ - Changes handling of input streams to be compliant with Rack. Allows
+   the server to run with `Rack::Lint` middleware. In the process, the
+   `RDFSource` and `NonRDFSource` interfaces are changed to accept only
+   IO-like objects conforming to Rack's input expectations. `String`
+   objects are no longer handled.
+
 0.6.0
 -----
  - Upgrades to RDF.rb 2.0
