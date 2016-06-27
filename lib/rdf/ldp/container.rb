@@ -160,7 +160,7 @@ module RDF::LDP
       raise UnsupportedMediaType unless method
 
       temp_graph = RDF::Graph.new << graph.statements
-      send(method, env['rack.input'], temp_graph)
+      send(method, env['rack.input'].read, temp_graph)
 
       validate_statements!(temp_graph)
       graph.clear!
