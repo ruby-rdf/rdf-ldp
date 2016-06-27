@@ -33,7 +33,7 @@ module RDF::LDP
   #   resource = RDF::LDP::Resource.new('http://example.org/moomin', repository)
   #   resource.exists? # => false
   #
-  #   resource.create('', 'text/plain')
+  #   resource.create(StringIO.new(''), 'text/plain')
   #
   #   resource.exists? # => true
   #   resource.metagraph.dump :ttl

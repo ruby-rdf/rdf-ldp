@@ -62,9 +62,9 @@ module RDF::LDP
     # @example
     #   repository = RDF::Repository.new
     #   ldprs = RDF::LDP::RDFSource.new('http://example.org/moomin', repository)
-    #   ldprs.create('<http://ex.org/1> <http://ex.org/prop> "moomin" .', 'text/turtle')
+    #   ldprs.create(StringIO.new('<http://ex.org/1> <http://ex.org/prop> "moomin" .'), 'text/turtle')
     #
-    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    # @param [IO, File] input  input (usually from a Rack env's 
     #   `rack.input` key) used to determine the Resource's initial state.
     # @param [#to_s] content_type  a MIME content_type used to read the graph.
     #
@@ -76,7 +76,7 @@ module RDF::LDP
     # @example altering changes before execution with block syntax
     #   content = '<http://ex.org/1> <http://ex.org/prop> "moomin" .'
     #
-    #   ldprs.create(content, 'text/turtle') do |tx|
+    #   ldprs.create(StringIO.new(content), 'text/turtle') do |tx|
     #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom'])
     #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom', RDF::URI('g')])
     #   end
@@ -84,7 +84,7 @@ module RDF::LDP
     # @example validating changes before execution with block syntax
     #   content = '<http://ex.org/1> <http://ex.org/prop> "moomin" .'
     #
-    #   ldprs.create(content, 'text/turtle') do |tx|
+    #   ldprs.create(StringIO.new(content), 'text/turtle') do |tx|
     #     raise "cannot delete triples on create!" unless tx.deletes.empty?
     #   end
     #
@@ -107,7 +107,7 @@ module RDF::LDP
     # Updates the resource. Replaces the contents of `graph` with the parsed 
     # input.
     #
-    # @param [IO, File, #to_s] input  input (usually from a Rack env's 
+    # @param [IO, File] input  input (usually from a Rack env's 
     #   `rack.input` key) used to determine the Resource's new state.
     # @param [#to_s] content_type  a MIME content_type used to interpret the
     #   input.
@@ -120,7 +120,7 @@ module RDF::LDP
     # @example altering changes before execution with block syntax
     #   content = '<http://ex.org/1> <http://ex.org/prop> "moomin" .'
     #
-    #   ldprs.update(content, 'text/turtle') do |tx|
+    #   ldprs.update(StringIO.new(content), 'text/turtle') do |tx|
     #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom'])
     #     tx.insert([RDF::URI('s'), RDF::URI('p'), 'custom', RDF::URI('g')])
     #   end
@@ -229,8 +229,8 @@ module RDF::LDP
     # Finds an {RDF::Reader} appropriate for the given content_type and attempts
     # to parse the graph string.
     #
-    # @param [IO, File, String] input  a (Rack) input stream IO object or String
-    #   to parse
+    # @param [IO, File] input  a (Rack) input stream IO object to parse
+    #
     # @param [#to_s] content_type  the content type for the reader
     #
     # @return [RDF::Enumerable] the statements in the resulting graph
