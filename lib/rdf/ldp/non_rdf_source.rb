@@ -1,16 +1,16 @@
 module RDF::LDP
   ##
   # A NonRDFSource describes a `Resource` whose response body is a format other
-  # than an RDF serialization. The persistent state of the resource, as 
-  # represented by the body, is persisted to an IO stream provided by a 
+  # than an RDF serialization. The persistent state of the resource, as
+  # represented by the body, is persisted to an IO stream provided by a
   # `RDF::LDP::NonRDFSource::StorageAdapter` given by `#storage`.
   #
   # In addition to the properties stored by the `RDF::LDP::Resource#metagraph`,
-  # `NonRDFSource`s also store a content type (format). 
+  # `NonRDFSource`s also store a content type (format).
   #
-  # When a `NonRDFSource` is created, it also creates an `RDFSource` which 
+  # When a `NonRDFSource` is created, it also creates an `RDFSource` which
   # describes it. This resource is created at the URI in `#description_uri`,
-  # the resource itself is returned by `#description`. 
+  # the resource itself is returned by `#description`.
   #
   # @see RDF::LDP::Resource
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source for
@@ -19,13 +19,13 @@ module RDF::LDP
     # Use DC elements format
     FORMAT_TERM = RDF::Vocab::DC11.format
     DESCRIBED_BY_TERM = RDF::URI('http://www.w3.org/2007/05/powder-s#describedby')
-    
+
     ##
-    # @return [RDF::URI] uri with lexical representation 
+    # @return [RDF::URI] uri with lexical representation
     #   'http://www.w3.org/ns/ldp#NonRDFSource'
     #
     # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source
-    def self.to_uri 
+    def self.to_uri
       RDF::Vocab::LDP.NonRDFSource
     end
 
@@ -36,7 +36,7 @@ module RDF::LDP
     end
 
     ##
-    # @param [IO, File] input  input (usually from a Rack env's 
+    # @param [IO, File] input  input (usually from a Rack env's
     #   `rack.input` key) that will be read into the NonRDFSource
     # @param [#to_s] c_type  a MIME content_type used as a content type
     #   for the created NonRDFSource
@@ -67,13 +67,13 @@ module RDF::LDP
     end
 
     ##
-    # Deletes the LDP-NR contents from the storage medium and marks the 
+    # Deletes the LDP-NR contents from the storage medium and marks the
     # resource as destroyed.
     #
     # @see RDF::LDP::Resource#destroy
     def destroy
-      storage.delete
       super
+      storage.delete
     end
 
     ##
@@ -95,44 +95,44 @@ module RDF::LDP
     def storage
       @storage_adapter ||= StorageAdapter.new(self)
     end
-    
+
     ##
     # Sets the MIME type for the resource in `metagraph`.
     #
     # @param [String] a string representing the content type for this LDP-NR.
     #   This SHOULD be a regisered MIME type.
     #
-    # @return [StorageAdapter] the content type 
+    # @return [StorageAdapter] the content type
     def content_type=(content_type)
       metagraph.delete([subject_uri, FORMAT_TERM])
-      metagraph << 
+      metagraph <<
         RDF::Statement(subject_uri, RDF::Vocab::DC11.format, content_type)
     end
-    
+
     ##
-    # @return [StorageAdapter] this resource's content type 
+    # @return [StorageAdapter] this resource's content type
     def content_type
       format_triple = metagraph.first([subject_uri, FORMAT_TERM, :format])
       format_triple.nil? ? nil : format_triple.object.object
     end
 
     ##
-    # @return [#each] the response body. This is normally the StorageAdapter's 
+    # @return [#each] the response body. This is normally the StorageAdapter's
     #   IO object in read and binary mode.
-    # 
+    #
     # @raise [RDF::LDP::RequestError] when the request fails
     def to_response
       (exists? && !destroyed?) ? storage.io : []
     end
 
-    private 
+    private
 
     ##
     # Process & generate response for PUT requsets.
     def put(status, headers, env)
-      raise PreconditionFailed.new('Etag invalid') if 
+      raise PreconditionFailed.new('Etag invalid') if
         env.has_key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
-      
+
       if exists?
         update(env['rack.input'], env['CONTENT_TYPE'])
         headers = update_headers(headers)
@@ -155,26 +155,26 @@ module RDF::LDP
     end
 
     ##
-    # StorageAdapters bundle the logic for mapping a `NonRDFSource` to a 
+    # StorageAdapters bundle the logic for mapping a `NonRDFSource` to a
     # specific IO stream. Implementations must conform to a minimal interface:
     #
-    #  - `#initailize` must accept a `resource` parameter. The input should be 
+    #  - `#initailize` must accept a `resource` parameter. The input should be
     #     a `NonRDFSource` (LDP-NR).
-    #  - `#io` must yield and return a IO object in binary mode that represents 
+    #  - `#io` must yield and return a IO object in binary mode that represents
     #    the current state of the LDP-NR.
     #    - If a block is passed to `#io`, the implementation MUST allow return a
-    #      writable IO object and that anything written to the stream while 
+    #      writable IO object and that anything written to the stream while
     #      yielding is synced with the source in a thread-safe manner.
-    #    - Clients not passing a block to `#io` SHOULD call `#close` on the 
-    #      object after reading it. 
+    #    - Clients not passing a block to `#io` SHOULD call `#close` on the
+    #      object after reading it.
     #    - If the `#io` object responds to `#to_path` it MUST give the location
     #      of a file whose contents are identical the IO object's. This supports
     #      Rack's response body interface.
     #  - `#delete` remove the contents from the corresponding storage. This MAY
-    #      be a no-op if is undesirable or impossible to delete the contents 
+    #      be a no-op if is undesirable or impossible to delete the contents
     #      from the storage medium.
     #
-    # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body 
+    # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body
     #   for details about `#to_path` in Rack response bodies.
     #
     # @example reading from a `StorageAdapter`
@@ -186,15 +186,15 @@ module RDF::LDP
     #   storage.io { |io| io.write('moomin') }
     #
     # Beyond this interface, implementations are permitted to behave as desired.
-    # They may, for instance, reject undesirable content or alter the graph (or 
-    # metagraph) of the resource. They should throw appropriate `RDF::LDP` 
-    # errors when failing to allow the middleware to handle response codes and 
+    # They may, for instance, reject undesirable content or alter the graph (or
+    # metagraph) of the resource. They should throw appropriate `RDF::LDP`
+    # errors when failing to allow the middleware to handle response codes and
     # messages.
     #
-    # The base storage adapter class provides a simple File storage 
+    # The base storage adapter class provides a simple File storage
     # implementation.
     #
-    # @todo check thread saftey on write for base implementation 
+    # @todo check thread saftey on write for base implementation
     class StorageAdapter
       STORAGE_PATH = '.storage'.freeze
 
@@ -205,14 +205,14 @@ module RDF::LDP
       def initialize(resource)
         @resource = resource
       end
-      
+
       ##
       # Gives an IO object which represents the current state of @resource.
-      # Opens the file for read-write (mode: r+), if it already exists; 
+      # Opens the file for read-write (mode: r+), if it already exists;
       # otherwise, creates the file and opens it for read-write (mode: w+).
       #
-      # @yield [IO] yields a read-writable object conforming to the Ruby IO 
-      #   interface for storage. The IO object will be closed when the block 
+      # @yield [IO] yields a read-writable object conforming to the Ruby IO
+      #   interface for storage. The IO object will be closed when the block
       #   ends.
       #
       # @return [IO] an object conforming to the Ruby IO interface
@@ -222,15 +222,15 @@ module RDF::LDP
 
         File.open(path, 'r+b', &block)
       end
-      
+
       ##
       # @return [Boolean] 1 if the file has been deleted, otherwise false
       def delete
         return false unless File.exists?(path)
-        File.delete(path) 
+        File.delete(path)
       end
 
-      private 
+      private
 
       ##
       # @return [Boolean]
