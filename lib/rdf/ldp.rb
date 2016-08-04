@@ -13,15 +13,15 @@ require 'rdf/ldp/indirect_container'
 module RDF
   ##
   # This module implements a basic domain model for Linked Data Platform (LDP).
-  # Its classes allow CRUD operations on LDP RDFSources, NonRDFSources and 
-  # Containers, while presenting an interface appropriate for consumption by 
+  # Its classes allow CRUD operations on LDP RDFSources, NonRDFSources and
+  # Containers, while presenting an interface appropriate for consumption by
   # Rack servers.
-  #   
+  #
   # @see RDF::LDP::Resource
   # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
   module LDP
     ##
-    # Interaction models are in reverse order of preference for POST/PUT 
+    # Interaction models are in reverse order of preference for POST/PUT
     # requests; e.g. if a client sends a request with Resource, RDFSource, and
     # BasicContainer headers, the server gives a basic container.
     INTERACTION_MODELS = {
@@ -34,20 +34,20 @@ module RDF
       RDF::LDP::NonRDFSource.to_uri => RDF::LDP::NonRDFSource
     }.freeze
 
-    CONTAINER_CLASSES = { 
-      basic:    RDF::Vocab::LDP.BasicContainer,
-      direct:   RDF::LDP::DirectContainer.to_uri,
-      indirect: RDF::LDP::IndirectContainer.to_uri
-    }
+    CONTAINER_CLASSES = {
+      basic:    RDF::Vocab::LDP.BasicContainer.freeze,
+      direct:   RDF::LDP::DirectContainer.to_uri.freeze,
+      indirect: RDF::LDP::IndirectContainer.to_uri.freeze
+    }.freeze
 
-    CONSTRAINED_BY = RDF::Vocab::LDP.constrainedBy
+    CONSTRAINED_BY = RDF::Vocab::LDP.constrainedBy.freeze
 
     ##
     # A base class for HTTP request errors.
     #
     # This and its subclasses are caught and handled by Rack::LDP middleware.
     # When a `RequestError` is caught by server middleware, its `#status` can be
-    # used as a response code and `#headers` may be added to (or replace) the 
+    # used as a response code and `#headers` may be added to (or replace) the
     # existing HTTP headers.
     class RequestError < RuntimeError
       STATUS = 500
@@ -57,7 +57,7 @@ module RDF
       end
 
       def headers
-        uri = 
+        uri =
           'https://github.com/no-reply/rdf-ldp/blob/master/CONSTRAINED_BY.md'
         { 'Link' => "<#{uri}>;rel=\"#{CONSTRAINED_BY}\"" }
       end

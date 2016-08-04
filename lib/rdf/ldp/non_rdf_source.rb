@@ -17,8 +17,7 @@ module RDF::LDP
   #   a definition of NonRDFSource in LDP
   class NonRDFSource < Resource
     # Use DC elements format
-    FORMAT_TERM = RDF::Vocab::DC11.format
-    DESCRIBED_BY_TERM = RDF::URI('http://www.w3.org/2007/05/powder-s#describedby')
+    FORMAT_TERM = RDF::Vocab::DC11.format.freeze
 
     ##
     # @return [RDF::URI] uri with lexical representation
@@ -52,7 +51,7 @@ module RDF::LDP
       self.content_type = c_type
 
       RDFSource.new(description_uri, @data)
-        .create(StringIO.new, 'application/n-triples')
+               .create(StringIO.new, 'application/n-triples')
 
       self
     end
@@ -106,7 +105,7 @@ module RDF::LDP
     def content_type=(content_type)
       metagraph.delete([subject_uri, FORMAT_TERM])
       metagraph <<
-        RDF::Statement(subject_uri, RDF::Vocab::DC11.format, content_type)
+        RDF::Statement(subject_uri, FORMAT_TERM, content_type)
     end
 
     ##
@@ -129,9 +128,9 @@ module RDF::LDP
 
     ##
     # Process & generate response for PUT requsets.
-    def put(status, headers, env)
-      raise PreconditionFailed.new('Etag invalid') if
-        env.has_key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
+    def put(_status, headers, env)
+      raise(PreconditionFailed, 'Etag invalid') if
+        env.key?('HTTP_IF_MATCH') && !match?(env['HTTP_IF_MATCH'])
 
       if exists?
         update(env['rack.input'], env['CONTENT_TYPE'])
@@ -217,8 +216,8 @@ module RDF::LDP
       #
       # @return [IO] an object conforming to the Ruby IO interface
       def io(&block)
-        FileUtils.mkdir_p(path_dir) unless Dir.exists?(path_dir)
-        FileUtils.touch(path) unless file_exists?
+        FileUtils.mkdir_p(path_dir) unless Dir.exist?(path_dir)
+        FileUtils.touch(path)       unless file_exists?
 
         File.open(path, 'r+b', &block)
       end
@@ -226,7 +225,7 @@ module RDF::LDP
       ##
       # @return [Boolean] 1 if the file has been deleted, otherwise false
       def delete
-        return false unless File.exists?(path)
+        return false unless file_exists?
         File.delete(path)
       end
 
@@ -235,7 +234,7 @@ module RDF::LDP
       ##
       # @return [Boolean]
       def file_exists?
-        File.exists?(path)
+        File.exist?(path)
       end
 
       ##
