@@ -96,6 +96,19 @@ module RDF::LDP
     end
 
     ##
+    # Sets the StorageAdapter to use for this LDP-NR
+    #
+    # @param [StorageAdapter] a class implementing the StorageAdapter interface
+    #
+    # @return [Boolean] false if the storage adapter was already set
+    def set_storage(adapter)
+      return false if @storage_adapter
+
+      @storage_adapter = adapter.new(self)
+      true
+    end
+
+    ##
     # Sets the MIME type for the resource in `metagraph`.
     #
     # @param [String] a string representing the content type for this LDP-NR.
