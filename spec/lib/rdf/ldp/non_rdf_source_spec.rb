@@ -39,7 +39,7 @@ describe RDF::LDP::NonRDFSource do
       let(:input)   { 'moomin' }
       let(:message) { 'fake resource error' }
 
-      it 'leaves file on disk' do
+      it 'leaves file on disk', skip_rbx: true do
         expect { subject.destroy }.to raise_error message
 
         expect(subject).not_to be_destroyed
