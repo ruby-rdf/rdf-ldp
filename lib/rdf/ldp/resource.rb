@@ -80,9 +80,9 @@ module RDF::LDP
   #
   #   resource.request(:put, 200, {}, {}) # RDF::LDP::MethodNotAllowed: put
   #
-  # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource for a
-  #   definition of 'Resource' in LDP
+  # @see http://www.w3.org/TR/ldp/ Linked Data platform Specification
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource Definition
+  #   of 'Resource' in LDP
   class Resource
     CONTAINS_URI       = RDF::Vocab::LDP.contains.freeze
     INVALIDATED_AT_URI = RDF::Vocab::PROV.invalidatedAtTime.freeze
@@ -308,13 +308,15 @@ module RDF::LDP
     #
     # @return [String] an HTTP Etag
     #
-    # @note these etags are strong if (and only if) all software that updates
-    #   the resource also updates the ETag
+    # @note these etags are weak, but we allow clients to use them in 
+    #   `If-Match` headers, and use weak comparison. This is in conflict with
+    #   https://tools.ietf.org/html/rfc7232#section-3.1. See: 
+    #   https://github.com/ruby-rdf/rdf-ldp/issues/68
     #
     # @see http://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
     # @see http://www.w3.org/TR/ldp#h-ldpr-put-precond  LDP ETag clause for PUT
-    # @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.3
-    #   description of strong vs. weak validators
+    # @see https://tools.ietf.org/html/rfc7232#section-2.1
+    #   Weak vs. strong validators
     def etag
       return nil unless exists?
       "W/\"#{last_modified.new_offset(0).iso8601(9)}\""
@@ -397,7 +399,7 @@ module RDF::LDP
     # conforming to the Rack interfare.
     #
     # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body
-    #   for Rack body documentation
+    #   Rack body documentation
     def to_response
       []
     end

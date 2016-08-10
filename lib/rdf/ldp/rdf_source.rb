@@ -20,13 +20,13 @@ module RDF::LDP
   # `Rack::LDP::ContentNegotiation`.
   #
   # @note the contents of `#metagraph`'s are *not* the same as
-  # LDP-server-managed triples. `#metagraph` contains internal properties of the
-  # RDFSource which are necessary for the server's management purposes, but MAY
-  # be absent from (or in conflict with) the representation of its state in
-  # `#graph`.
+  #   LDP-server-managed triples. `#metagraph` contains internal properties of 
+  #   the RDFSource which are necessary for the server's management purposes, 
+  #   but MAY be absent from (or in conflict with) the representation of its 
+  #   state in `#graph`.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source for
-  #   definition of ldp:RDFSource in the LDP specification
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source 
+  #   Definition of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
     class << self
       ##
@@ -240,7 +240,7 @@ module RDF::LDP
     # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
     #
     # @see http://www.rubydoc.info/github/rack/rack/file/SPEC#The_Input_Stream
-    #   for documentation on input streams in the Rack SPEC
+    #   Documentation on input streams in the Rack SPEC
     def parse_graph(input, content_type)
       reader = RDF::Reader.for(content_type: content_type.to_s)
       raise(RDF::LDP::UnsupportedMediaType, content_type) if reader.nil?
