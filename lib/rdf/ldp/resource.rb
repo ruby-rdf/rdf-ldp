@@ -56,8 +56,8 @@ module RDF::LDP
   #   resource.exists? # => true
   #   resource.destroyed? # => true
   #
-  # Rack (via `RDF::LDP::Rack`) uses the `#request` method to dispatch requests and
-  # interpret responses. Disallowed HTTP methods result in
+  # Rack (via `RDF::LDP::Rack`) uses the `#request` method to dispatch requests
+  # and interpret responses. Disallowed HTTP methods result in
   # `RDF::LDP::MethodNotAllowed`. Individual Resources populate `Link`, `Allow`,
   # `ETag`, `Last-Modified`, and `Accept-*` headers as required by LDP. All
   # subclasses (MUST) return `self` as the Body, and respond to `#each`/
@@ -80,10 +80,14 @@ module RDF::LDP
   #
   #   resource.request(:put, 200, {}, {}) # RDF::LDP::MethodNotAllowed: put
   #
-  # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource for a
-  #   definition of 'Resource' in LDP
+  # @see http://www.w3.org/TR/ldp/ Linked Data platform Specification
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource Definition
+  #   of 'Resource' in LDP
   class Resource
+    CONTAINS_URI       = RDF::Vocab::LDP.contains.freeze
+    INVALIDATED_AT_URI = RDF::Vocab::PROV.invalidatedAtTime.freeze
+    MODIFIED_URI       = RDF::Vocab::DC.modified.freeze
+
     # @!attribute [r] subject_uri
     #   an rdf term identifying the `Resource`
     attr_reader :subject_uri
@@ -149,18 +153,19 @@ module RDF::LDP
       # @return [Class] a subclass of {RDF::LDP::Resource} matching the
       #   requested interaction model;
       def interaction_model(link_header)
-        models = LinkHeader.parse(link_header)
-                 .links.select { |link| link['rel'].downcase == 'type' }
-                 .map { |link| link.href }
+        models =
+          LinkHeader.parse(link_header)
+                    .links.select { |link| link['rel'].casecmp 'type' }
+                    .map { |link| link.href }
 
         return RDFSource if models.empty?
         match = INTERACTION_MODELS.keys.reverse.find { |u| models.include? u }
 
         if match == RDF::LDP::NonRDFSource.to_uri
           raise NotAcceptable if
-            models.include?(RDF::LDP::RDFSource.to_uri) ||
-            models.include?(RDF::LDP::Container.to_uri) ||
-            models.include?(RDF::LDP::DirectContainer.to_uri) ||
+            models.include?(RDF::LDP::RDFSource.to_uri)         ||
+            models.include?(RDF::LDP::Container.to_uri)         ||
+            models.include?(RDF::LDP::DirectContainer.to_uri)   ||
             models.include?(RDF::LDP::IndirectContainer.to_uri) ||
             models.include?(RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'))
         end
@@ -217,7 +222,7 @@ module RDF::LDP
     # @raise [RDF::LDP::RequestError] when creation fails. May raise various
     #   subclasses for the appropriate response codes.
     # @raise [RDF::LDP::Conflict] when the resource exists
-    def create(input, content_type, &block)
+    def create(_input, _content_type)
       raise Conflict if exists?
 
       @data.transaction(mutable: true) do |transaction|
@@ -268,13 +273,13 @@ module RDF::LDP
     #
     # @todo Use of owl:Nothing is probably problematic. Define an internal
     # namespace and class represeting deletion status as a stateful property.
-    def destroy(&block)
+    def destroy
       @data.transaction(mutable: true) do |transaction|
         containers.each { |c| c.remove(self, transaction) if c.container? }
         transaction.insert RDF::Statement(subject_uri,
-                                      RDF::Vocab::PROV.invalidatedAtTime,
-                                      DateTime.now,
-                                      graph_name: metagraph_name)
+                                          INVALIDATED_AT_URI,
+                                          DateTime.now,
+                                          graph_name: metagraph_name)
         yield transaction if block_given?
       end
       self
@@ -294,8 +299,8 @@ module RDF::LDP
     ##
     # @return [Boolean] true if resource has been destroyed
     def destroyed?
-      times = @metagraph.query([subject_uri, RDF::Vocab::PROV.invalidatedAtTime, nil])
-      !(times.empty?)
+      times = @metagraph.query([subject_uri, INVALIDATED_AT_URI, nil])
+      !times.empty?
     end
 
     ##
@@ -303,13 +308,15 @@ module RDF::LDP
     #
     # @return [String] an HTTP Etag
     #
-    # @note these etags are strong if (and only if) all software that updates
-    #   the resource also updates the ETag
+    # @note these etags are weak, but we allow clients to use them in 
+    #   `If-Match` headers, and use weak comparison. This is in conflict with
+    #   https://tools.ietf.org/html/rfc7232#section-3.1. See: 
+    #   https://github.com/ruby-rdf/rdf-ldp/issues/68
     #
     # @see http://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
     # @see http://www.w3.org/TR/ldp#h-ldpr-put-precond  LDP ETag clause for PUT
-    # @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.3
-    #   description of strong vs. weak validators
+    # @see https://tools.ietf.org/html/rfc7232#section-2.1
+    #   Weak vs. strong validators
     def etag
       return nil unless exists?
       "W/\"#{last_modified.new_offset(0).iso8601(9)}\""
@@ -382,7 +389,7 @@ module RDF::LDP
     ##
     # @return [Array<RDF::LDP::Resource>] the container for this resource
     def containers
-      @data.query([:s, RDF::Vocab::LDP.contains, subject_uri]).map do |st|
+      @data.query([:s, CONTAINS_URI, subject_uri]).map do |st|
         RDF::LDP::Resource.find(st.subject, @data)
       end
     end
@@ -392,11 +399,11 @@ module RDF::LDP
     # conforming to the Rack interfare.
     #
     # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body
-    #   for Rack body documentation
+    #   Rack body documentation
     def to_response
       []
     end
-    alias_method :each, :to_response
+    alias each to_response
 
     ##
     # Build the response for the HTTP `method` given.
@@ -426,7 +433,7 @@ module RDF::LDP
       raise Gone if destroyed?
       begin
         send(method.to_sym.downcase, status, headers, env)
-      rescue NotImplementedError => e
+      rescue NotImplementedError
         raise MethodNotAllowed, method
       end
     end
@@ -436,27 +443,27 @@ module RDF::LDP
     ##
     # Generate response for GET requests. Returns existing status and headers,
     # with `self` as the body.
-    def get(status, headers, env)
+    def get(status, headers, _env)
       [status, update_headers(headers), self]
     end
 
     ##
     # Generate response for HEAD requsets. Adds appropriate headers and returns
     # an empty body.
-    def head(status, headers, env)
+    def head(status, headers, _env)
       [status, update_headers(headers), []]
     end
 
     ##
     # Generate response for OPTIONS requsets. Adds appropriate headers and
     # returns an empty body.
-    def options(status, headers, env)
+    def options(status, headers, _env)
       [status, update_headers(headers), []]
     end
 
     ##
     # Process & generate response for DELETE requests.
-    def delete(status, headers, env)
+    def delete(_status, headers, _env)
       destroy
       headers.delete('Content-Type')
       [204, headers, []]
@@ -503,7 +510,7 @@ module RDF::LDP
     # @return [Hash<String, String>] the updated headers
     def update_headers(headers)
       headers['Link'] =
-        ([headers['Link']] + link_headers).compact.join(",")
+        ([headers['Link']] + link_headers).compact.join(',')
 
       headers['Allow'] = allowed_methods.join(', ')
       headers['Accept-Post'] = accept_post   if respond_to?(:post, true)
@@ -561,18 +568,15 @@ module RDF::LDP
         # transactions do not support updates or pattern deletes, so we must
         # ask the Repository for the current last_modified to delete the statement
         # transactionally
-        modified = last_modified
-        transaction.delete RDF::Statement(subject_uri,
-                                          RDF::Vocab::DC.modified,
-                                          modified,
-                                          graph_name: metagraph_name) if modified
+        transaction
+          .delete RDF::Statement(subject_uri, MODIFIED_URI, last_modified,
+                                 graph_name: metagraph_name) if last_modified
 
-        transaction.insert RDF::Statement(subject_uri,
-                                          RDF::Vocab::DC.modified,
-                                          DateTime.now,
-                                          graph_name: metagraph_name)
+        transaction
+          .insert RDF::Statement(subject_uri, MODIFIED_URI, DateTime.now,
+                                 graph_name: metagraph_name)
       else
-        metagraph.update([subject_uri, RDF::Vocab::DC.modified, DateTime.now])
+        metagraph.update([subject_uri, MODIFIED_URI, DateTime.now])
       end
     end
 

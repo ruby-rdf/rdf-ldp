@@ -1,29 +1,32 @@
 module RDF::LDP
   ##
-  # An extension of `RDF::LDP::Container` implementing direct containment. 
-  # This adds the concepts of a membership resource, predicate, and triples to 
+  # An extension of `RDF::LDP::Container` implementing direct containment.
+  # This adds the concepts of a membership resource, predicate, and triples to
   # the Basic Container's containment triples.
   #
-  # When the membership resource is an `RDFSource`, the membership triple is 
+  # When the membership resource is an `RDFSource`, the membership triple is
   # added/removed from its graph when the resource created/deleted within the
-  # container. When the membership resource is a `NonRDFSource`, the triple is 
+  # container. When the membership resource is a `NonRDFSource`, the triple is
   # added/removed on its description's graph instead.
   #
   # A membership constant URI and membership predicate MUST be specified as
   # described in LDP--exactly one of each. If none is given, we default to
   # the container itself as a membership resource and `ldp:member` as predicate.
-  # If more than one of either is given, all `#add/#remove` (POST/DELETE) 
+  # If more than one of either is given, all `#add/#remove` (POST/DELETE)
   # requests will fail.
   #
   # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-direct-container
   #   definition of LDP Direct Container
   class DirectContainer < Container
+    MEMBER_URI              = RDF::Vocab::LDP.member.freeze
+    MEMBERSHIP_RESOURCE_URI = RDF::Vocab::LDP.membershipResource.freeze
+
+    RELATION_TERMS = [RDF::Vocab::LDP.hasMemberRelation.freeze,
+                      RDF::Vocab::LDP.isMemberOfRelation.freeze].freeze
+
     def self.to_uri
       RDF::Vocab::LDP.DirectContainer
     end
-
-    RELATION_TERMS = [RDF::Vocab::LDP.hasMemberRelation,
-                      RDF::Vocab::LDP.isMemberOfRelation]
 
     ##
     # @return [RDF::URI] a URI representing the container type
@@ -34,16 +37,16 @@ module RDF::LDP
     ##
     # Creates and inserts default relation triples if none are given.
     #
-    # @note the addition of default triples is handled in a separate 
+    # @note the addition of default triples is handled in a separate
     #   transaction. It is possible for the second transaction to fail, causing
     #   the resource to persist in an invalid state. It is also possible for a
     #   read to occur between the two transactions.
-    # @todo Make atomic. Consider just raising an error instead of adding 
-    #   triples. There's a need to handle this issue for repositories with 
+    # @todo Make atomic. Consider just raising an error instead of adding
+    #   triples. There's a need to handle this issue for repositories with
     #   snapshot reads, as well as those without.
     #
     # @see Container#create
-    def create(input, content_type, &block)
+    def create(input, content_type)
       super
 
       graph.transaction(mutable: true) do |tx|
@@ -63,8 +66,8 @@ module RDF::LDP
     # @see RDF::LDP::Container#add
     def add(resource, transaction = nil)
       target = transaction || graph
-      process_membership_resource(resource) do |membership, quad, resource|
-        super(resource, transaction)
+      process_membership_resource(resource) do |membership, quad, subject|
+        super(subject, transaction)
         target = transaction || membership.graph
         target.insert(quad)
       end
@@ -72,13 +75,13 @@ module RDF::LDP
     end
 
     ##
-    # Removes a member `resource` to the container. Handles containment and 
+    # Removes a member `resource` to the container. Handles containment and
     # removes membership triple to the memebership resource.
     #
     # @see RDF::LDP::Container#remove
     def remove(resource, transaction = nil)
-      process_membership_resource(resource) do |membership, quad, resource|
-        super(resource, transaction)
+      process_membership_resource(resource) do |membership, quad, subject|
+        super(subject, transaction)
         target = transaction || membership.graph
         target.delete(quad)
       end
@@ -86,24 +89,25 @@ module RDF::LDP
     end
 
     ##
-    # Gives the membership constant URI. If none is present in the container 
+    # Gives the membership constant URI. If none is present in the container
     # state, we add the current resource as a membership constant.
     #
     # @return [RDF::URI] the membership constant uri for the container
     #
-    # @raise [RDF::LDP::NotAcceptable] if multiple membership constant uris exist
+    # @raise [RDF::LDP::NotAcceptable] if multiple membership constant uris
+    #   exist
     #
     # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
     def membership_constant_uri
       statements = membership_resource_statements
       return statements.first.object if statements.count == 1
 
-      raise NotAcceptable.new('An LDP-DC MUST have exactly one membership ' \
-                              "resource; found #{statements.count}.")
+      raise(NotAcceptable, 'An LDP-DC MUST have exactly one membership ' \
+                           "resource; found #{statements.count}.")
     end
 
     ##
-    # Gives the membership predicate. If none is present in the container 
+    # Gives the membership predicate. If none is present in the container
     # state, we add the current resource as a membership constant.
     #
     # @return [RDF::URI] the membership predicate
@@ -115,8 +119,8 @@ module RDF::LDP
       statements = member_relation_statements
       return statements.first.object if statements.count == 1
 
-      raise NotAcceptable.new('An LDP-DC MUST have exactly one member ' \
-                              "relation triple; found #{statements.count}.")
+      raise(NotAcceptable, 'An LDP-DC MUST have exactly one member ' \
+                           "relation triple; found #{statements.count}.")
     end
 
     ##
@@ -134,9 +138,9 @@ module RDF::LDP
     end
 
     private
-    
+
     def membership_resource_statements
-      graph.query([subject_uri, RDF::Vocab::LDP.membershipResource, :o])
+      graph.query([subject_uri, MEMBERSHIP_RESOURCE_URI, :o])
     end
 
     def member_relation_statements
@@ -153,28 +157,24 @@ module RDF::LDP
       resource
     end
 
-    def process_membership_resource(resource, &block)
+    def process_membership_resource(resource)
       statement = make_membership_triple(resource.to_uri)
 
-      begin
-        membership_rs = membership_resource
-      rescue NotFound => e
-        raise NotAcceptable.new('Membership resource ' \
-                                "#{membership_constant_uri} does not exist")
-      end
+      membership_rs = membership_resource
 
       statement.graph_name = membership_rs.subject_uri
       yield(membership_rs, statement, resource) if block_given?
+    rescue NotFound
+      raise(NotAcceptable, 'Membership resource ' \
+                           "#{membership_constant_uri} does not exist")
     end
 
     def default_membership_resource_statement
-      RDF::Statement(subject_uri, 
-                     RDF::Vocab::LDP.membershipResource, 
-                     subject_uri)
+      RDF::Statement(subject_uri, MEMBERSHIP_RESOURCE_URI, subject_uri)
     end
-    
+
     def default_member_relation_statement
-      RDF::Statement(subject_uri, RELATION_TERMS.first, RDF::Vocab::LDP.member)
+      RDF::Statement(subject_uri, RELATION_TERMS.first, MEMBER_URI)
     end
   end
 end

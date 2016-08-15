@@ -1,11 +1,11 @@
 module RDF::LDP
   ##
-  # An LDP Basic Container. This also serves as a base class for other 
+  # An LDP Basic Container. This also serves as a base class for other
   # container types. Containers are implemented as `RDF::LDP::RDFSources` with
   # the ability to contain other resources.
   #
   # Containers respond to `#post`, allowing new resources to be added to them.
-  # On the public interface (not running through HTTP/`#request`), this is 
+  # On the public interface (not running through HTTP/`#request`), this is
   # supported by `#add` and `#remove`.
   #
   # Containers will throw errors when attempting to edit them in conflict with
@@ -15,7 +15,7 @@ module RDF::LDP
   #   of LDP Container
   class Container < RDFSource
     ##
-    # @return [RDF::URI] uri with lexical representation 
+    # @return [RDF::URI] uri with lexical representation
     #   'http://www.w3.org/ns/ldp#Container'
     def self.to_uri
       RDF::Vocab::LDP.Container
@@ -36,25 +36,11 @@ module RDF::LDP
     ##
     # Create with validation as required for the LDP container.
     #
-    # @raise [RDF::LDP::Conflict] if the create inserts triples that are not 
+    # @raise [RDF::LDP::Conflict] if the create inserts triples that are not
     #   allowed by LDP for the container type
     # @see RDFSource#create
     def create(input, content_type, &block)
-      super do |transaction| 
-        validate_triples!(transaction)
-        yield transaction if block_given?
-      end
-      self
-    end
-    
-    ##
-    # Updates with validation as required for the LDP container.
-    #
-    # @raise [RDF::LDP::Conflict] if the update edits triples that are not 
-    #   allowed by LDP for the container type
-    # @see RDFSource#update
-    def update(input, content_type, &block)
-      super do |transaction| 
+      super do |transaction|
         validate_triples!(transaction)
         yield transaction if block_given?
       end
@@ -62,12 +48,26 @@ module RDF::LDP
     end
 
     ##
-    # Adds a member `resource` to the container. Handles containment and 
+    # Updates with validation as required for the LDP container.
+    #
+    # @raise [RDF::LDP::Conflict] if the update edits triples that are not
+    #   allowed by LDP for the container type
+    # @see RDFSource#update
+    def update(input, content_type, &block)
+      super do |transaction|
+        validate_triples!(transaction)
+        yield transaction if block_given?
+      end
+      self
+    end
+
+    ##
+    # Adds a member `resource` to the container. Handles containment and
     # membership triples as appropriate for the container type.
     #
-    # If a transaction is passed as the second argument, the additon of the 
-    # containment triple is completed when the transaction closes; otherwise it is 
-    # handled atomically.
+    # If a transaction is passed as the second argument, the additon of the
+    # containment triple is completed when the transaction closes; otherwise it
+    # is handled atomically.
     #
     # @param [RDF::Term] a new member for this container
     # @param transaction [RDF::Transaction] an active transaction as context for
@@ -81,8 +81,8 @@ module RDF::LDP
     # Removes a member `resource` from the container. Handles containment and
     # membership triples as appropriate for the container type.
     #
-    # If a transaction is passed as the second argument, the removal of the 
-    # containment triple is completed when the transaction closes; otherwise it is 
+    # If a transaction is passed as the second argument, the removal of the
+    # containment triple is completed when the transaction closes; otherwise it is
     # handled atomically.
     #
     # @param [RDF::Term] a new member for this container
@@ -96,9 +96,7 @@ module RDF::LDP
     ##
     # @return [RDF::Query::Enumerator] the containment triples
     def containment_triples
-      graph.query([subject_uri, 
-                   RDF::Vocab::LDP.contains, 
-                   nil]).statements
+      graph.query([subject_uri, CONTAINS_URI, nil]).statements
     end
 
     ##
@@ -106,7 +104,7 @@ module RDF::LDP
     #
     # @return [Boolean] true if the containment triple exists
     def has_containment_triple?(statement)
-      !(containment_triples.find { |t| statement == t }.nil?)
+      !containment_triples.find { |t| statement == t }.nil?
     end
 
     ##
@@ -116,7 +114,7 @@ module RDF::LDP
     # the transaction's inserts; otherwise it is added directly to `#graph`.
     #
     # @param resource [RDF::Term] a new member for this container
-    # @param transaction [RDF::Transaction] 
+    # @param transaction [RDF::Transaction]
     # @return [Container] self
     def add_containment_triple(resource, transaction = nil)
       target = transaction || graph
@@ -132,7 +130,7 @@ module RDF::LDP
     # the transaction's deletes; otherwise it is deleted directly from `#graph`.
     #
     # @param resource [RDF::Term] a member to remove from this container
-    # @param transaction [RDF::Transaction] 
+    # @param transaction [RDF::Transaction]
     # @return [Container] self
     def remove_containment_triple(resource, transaction = nil)
       target = transaction || graph
@@ -144,16 +142,16 @@ module RDF::LDP
     ##
     # @param [RDF::Term] a member to be represented in the containment triple
     #
-    # @return [RDF::URI] the containment triple, with a graph_name pointing 
+    # @return [RDF::URI] the containment triple, with a graph_name pointing
     #   to `#graph`
     def make_containment_triple(resource)
-      RDF::Statement(subject_uri, RDF::Vocab::LDP.contains, resource, 
+      RDF::Statement(subject_uri, CONTAINS_URI, resource,
                      graph_name: subject_uri)
     end
 
     private
 
-    def patch(status, headers, env)
+    def patch(_status, headers, env)
       check_precondition!(env)
       method = patch_types[env['CONTENT_TYPE']]
 
@@ -177,58 +175,57 @@ module RDF::LDP
     #
     # @raise [RDF::LDP::RequestError] when creation fails
     #
-    # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response 
+    # @return [Array<Fixnum, Hash<String, String>, #each] a new Rack response
     #   array.
-    def post(status, headers, env)
+    def post(_status, headers, env)
       klass = self.class.interaction_model(env.fetch('HTTP_LINK', ''))
       slug = env['HTTP_SLUG']
       slug = klass.gen_id if slug.nil? || slug.empty?
-      raise NotAcceptable.new('Refusing to create resource with `#` in Slug') if 
+      raise(NotAcceptable, 'Refusing to create resource with `#` in Slug') if
         slug.include? '#'
 
       id = (subject_uri / slug).canonicalize
 
       created = klass.new(id, @data)
-                          
+
       created.create(env['rack.input'], env['CONTENT_TYPE']) do |transaction|
         add(created, transaction)
       end
-      
+
       headers['Location'] = created.subject_uri.to_s
       [201, created.send(:update_headers, headers), created]
     end
 
     def validate_triples!(transaction)
       existing_triples = containment_triples.to_a
-      
-      tx_containment = transaction.query(subject: subject_uri, 
-                                         predicate: RDF::Vocab::LDP.contains)
+
+      tx_containment = transaction.query(subject: subject_uri,
+                                         predicate: CONTAINS_URI)
 
       tx_containment.each do |statement|
-        raise Conflict.new('Attempted to write unacceptable LDP ' \
-                           "containment-triple: #{statement}") unless
-          existing_triples.include?(statement) 
+        raise(Conflict, 'Attempted to write unacceptable LDP ' \
+                        "containment-triple: #{statement}") unless
+          existing_triples.include?(statement)
       end
 
       deletes = existing_triples.reject { |st| tx_containment.include?(st) }
-      raise Conflict.new('Cannot remove containment triples in updates. ' \
-                         "Attepted to remove #{deletes}") unless deletes.empty?
+      raise(Conflict, 'Cannot remove containment triples in updates. ' \
+                      "Attepted to remove #{deletes}") unless deletes.empty?
     end
 
     ##
     # supports Patch.
     def validate_statements!(statements)
       existing_triples = containment_triples.to_a
-      statements.query(subject: subject_uri, 
-                       predicate: RDF::Vocab::LDP.contains) do |statement|
-        existing_triples.delete(statement) do 
-          raise Conflict.new('Attempted to write unacceptable LDP ' \
-                             "containment-triple: #{statement}") 
+      statements.query(subject: subject_uri, predicate: CONTAINS_URI) do |st|
+        existing_triples.delete(st) do
+          raise(Conflict, 'Attempted to write unacceptable LDP ' \
+                          "containment-triple: #{st}")
         end
       end
-      raise Conflict.new('Cannot remove containment triples in updates. ' \
-                         "Attepted to remove #{existing_triples}") unless
-        existing_triples.empty?
+      raise(Conflict, 'Cannot remove containment triples in updates. ' \
+                      "Attepted to remove #{existing_triples}") unless
+                existing_triples.empty?
     end
   end
 end
