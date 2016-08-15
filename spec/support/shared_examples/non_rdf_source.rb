@@ -5,7 +5,7 @@ shared_examples 'a NonRDFSource' do
   let(:uri) { RDF::URI 'http://example.org/moomin' }
 
   let(:contents) { StringIO.new('mummi') }
-  
+
   after { subject.destroy }
 
   describe '#non_rdf_source?' do
@@ -84,6 +84,20 @@ shared_examples 'a NonRDFSource' do
   describe '#description_uri' do
     it 'is a uri' do
       expect(subject.description_uri).to be_a RDF::URI
+    end
+  end
+
+  describe '#storage' do
+    it 'sets a default storage adapter' do
+      expect(subject.storage).to be_a RDF::LDP::NonRDFSource::FileStorageAdapter
+    end
+
+    it 'explicitly sets a storage adapter' do
+      class DummyAdapter < RDF::LDP::NonRDFSource::FileStorageAdapter
+      end
+
+      dummy_subject = described_class.new(uri, nil, DummyAdapter)
+      expect(dummy_subject.storage).to be_a DummyAdapter
     end
   end
 
