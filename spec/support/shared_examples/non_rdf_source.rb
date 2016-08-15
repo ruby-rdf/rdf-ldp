@@ -88,23 +88,16 @@ shared_examples 'a NonRDFSource' do
   end
 
   describe '#storage' do
-    before do
-      class DummyAdapter < RDF::LDP::NonRDFSource::StorageAdapter
-      end
-    end
-
     it 'sets a default storage adapter' do
-      expect(subject.storage).to be_a RDF::LDP::NonRDFSource::StorageAdapter
+      expect(subject.storage).to be_a RDF::LDP::NonRDFSource::FileStorageAdapter
     end
 
     it 'explicitly sets a storage adapter' do
-      expect(subject.set_storage DummyAdapter).to be true
-      expect(subject.storage).to be_a DummyAdapter
-    end
+      class DummyAdapter < RDF::LDP::NonRDFSource::FileStorageAdapter
+      end
 
-    it 'does not allow changing a storage adapter' do
-      subject.storage
-      expect(subject.set_storage DummyAdapter).to be false
+      dummy_subject = described_class.new(uri, nil, DummyAdapter)
+      expect(dummy_subject.storage).to be_a DummyAdapter
     end
   end
 
