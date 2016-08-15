@@ -1,3 +1,11 @@
+0.8.0
+-----
+ - Deletes on NonRDFSources now leave the file on disk if deleting the
+ metadata fails, making deletes atomic from the client's perspective.
+ - Changes the NonRDFSource interface to allow configuration of storage
+ adapters via dependency injection.
+ - Ends support for Ruby versions earlier than 2.2.2.
+   
 0.7.0
 -----
  - Changes handling of input streams to be compliant with Rack. Allows
