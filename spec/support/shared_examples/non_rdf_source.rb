@@ -96,7 +96,7 @@ shared_examples 'a NonRDFSource' do
       class DummyAdapter < RDF::LDP::NonRDFSource::FileStorageAdapter
       end
 
-      dummy_subject = described_class.new(uri, storage_adapter: DummyAdapter)
+      dummy_subject = described_class.new(uri, nil, DummyAdapter)
       expect(dummy_subject.storage).to be_a DummyAdapter
     end
   end
