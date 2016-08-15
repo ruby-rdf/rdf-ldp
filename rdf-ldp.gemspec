@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
 
   gem.name               = 'rdf-ldp'
   gem.homepage           = 'http://ruby-rdf.github.com/'
-  gem.license            = 'Public Domain' if gem.respond_to?(:license=)
+  gem.license            = 'Unlicense'
   gem.summary            = 'A suite of LDP software and middleware for RDF.rb.'
   gem.description        = 'Implements a Linked Data Platform domain model, Rack ' \
                            'middleware for server implementers, and a simple ' \
@@ -28,12 +28,12 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 2.2.2'
   gem.requirements               = []
 
-  gem.add_runtime_dependency     'rack', '~> 1.6'
-  gem.add_runtime_dependency     'rdf', '~> 2.0.0'
-  gem.add_runtime_dependency     'rdf-turtle'
-  gem.add_runtime_dependency     'ld-patch', '~> 0.3'
-  gem.add_runtime_dependency     'rdf-vocab', '~> 2.0'
-  gem.add_runtime_dependency     'rack-linkeddata', '~> 1.1'
+  gem.add_runtime_dependency     'rack',            '~> 1.6'
+  gem.add_runtime_dependency     'rdf',             '~> 2.0'
+  gem.add_runtime_dependency     'rdf-turtle',      '~> 2.0'
+  gem.add_runtime_dependency     'ld-patch',        '~> 0.3'
+  gem.add_runtime_dependency     'rdf-vocab',       '~> 2.0'
+  gem.add_runtime_dependency     'rack-linkeddata', '~> 2.0'
 
   gem.add_runtime_dependency     'json-ld', '~> 2.0'
 
