@@ -22,7 +22,9 @@ shared_examples 'a DirectContainer' do
   end
 
   describe '#add' do
-    let(:resource_uri) { RDF::URI('http://ex.org/too-ticky') }
+    let(:added)     { described_class.new(added_uri, repo) }
+    let(:added_uri) { RDF::URI('http://ex.org/too-ticky') }
+
 
     context 'when the membership resource does not exist' do
       before do
@@ -36,41 +38,32 @@ shared_examples 'a DirectContainer' do
 
       let(:membership_resource_uri) { RDF::URI('http://example.com/moomin_resource') }
 
-      it 'raises an error if added resource does not exist' do
-        expect { subject.add(resource_uri) }
-          .to raise_error RDF::LDP::NotAcceptable
-        expect(subject.containment_triples).to be_empty
-      end
-      
-      it 'adds to resource' do
-        added = described_class.new(resource_uri, repo)
-                  .create(StringIO.new, 'application/n-triples')
-
-        expect { subject.add(resource_uri) }
-          .to change { added.graph.statements }
-                .to include subject.make_membership_triple(resource_uri)
+      it 'adds membership triple to the container' do
+        expect { subject.add(added) }
+          .to change { subject.graph.statements }
+                .to include subject.make_membership_triple(added_uri)
       end
     end
 
     context 'when the membership resource exists' do
       before { subject.create(StringIO.new, 'application/n-triples') }
 
-      it 'adds membership triple to membership resource' do
-        expect(subject.add(resource_uri).graph)
-          .to have_statement subject.make_membership_triple(resource_uri)
+      it 'adds membership triple to container' do
+        expect(subject.add(added).graph)
+          .to have_statement subject.make_membership_triple(added_uri)
       end
 
       it 'updates last_modified for membership resource' do
-        expect { subject.add(resource_uri).graph }
+        expect { subject.add(added).graph }
           .to change { subject.last_modified }
       end
 
       it 'updates etag for for membership resource' do
-        expect { subject.add(resource_uri).graph }
+        expect { subject.add(added).graph }
           .to change { subject.etag }
       end
 
-      it 'adds membership triple to custom membership resource' do
+      it 'adds membership triple to container for custom membership resource' do
         repo = RDF::Repository.new
         subject = described_class.new(uri, repo)
         mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'), 
@@ -83,10 +76,10 @@ shared_examples 'a DirectContainer' do
         subject.create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
         mem_rs.create(StringIO.new, 'application/n-triples')
         
-        subject.add(resource_uri)
+        subject.add(added)
 
-        expect(mem_rs.graph)
-          .to have_statement subject.make_membership_triple(resource_uri)
+        expect(subject.graph)
+          .to have_statement subject.make_membership_triple(added_uri)
       end
 
       it 'adds membership triple to membership resource with #fragment' do
@@ -100,11 +93,11 @@ shared_examples 'a DirectContainer' do
                                         mem_rs)
 
         subject.create(StringIO.new(g.dump(:ttl)), 'application/n-triples')
-        expect(subject.add(resource_uri).graph)
-          .to have_statement subject.make_membership_triple(resource_uri)
+        expect(subject.add(added).graph)
+          .to have_statement subject.make_membership_triple(added_uri)
       end
 
-      it 'adds membership triple to LDP-NR membership resource' do
+      it 'adds membership triple to container for LDP-NR membership resource' do
         repo = RDF::Repository.new
         container = described_class.new(uri, repo)
 
@@ -118,9 +111,9 @@ shared_examples 'a DirectContainer' do
         container.create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
         nr.create(StringIO.new, 'application/n-triples')
 
-        container.add(resource_uri)
-        expect(nr.description.graph)
-          .to have_statement container.make_membership_triple(resource_uri)
+        container.add(added)
+        expect(container.graph)
+          .to have_statement container.make_membership_triple(added_uri)
       end
 
       context 'with multiple membership resources' do
@@ -132,7 +125,7 @@ shared_examples 'a DirectContainer' do
                                           RDF::Vocab::LDP.membershipResource,
                                           (subject.subject_uri / 'moomin'))
 
-          expect { subject.add(resource_uri) }
+          expect { subject.add(added) }
             .to raise_error RDF::LDP::RequestError
           expect(subject.containment_triples).to be_empty
         end
@@ -141,31 +134,16 @@ shared_examples 'a DirectContainer' do
   end
 
   describe '#remove' do
-    let(:resource_uri) { RDF::URI('http://ex.org/too-ticky') }
-
-    context 'when the membership resource does not exist' do
-      before do
-        subject.graph << has_member_statement
-        subject.graph << RDF::Statement(subject.subject_uri,
-                                        RDF::Vocab::LDP.membershipResource,
-                                        membership_resource_uri)
-      end
-
-      let(:membership_resource_uri) { RDF::URI('http://example.com/moomin_resource') }
-
-      it 'raises an error if the membership resource does not exist' do
-        expect { subject.remove(resource_uri) }
-          .to raise_error RDF::LDP::NotAcceptable
-      end
-    end
+    let(:added)     { described_class.new(added_uri, repo) }
+    let(:added_uri) { RDF::URI('http://ex.org/too-ticky') }
 
     context 'when the membership resource exists' do
       before { subject.create(StringIO.new, 'application/n-triples') }
 
       it 'removes membership triple to membership resource' do
-        subject.graph << subject.make_membership_triple(resource_uri)
-        expect(subject.remove(resource_uri).graph)
-          .not_to have_statement subject.make_membership_triple(resource_uri)
+        subject.graph << subject.make_membership_triple(added_uri)
+        expect(subject.remove(added_uri).graph)
+          .not_to have_statement subject.make_membership_triple(added_uri)
       end
     end
 

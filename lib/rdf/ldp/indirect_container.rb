@@ -78,12 +78,12 @@ module RDF::LDP
            .statements
     end
 
-    def process_membership_resource(resource)
-      resource = member_derived_uri(resource)
-      super
+    def process_membership_resource(resource, transaction = nil)
+      member = member_derived_uri(resource, transaction)
+      super(resource, transaction, member)
     end
 
-    def member_derived_uri(resource)
+    def member_derived_uri(resource, transaction = nil)
       predicate = inserted_content_relation
       return resource.to_uri if predicate == MEMBER_SUBJECT_URI
 
@@ -91,7 +91,8 @@ module RDF::LDP
                            'it to an IndirectContainer with a content '   \
                            'relation.') if resource.non_rdf_source?
 
-      statements = resource.graph.query([resource.subject_uri, predicate, :o])
+      target = transaction || resource.graph
+      statements = target.query([resource.subject_uri, predicate, :o])
       return statements.first.object if statements.count == 1
 
       raise(NotAcceptable, "#{statements.count} inserted content" \
