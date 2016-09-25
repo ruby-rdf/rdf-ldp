@@ -65,7 +65,6 @@ module RDF::LDP
     #
     # @see RDF::LDP::Container#add
     def add(resource, transaction = nil)
-      target = transaction || graph
       process_membership_resource(resource) do |membership, quad, subject|
         super(subject, transaction)
         target = transaction || membership.graph

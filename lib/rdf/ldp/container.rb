@@ -119,7 +119,7 @@ module RDF::LDP
     def add_containment_triple(resource, transaction = nil)
       target = transaction || graph
       target.insert make_containment_triple(resource)
-      set_last_modified(transaction)
+      set_last_modified(transaction) # #set_last_modified handles nil case
       self
     end
 
@@ -135,7 +135,7 @@ module RDF::LDP
     def remove_containment_triple(resource, transaction = nil)
       target = transaction || graph
       target.delete(make_containment_triple(resource))
-      set_last_modified(transaction)
+      set_last_modified(transaction) # #set_last_modified handles nil case
       self
     end
 
