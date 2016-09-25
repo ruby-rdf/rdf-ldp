@@ -5,8 +5,9 @@
 shared_examples 'a DirectContainer' do
   it_behaves_like 'a Container'
 
-  let(:uri) { RDF::URI('http://ex.org/moomin') }
-  subject { described_class.new(uri) }
+  let(:uri)  { RDF::URI('http://ex.org/moomin') }
+  let(:repo) { RDF::Repository.new }
+  subject    { described_class.new(uri, repo) }
 
   let(:has_member_statement) do
     RDF::Statement(subject.subject_uri, 
@@ -23,10 +24,32 @@ shared_examples 'a DirectContainer' do
   describe '#add' do
     let(:resource_uri) { RDF::URI('http://ex.org/too-ticky') }
 
-    it 'raises an error if the membership resource does not exist' do
-      expect { subject.add(resource_uri) }
-        .to raise_error RDF::LDP::NotAcceptable
-      expect(subject.containment_triples).to be_empty
+    context 'when the membership resource does not exist' do
+      before do
+        subject.create(StringIO.new, 'application/n-triples')
+
+        subject.graph.update has_member_statement
+        subject.graph.update RDF::Statement(subject.subject_uri,
+                                            RDF::Vocab::LDP.membershipResource,
+                                            membership_resource_uri)
+      end
+
+      let(:membership_resource_uri) { RDF::URI('http://example.com/moomin_resource') }
+
+      it 'raises an error if added resource does not exist' do
+        expect { subject.add(resource_uri) }
+          .to raise_error RDF::LDP::NotAcceptable
+        expect(subject.containment_triples).to be_empty
+      end
+      
+      it 'adds to resource' do
+        added = described_class.new(resource_uri, repo)
+                  .create(StringIO.new, 'application/n-triples')
+
+        expect { subject.add(resource_uri) }
+          .to change { added.graph.statements }
+                .to include subject.make_membership_triple(resource_uri)
+      end
     end
 
     context 'when the membership resource exists' do
@@ -120,9 +143,20 @@ shared_examples 'a DirectContainer' do
   describe '#remove' do
     let(:resource_uri) { RDF::URI('http://ex.org/too-ticky') }
 
-    it 'raises an error if the membership resource does not exist' do
-      expect { subject.remove(resource_uri) }
-        .to raise_error RDF::LDP::NotAcceptable
+    context 'when the membership resource does not exist' do
+      before do
+        subject.graph << has_member_statement
+        subject.graph << RDF::Statement(subject.subject_uri,
+                                        RDF::Vocab::LDP.membershipResource,
+                                        membership_resource_uri)
+      end
+
+      let(:membership_resource_uri) { RDF::URI('http://example.com/moomin_resource') }
+
+      it 'raises an error if the membership resource does not exist' do
+        expect { subject.remove(resource_uri) }
+          .to raise_error RDF::LDP::NotAcceptable
+      end
     end
 
     context 'when the membership resource exists' do
