@@ -66,7 +66,7 @@ module RDF::LDP
     # @see RDF::LDP::Container#add
     def add(resource, transaction = nil)
       process_membership_resource(resource) do |membership, quad, subject|
-        super(subject, transaction)
+        super(subject, transaction) # super handles nil transaction case
         target = transaction || membership.graph
         target.insert(quad)
       end
@@ -80,7 +80,7 @@ module RDF::LDP
     # @see RDF::LDP::Container#remove
     def remove(resource, transaction = nil)
       process_membership_resource(resource) do |membership, quad, subject|
-        super(subject, transaction)
+        super(subject, transaction) # super handles nil transaction case
         target = transaction || membership.graph
         target.delete(quad)
       end
@@ -159,13 +159,18 @@ module RDF::LDP
     def process_membership_resource(resource)
       statement = make_membership_triple(resource.to_uri)
 
-      membership_rs = membership_resource
+      begin 
+        target_graph = membership_resource
+      rescue NotFound
+        begin 
+          target_graph = RDF::LDP::Resource.find(resource, @data)
+        rescue NotFound
+          raise(NotAcceptable, "Resource #{resource} does not exist")
+        end
+      end
 
-      statement.graph_name = membership_rs.subject_uri
-      yield(membership_rs, statement, resource) if block_given?
-    rescue NotFound
-      raise(NotAcceptable, 'Membership resource ' \
-                           "#{membership_constant_uri} does not exist")
+      statement.graph_name = target_graph.subject_uri
+      yield(target_graph, statement, resource) if block_given?
     end
 
     def default_membership_resource_statement
