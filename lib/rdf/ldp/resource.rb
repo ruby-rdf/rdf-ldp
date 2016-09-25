@@ -563,6 +563,10 @@ module RDF::LDP
 
     ##
     # Sets the last modified date/time to now
+    #
+    # @param transaction [RDF::Transaction] the transaction scope in which to 
+    #   apply changes. If none (or `nil`) is given, the change is made outside
+    #   any transaction scope.
     def set_last_modified(transaction = nil)
       if transaction
         # transactions do not support updates or pattern deletes, so we must
