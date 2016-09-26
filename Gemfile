@@ -4,6 +4,8 @@ gemspec
 
 gem 'pry'
 
+gem 'rack-linkeddata', github: 'ruby-rdf/rack-linkeddata', branch: 'feature/rack-2.0'
+
 group :debug do
   gem 'psych', :platforms => [:mri, :rbx]
   gem "wirble"
