@@ -225,9 +225,8 @@ ignore `ldp:insertedContentRelation` on DirectContainers.
 - __5.4.2.1__: Triples are created as described when POSTing to a container. We
 allow clients to delete and replace triples at their own risk, per the MAY in
 this section.
-  - Membership triples are added to the Membership Resource's graph unless
-  the Membership Resource does not exist on the server. In this case, they are
-  added to the member's graph.
+  - Membership triples are added to the containers graph for both the
+  `ldp:hasMemberRelation` and `isMemberOfRelation` cases.
   - If the Membership Resource is an LDP-NR, membership triples are added to
   the server-created LDP-RS (`describedby`, resource).
   - POST requests are rejected if the Membership Resource does not exist.

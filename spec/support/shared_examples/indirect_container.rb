@@ -107,32 +107,41 @@ shared_examples 'an IndirectContainer' do
               .delete([uri, RDF::Vocab::LDP.membershipResource, nil])
             subject.graph << RDF::Statement(uri,
                                     RDF::Vocab::LDP.membershipResource,
-                                    contained_resource.to_uri)
+                                    membership_resource)
           end
-          
+
+          let(:membership_resource) { uri }
+
           it 'raises error when resource does not exist' do
             new_resource = described_class.new(uri / 'new', repo)
             expect { new_resource.add(contained_resource) }
               .to raise_error RDF::LDP::NotAcceptable
           end
 
-          it 'adds triple to membership resource' do
-            contained_resource.create(StringIO.new, 'application/n-triples')
-            subject.add(contained_resource)
-            expect(contained_resource.graph.statements)
-              .to include RDF::Statement(contained_resource.to_uri,
-                                         subject.membership_predicate,
-                                         target_uri)
-          end
+          context 'when the membership resource is not in the server' do
+            let(:membership_resource) { uri / '#me' }
+          
+            it 'adds membership triple to container' do
+              contained_resource.create(StringIO.new, 'application/n-triples')
+              subject.add(contained_resource)
 
-          it 'removes triple from membership resource' do
-            contained_resource.create(StringIO.new, 'application/n-triples')
-            subject.add(contained_resource)
-            subject.remove(contained_resource)
-            expect(contained_resource.graph.statements)
-              .not_to include RDF::Statement(contained_resource.to_uri,
-                                             subject.membership_predicate,
-                                             target_uri)
+              expect(subject.graph.statements)
+                .to include RDF::Statement(membership_resource,
+                                           subject.membership_predicate,
+                                           target_uri)
+            end
+
+            it 'removes membership triple to container' do
+              contained_resource.create(StringIO.new, 'application/n-triples')
+
+              subject.add(contained_resource)
+              subject.remove(contained_resource)
+
+              expect(subject.graph.statements)
+                .not_to include RDF::Statement(membership_resource,
+                                               subject.membership_predicate,
+                                               target_uri)
+            end
           end
         end
       end

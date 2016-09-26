@@ -52,7 +52,7 @@ describe RDF::LDP::DirectContainer do
 
         subject.add(resource_uri)
 
-        expect(mem_rs.graph)
+        expect(subject.graph)
           .to have_statement subject.make_membership_triple(resource_uri)
       end
 
