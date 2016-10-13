@@ -161,7 +161,7 @@ module RDF::LDP
     end
 
     def link_headers
-      super << "<#{description_uri}>;rel=\"describedBy\""
+      super << "<#{description_uri}>;rel=\"describedby\""
     end
   end
 end
