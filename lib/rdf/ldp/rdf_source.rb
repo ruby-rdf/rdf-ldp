@@ -199,9 +199,26 @@ module RDF::LDP
     end
 
     def sparql_update(input, graph)
-      SPARQL.execute(input.read, graph, update: true)
-    rescue SPARQL::MalformedQuery => e
+      base_iri = RDF::URI.new(graph.name)
+      query = SPARQL.parse(input.read, update: true)
+      resolve_relative_iris!(query, base_iri)
+      query.execute(graph, update: true)
+    rescue SPARQL::Grammar::Parser::Error => e
       raise BadRequest, e.message
+    end
+
+    def resolve_relative_iris!(query, base_iri)
+      case query
+      when SPARQL::Algebra::Operator
+        query.descendants { |op| resolve_relative_iris!(op, base_iri) }
+      when RDF::Query
+        query.patterns.each { |pattern| resolve_relative_iris!(pattern, base_iri) }
+      when RDF::Query::Pattern
+        if query.subject.respond_to?(:relative?) and query.subject.relative?
+          query.subject = base_iri.join(query.subject)
+        end
+      end
+      query
     end
 
     ##
