@@ -1,3 +1,9 @@
+0.9.0
+-----
+ - Change membership resource handling to accept memberhip resources
+ from outside the server;
+ - Fixes a typo in `describedby` header keys.
+
 0.8.0
 -----
  - Deletes on NonRDFSources now leave the file on disk if deleting the
