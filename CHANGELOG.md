@@ -1,3 +1,7 @@
+0.9.1
+-----
+  - Add support for relative IRIs in SPARQL Update PATCH requests.
+
 0.9.0
 -----
  - Change membership resource handling to accept memberhip resources
