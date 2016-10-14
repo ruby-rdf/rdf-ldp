@@ -20,12 +20,12 @@ module RDF::LDP
   # `Rack::LDP::ContentNegotiation`.
   #
   # @note the contents of `#metagraph`'s are *not* the same as
-  #   LDP-server-managed triples. `#metagraph` contains internal properties of 
-  #   the RDFSource which are necessary for the server's management purposes, 
-  #   but MAY be absent from (or in conflict with) the representation of its 
+  #   LDP-server-managed triples. `#metagraph` contains internal properties of
+  #   the RDFSource which are necessary for the server's management purposes,
+  #   but MAY be absent from (or in conflict with) the representation of its
   #   state in `#graph`.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source 
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
   #   Definition of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
     class << self
@@ -199,26 +199,11 @@ module RDF::LDP
     end
 
     def sparql_update(input, graph)
-      base_iri = RDF::URI.new(graph.name)
-      query = SPARQL.parse(input.read, update: true)
-      resolve_relative_iris!(query, base_iri)
-      query.execute(graph, update: true)
-    rescue SPARQL::Grammar::Parser::Error => e
+      SPARQL.execute(input.read, graph,
+                     update:   true,
+                     base_uri: RDF::URI.intern(graph.name))
+    rescue SPARQL::MalformedQuery => e
       raise BadRequest, e.message
-    end
-
-    def resolve_relative_iris!(query, base_iri)
-      case query
-      when SPARQL::Algebra::Operator
-        query.descendants { |op| resolve_relative_iris!(op, base_iri) }
-      when RDF::Query
-        query.patterns.each { |pattern| resolve_relative_iris!(pattern, base_iri) }
-      when RDF::Query::Pattern
-        if query.subject.respond_to?(:relative?) and query.subject.relative?
-          query.subject = base_iri.join(query.subject)
-        end
-      end
-      query
     end
 
     ##
