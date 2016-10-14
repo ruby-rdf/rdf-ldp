@@ -139,6 +139,18 @@ describe 'lamprey' do
         patch '/', update, 'CONTENT_TYPE' => 'application/sparql-update'
         expect(last_response.status).to eq 200
       end
+      
+      it 'properly handles null relative IRIs' do
+        post '/', '<> <http://example.org/ns#foo> "foo" .', 'CONTENT_TYPE' => 'text/turtle'
+        resource_path = URI.parse(last_response['Location']).path
+
+        update = 'DELETE { <> <http://example.org/ns#foo> ?change . } ' \
+                 ' WHERE { <> <http://example.org/ns#foo> ?change . } ; ' \
+                 'INSERT { <> <http://example.org/ns#foo> "bar" . } ' \
+                 ' WHERE { }'
+        patch resource_path, update, 'CONTENT_TYPE' => 'application/sparql-update'
+        expect(last_response.status).to eq 200
+      end
     end
 
     describe 'POST' do

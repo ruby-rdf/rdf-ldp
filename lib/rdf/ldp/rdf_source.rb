@@ -20,12 +20,12 @@ module RDF::LDP
   # `Rack::LDP::ContentNegotiation`.
   #
   # @note the contents of `#metagraph`'s are *not* the same as
-  #   LDP-server-managed triples. `#metagraph` contains internal properties of 
-  #   the RDFSource which are necessary for the server's management purposes, 
-  #   but MAY be absent from (or in conflict with) the representation of its 
+  #   LDP-server-managed triples. `#metagraph` contains internal properties of
+  #   the RDFSource which are necessary for the server's management purposes,
+  #   but MAY be absent from (or in conflict with) the representation of its
   #   state in `#graph`.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source 
+  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
   #   Definition of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
     class << self
@@ -199,7 +199,9 @@ module RDF::LDP
     end
 
     def sparql_update(input, graph)
-      SPARQL.execute(input.read, graph, update: true)
+      SPARQL.execute(input.read, graph,
+                     update:   true,
+                     base_uri: RDF::URI.intern(graph.name))
     rescue SPARQL::MalformedQuery => e
       raise BadRequest, e.message
     end
