@@ -9,6 +9,7 @@ require 'rdf/ldp/non_rdf_source'
 require 'rdf/ldp/container'
 require 'rdf/ldp/direct_container'
 require 'rdf/ldp/indirect_container'
+require 'rdf/ldp/interaction_model'
 
 module RDF
   ##
@@ -20,20 +21,12 @@ module RDF
   # @see RDF::LDP::Resource
   # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
   module LDP
-    ##
-    # Interaction models are in reverse order of preference for POST/PUT
-    # requests; e.g. if a client sends a request with Resource, RDFSource, and
-    # BasicContainer headers, the server gives a basic container.
-    INTERACTION_MODELS = {
-      RDF::Vocab::LDP.Resource => RDF::LDP::RDFSource,
-      RDF::LDP::RDFSource.to_uri => RDF::LDP::RDFSource,
-      RDF::LDP::Container.to_uri => RDF::LDP::Container,
-      RDF::Vocab::LDP.BasicContainer => RDF::LDP::Container,
-      RDF::LDP::DirectContainer.to_uri => RDF::LDP::DirectContainer,
-      RDF::LDP::IndirectContainer.to_uri => RDF::LDP::IndirectContainer,
-      RDF::LDP::NonRDFSource.to_uri => RDF::LDP::NonRDFSource
-    }.freeze
-
+    InteractionModel.register(RDF::LDP::RDFSource, default: true)
+    InteractionModel.register(RDF::LDP::Container, for: RDF::Vocab::LDP.BasicContainer)
+    InteractionModel.register(RDF::LDP::DirectContainer)
+    InteractionModel.register(RDF::LDP::IndirectContainer)
+    InteractionModel.register(RDF::LDP::NonRDFSource)
+    
     CONTAINER_CLASSES = {
       basic:    RDF::Vocab::LDP.BasicContainer.freeze,
       direct:   RDF::LDP::DirectContainer.to_uri.freeze,

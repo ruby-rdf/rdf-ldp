@@ -132,8 +132,10 @@ module RDF::LDP
         graph = RDF::Graph.new(graph_name: metagraph_name(uri), data: data)
         raise NotFound if graph.empty?
 
-        rdf_class = graph.query([uri, RDF.type, :o]).first
-        klass = INTERACTION_MODELS[rdf_class.object] if rdf_class
+        klass = graph.query([uri, RDF.type, :o]).find do |rdf_class|
+          candidate = InteractionModel.for(rdf_class.object)
+          break candidate unless candidate.nil?
+        end
         klass ||= RDFSource
 
         klass.new(uri, data)
@@ -156,21 +158,13 @@ module RDF::LDP
         models =
           LinkHeader.parse(link_header)
                     .links.select { |link| link['rel'].casecmp 'type' }
-                    .map { |link| link.href }
+                    .map { |link| RDF::URI(link.href) }
 
-        return RDFSource if models.empty?
-        match = INTERACTION_MODELS.keys.reverse.find { |u| models.include? u }
+        return InteractionModel.default if models.empty?
+        
+        raise NotAcceptable unless InteractionModel.compatible?(models)
 
-        if match == RDF::LDP::NonRDFSource.to_uri
-          raise NotAcceptable if
-            models.include?(RDF::LDP::RDFSource.to_uri)         ||
-            models.include?(RDF::LDP::Container.to_uri)         ||
-            models.include?(RDF::LDP::DirectContainer.to_uri)   ||
-            models.include?(RDF::LDP::IndirectContainer.to_uri) ||
-            models.include?(RDF::URI('http://www.w3.org/ns/ldp#BasicContainer'))
-        end
-
-        INTERACTION_MODELS[match] || RDFSource
+        InteractionModel.find(models)
       end
 
       ##
@@ -585,7 +579,7 @@ module RDF::LDP
     end
 
     ##
-    # Sets the last modified date/time to the URI for this resource's class
+    # Sets the interaction model to the URI for this resource's class
     def set_interaction_model(transaction)
       transaction.insert(RDF::Statement(subject_uri,
                                         RDF.type,
