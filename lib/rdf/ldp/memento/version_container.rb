@@ -3,6 +3,9 @@ require 'rack/memento/timemap'
 module RDF::LDP::Memento
   ##
   # A specialized container storing versions of another LDP::Resource.
+  #
+  # A `VersionContainer` is both an `ldp:BasicContainer` and a Memento TimeMap.
+  # Its members are the versions of the its Original Resource.
   class VersionContainer < RDF::LDP::Container
     include Rack::Memento::Timemap
     ##
@@ -11,13 +14,6 @@ module RDF::LDP::Memento
     # @return [RDF::URI]
     def memento_original=(original)
       @memento_original = original.to_uri
-    end
-    
-    ##
-    # @note overrides `Rack::Memento::Timemap#to_uri` to reinstate `RDF::LDP::Resource` behavior
-    # @see RDF::LDP::Resource#to_uri
-    def to_uri
-      subject_uri
     end
   end
 end
