@@ -35,7 +35,10 @@ describe Rack::Memento do
     end
     
     context 'when the resource has a timemap' do
-      let(:uri_t)    { 'http://example.org/URI-T' }
+      let(:uri_t) do 
+        instance_double(Rack::Memento::Timemap, 
+                        to_s: 'http://example.org/URI-T')
+      end
       let(:response) { double('URI-R', timemap: uri_t, each: body) }
 
       it 'adds timemap Link header' do

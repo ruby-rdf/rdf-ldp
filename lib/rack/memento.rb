@@ -1,4 +1,5 @@
 require 'rack'
+require 'rack/memento/timemap'
 
 module Rack
   ##
@@ -42,7 +43,7 @@ module Rack
     def add_timegate_link(headers, response)
       return headers['Link'] unless response.respond_to?(:timegate)
 
-      ([headers['Link']] << link_header(response.timegate, TIMEGATE_REL))
+      ([headers['Link']] << link_header(response.timegate.to_s, TIMEGATE_REL))
         .compact.join(',')
     end
 
@@ -53,7 +54,7 @@ module Rack
     def add_timemap_link(headers, response)
       return headers['Link'] unless response.respond_to?(:timemap)
 
-      ([headers['Link']] << link_header(response.timemap, TIMEMAP_REL))
+      ([headers['Link']] << link_header(response.timemap.to_s, TIMEMAP_REL))
         .compact.join(',')
     end
 
