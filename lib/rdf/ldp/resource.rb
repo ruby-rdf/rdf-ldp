@@ -158,7 +158,7 @@ module RDF::LDP
         models =
           LinkHeader.parse(link_header)
                     .links.select { |link| link['rel'].casecmp 'type' }
-                    .map { |link| RDF::URI(link.href) }
+                    .map { |link| RDF::URI.intern(link.href) }
 
         return InteractionModel.default if models.empty?
         
@@ -193,7 +193,7 @@ module RDF::LDP
     #   end
     #
     def initialize(subject_uri, data = RDF::Repository.new)
-      @subject_uri = RDF::URI(subject_uri)
+      @subject_uri = RDF::URI.intern(subject_uri)
       @data = data
       @metagraph = RDF::Graph.new(graph_name: metagraph_name, data: data)
       yield self if block_given?
