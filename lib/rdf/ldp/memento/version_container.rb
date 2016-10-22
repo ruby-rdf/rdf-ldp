@@ -8,12 +8,19 @@ module RDF::LDP::Memento
   # Its members are the versions of the its Original Resource.
   class VersionContainer < RDF::LDP::Container
     include Rack::Memento::Timemap
+
     ##
     # Sets the memento original resource
     # @param original [#to_uri]
     # @return [RDF::URI]
     def memento_original=(original)
       @memento_original = original.to_uri
+    end
+    
+    ##
+    # @return [RDF::Enumerable<RDF::URI>] uris of the versions
+    def memento_versions
+      containment_triples.objects
     end
   end
 end

@@ -16,6 +16,10 @@ describe Rack::Memento::Timemap do
       def to_uri
         RDF::URI('http://example.org/moomin#timemap')
       end
+
+      def memento_versions
+        [RDF::URI('')]
+      end
     end
   end
 
