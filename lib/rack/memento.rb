@@ -2,7 +2,13 @@ require 'rack'
 
 module Rack
   ##
-  # Implements Memento as middleware
+  # Implements Memento as middleware.
+  #
+  # Expects an Original Resource, a Timegate, a Timemap, or a Memento as a 
+  # response body.
+  #
+  #  - `#timegate`
+  #  - `#timemap`
   #
   # @see https://mementoweb.org/guide/rfc/
   class Memento
@@ -23,6 +29,7 @@ module Rack
     def call(env)
       status, headers, response = @app.call(env)
       headers['Link'] = add_timegate_link(headers, response)
+      headers['Link'] = add_timemap_link(headers, response)
       [status, headers, response]
     end
 
@@ -33,9 +40,20 @@ module Rack
     #
     # @return [String] the new `Link:` headers with the timegate added
     def add_timegate_link(headers, response)
-      return headers unless response.respond_to?(:timegate)
+      return headers['Link'] unless response.respond_to?(:timegate)
 
       ([headers['Link']] << link_header(response.timegate, TIMEGATE_REL))
+        .compact.join(',')
+    end
+
+    ##
+    # Adds timemap link to headers
+    #
+    # @return [String] the new `Link:` headers with the timemap added
+    def add_timemap_link(headers, response)
+      return headers['Link'] unless response.respond_to?(:timemap)
+
+      ([headers['Link']] << link_header(response.timemap, TIMEMAP_REL))
         .compact.join(',')
     end
 
