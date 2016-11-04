@@ -62,7 +62,7 @@ module Rack
     # @param target [String]
     # @param rel    [String]
     def link_header(target, rel)
-      "<#{target}>;rel=#{rel}"
+      "<#{target}>;rel=\"#{rel}\""
     end
   end
 end
