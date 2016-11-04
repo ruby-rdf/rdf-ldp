@@ -1,4 +1,4 @@
-require 'spec_helper'
+ require 'spec_helper'
 
 require 'rdf/ldp/memento/version_container'
 
@@ -6,8 +6,12 @@ describe RDF::LDP::Memento::VersionContainer do
   subject        { described_class.new(uri) }
   let(:uri)      { RDF::URI('http://example.org/moomin/.well-known/timemap') }
   let(:original) { RDF::URI('http://example.org/moomin/') }
+  let(:timegate) { RDF::URI('http://example.org/moomin/.well-known/timegate') }
 
-  before { subject.memento_original = original }
+  before do
+    subject.memento_original = original
+    subject.memento_timegate = timegate
+  end
   
   it_behaves_like 'a memento timemap'
   it_behaves_like 'a Container'

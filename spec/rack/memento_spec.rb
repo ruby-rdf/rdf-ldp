@@ -44,7 +44,7 @@ describe Rack::Memento do
       it 'adds timemap Link header' do
         get '/'
         expect(last_response.headers['Link'])
-          .to eq "<#{uri_t}>;rel=#{described_class::TIMEMAP_REL}"
+          .to eq "<#{uri_t}>;rel=\"#{described_class::TIMEMAP_REL}\""
       end
 
       it 'keeps other link headers' do
@@ -54,7 +54,7 @@ describe Rack::Memento do
         get '/'
         expect(last_response.headers['Link']).to include link
         expect(last_response.headers['Link'])
-          .to include "<#{uri_t}>;rel=#{described_class::TIMEMAP_REL}"
+          .to include "<#{uri_t}>;rel=\"#{described_class::TIMEMAP_REL}\""
       end
     end
 
@@ -65,7 +65,7 @@ describe Rack::Memento do
       it 'adds timegate Link header' do
         get '/'
         expect(last_response.headers['Link'])
-          .to eq "<#{uri_g}>;rel=#{described_class::TIMEGATE_REL}"
+          .to eq "<#{uri_g}>;rel=\"#{described_class::TIMEGATE_REL}\""
       end
 
       it 'keeps other link headers' do
@@ -75,7 +75,7 @@ describe Rack::Memento do
         get '/'
         expect(last_response.headers['Link']).to include link
         expect(last_response.headers['Link'])
-          .to include "<#{uri_g}>;rel=#{described_class::TIMEGATE_REL}"
+          .to include "<#{uri_g}>;rel=\"#{described_class::TIMEGATE_REL}\""
       end
     end
   end

@@ -16,6 +16,14 @@ module RDF::LDP::Memento
     def memento_original=(original)
       @memento_original = original.to_uri
     end
+
+    ##
+    # Sets the memento timegate resource
+    # @param original [#to_uri]
+    # @return [RDF::URI]
+    def memento_timegate=(timegate)
+      @memento_timegate = timegate.to_uri
+    end
     
     ##
     # @return [RDF::Enumerable<RDF::URI>] uris of the versions
