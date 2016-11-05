@@ -6,8 +6,8 @@ module Rack
     # Mixin behavior for Memento TimeMaps
     #
     # Implementing classes are expected to provide a `@memento_original`
-    # instance variable, a `#to_uri` method, and a `#versions` method returning
-    # an enumerable of version uris.
+    # instance variable, a `#to_uri` method, and a `#memento_versions` method 
+    # returning an enumerable of version uris.
     module Timemap
       # @!attribute [r] memento_original
       #   @return [RDF::URI] the uri identifying the original resource (URI-R)

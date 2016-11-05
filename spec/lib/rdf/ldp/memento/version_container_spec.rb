@@ -1,4 +1,4 @@
- require 'spec_helper'
+require 'spec_helper'
 
 require 'rdf/ldp/memento/version_container'
 
