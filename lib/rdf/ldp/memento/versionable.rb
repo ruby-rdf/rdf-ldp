@@ -12,12 +12,10 @@ module RDF::LDP::Memento
   # @see RDF::LDP::Resource
   # @see Rack::Memento
   module Versionable
-    CREATED_URI             = RDF::Vocab::DC.created.freeze
-    REVISION_URI            = RDF::Vocab::PROV.wasRevisionOf.freeze
     TIMEMAP_CONTAINER_CLASS = RDF::LDP::Memento::VersionContainer
 
     ##
-    # @todo move the revison/created statement logic to VersionContainer
+    # Creates a new version of this resource.
     #
     # @param datetime [DateTime] the timestamp to use for the version. 
     #   default: now
@@ -41,16 +39,18 @@ module RDF::LDP::Memento
 
       version = self.class.new(version_uri(datetime), @data)
 
-      transaction = transaction || @data.transaction(mutable: true)
+      local_transaction = transaction.nil?
+      tx = transaction || @data.transaction(mutable: true)
 
-      timemap.add(version, transaction)
+      timemap.add(version, tx, datetime)
+      tx.insert(version_graph(version)) if rdf_source?
+      tx.insert([version.to_uri, 
+                 TIMEMAP_CONTAINER_CLASS::REVISION_URI, 
+                 to_uri,
+                 version.metagraph.graph_name])
 
-      transaction.insert revision_statement(version)
-      transaction.insert created_statement(version, datetime)
-      transaction.insert(version_graph(version)) if rdf_source?
-
-      transaction.execute
-
+      tx.execute if local_transaction
+      
       version
     end
 
@@ -68,6 +68,7 @@ module RDF::LDP::Memento
       @timemap ||= RDF::LDP::Resource.find(timemap_uri, @data)
     rescue RDF::LDP::NotFound
       @timemap = TIMEMAP_CONTAINER_CLASS.new(timemap_uri, @data)
+      @timemap.memento_original = self
       @timemap.create(StringIO.new, 'text/plain')
     end
     alias_method :version_container, :timemap
@@ -99,16 +100,6 @@ module RDF::LDP::Memento
     end
 
     private
-
-    def revision_statement(version)
-      [version.subject_uri, REVISION_URI, subject_uri,
-       version.metagraph.graph_name]
-    end
-
-    def created_statement(version, datetime)
-      [version.subject_uri, CREATED_URI, datetime,
-       version.metagraph.graph_name]
-    end
 
     def version_graph(version)
       version_graph = RDF::Graph.new(graph_name: version.subject_uri, 

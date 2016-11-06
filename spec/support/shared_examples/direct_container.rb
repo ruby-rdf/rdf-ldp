@@ -30,7 +30,6 @@ shared_examples 'a DirectContainer' do
       before do
         subject.create(StringIO.new, 'application/n-triples')
 
-        subject.graph.update has_member_statement
         subject.graph.update RDF::Statement(subject.subject_uri,
                                             RDF::Vocab::LDP.membershipResource,
                                             membership_resource_uri)
@@ -150,13 +149,9 @@ shared_examples 'a DirectContainer' do
   end
 
   describe '#membership_constant_uri' do
-    it 'when created defaults to #subject_uri' do
+    it 'when has a value' do
       subject.create(StringIO.new, 'application/n-triples')
-      expect(subject.membership_constant_uri).to eq subject.subject_uri
-      expect(subject.graph)
-        .to have_statement RDF::Statement(subject.subject_uri, 
-                                          RDF::Vocab::LDP.membershipResource, 
-                                          subject.subject_uri)
+      expect(subject.membership_constant_uri).to be_a RDF::URI
     end
 
     it 'gives membership resource' do
