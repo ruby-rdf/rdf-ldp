@@ -10,6 +10,10 @@ describe RDF::LDP::DirectContainer do
     it 'defaults to #subject_uri' do
       subject.create(StringIO.new, 'application/n-triples')
       expect(subject.membership_constant_uri).to eq subject.subject_uri
+      expect(subject.graph)
+        .to have_statement RDF::Statement(subject.subject_uri, 
+                                          RDF::Vocab::LDP.membershipResource,
+                                          subject.subject_uri)
     end
   end
 

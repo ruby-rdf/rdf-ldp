@@ -66,7 +66,7 @@ module RDF::LDP
     # @see RDF::LDP::Container#add
     def add(resource, transaction = nil)
       process_membership_resource(resource, transaction) do |container, quad, subject|
-        super(subject, transaction) # super handles nil transaction case
+        super(subject, transaction) 
         target = transaction || container.graph
         target.insert(quad)
       end
