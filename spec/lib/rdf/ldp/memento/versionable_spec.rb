@@ -6,9 +6,7 @@ require 'rdf/ldp/memento/versionable'
 
 describe RDF::LDP::Memento::Versionable do
   let(:resource_class) do
-    Class.new(RDF::LDP::Resource) do
-      include RDF::LDP::Memento::Versionable
-    end
+    Class.new(RDF::LDP::Resource) { include RDF::LDP::Memento::Versionable }
   end
 
   subject   { resource_class.new(uri) }
