@@ -36,6 +36,13 @@ shared_examples 'a versionable LDP-R' do
       expect(datetime).to eq target_time
     end
 
+    it 'raises an ArgumentError when datetime is in the future' do
+      target_time = DateTime.now + 1
+
+      expect { subject.create_version(datetime: target_time) }
+        .to raise_error ArgumentError
+    end
+
     context 'with an LDP-RS' do
       let(:resource_class) do
         Class.new(RDF::LDP::RDFSource) do
