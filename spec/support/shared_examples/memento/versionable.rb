@@ -67,6 +67,10 @@ shared_examples 'a versionable LDP-R' do
   end
 
   describe '#timemap' do
+    it 'exists' do
+      expect(subject.timemap).to exist
+    end
+
     it 'has an original' do
       expect(subject.timemap).to respond_to :memento_original
     end

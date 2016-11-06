@@ -21,11 +21,14 @@ module RDF::LDP::Memento
     #
     # @param datetime [DateTime] the timestamp to use for the version. 
     #   default: now
+    # @param transaction [RDF::Transaction] the transaction to use when 
+    #   creating the version. If none is given, a new transaction is 
+    #   created.
     # 
     # @raise [NotImplementedError] when trying to create a version of a 
     #   NonRDFSource. Support for this is expected in a future release.
     # @raise [ArgumentError] when passed a future datetime for the version
-    def create_version(datetime: DateTime.now)
+    def create_version(datetime: DateTime.now, transaction: nil)
       raise(NotImplementedError, 
             'LDP-NR (NonRDFSource) versioning is unsupported.') if 
         non_rdf_source?
@@ -34,19 +37,19 @@ module RDF::LDP::Memento
             "Attempted to create a version at future time: #{datetime}") if
         datetime > DateTime.now
 
-
-      version_uri(datetime)
+      timemap # touch the timemap in case it doesn't exist
 
       version = self.class.new(version_uri(datetime), @data)
 
-      version.create(StringIO.new, 'text/plain') do |transaction|
-        timemap.add(version, transaction)
+      transaction = transaction || @data.transaction(mutable: true)
 
-        transaction.insert revision_statement(version)
-        transaction.insert created_statement(version, datetime)
+      timemap.add(version, transaction)
 
-        transaction.insert(version_graph(version)) if rdf_source?
-      end
+      transaction.insert revision_statement(version)
+      transaction.insert created_statement(version, datetime)
+      transaction.insert(version_graph(version)) if rdf_source?
+
+      transaction.execute
 
       version
     end
@@ -62,9 +65,10 @@ module RDF::LDP::Memento
     # @return [VersionContainer] An LDPC that acts as a version container and
     #   timegate for this resource
     def timemap
-      @timemap ||= map RDF::LDP::Resource.find(timemap_uri, @data)
+      @timemap ||= RDF::LDP::Resource.find(timemap_uri, @data)
     rescue RDF::LDP::NotFound
       @timemap = TIMEMAP_CONTAINER_CLASS.new(timemap_uri, @data)
+      @timemap.create(StringIO.new, 'text/plain')
     end
     alias_method :version_container, :timemap
 
