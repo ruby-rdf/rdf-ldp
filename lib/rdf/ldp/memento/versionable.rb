@@ -17,11 +17,23 @@ module RDF::LDP::Memento
     TIMEMAP_CONTAINER_CLASS = RDF::LDP::Memento::VersionContainer
 
     ##
-    # @param datetime [DateTime] default: now
+    # @todo move the revison/created statement logic to VersionContainer
+    #
+    # @param datetime [DateTime] the timestamp to use for the version. 
+    #   default: now
+    # 
+    # @raise [NotImplementedError] when trying to create a version of a 
+    #   NonRDFSource. Support for this is expected in a future release.
+    # @raise [ArgumentError] when passed a future datetime for the version
     def create_version(datetime: DateTime.now)
       raise(NotImplementedError, 
             'LDP-NR (NonRDFSource) versioning is unsupported.') if 
         non_rdf_source?
+
+      raise(ArgumentError, 
+            "Attempted to create a version at future time: #{datetime}") if
+        datetime > DateTime.now
+
 
       version_uri(datetime)
 
