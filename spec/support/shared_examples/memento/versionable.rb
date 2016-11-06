@@ -1,12 +1,58 @@
 shared_examples 'a versionable LDP-R' do
-
   describe '#create_version' do
     it 'adds a version' do
       expect { subject.create_version }
         .to change { subject.versions.count }.by(1)
     end
+
+    it 'returns a version of the resource' do
+      version = subject.create_version
+
+      expect(version.metagraph)
+        .to have_statement(
+              RDF::Statement(version.to_uri,
+                             described_class::REVISION_URI,
+                             subject.to_uri,
+                             graph_name: version.metagraph.graph_name))
+    end
+
+    it 'returns a new version of the resource' do
+      version = subject.create_version
+      created = version.metagraph.query(subject: version.to_uri, 
+                                        predicate: described_class::CREATED_URI)
+      datetime = created.first.object.object
+
+      expect(datetime).to be_within(0.00001).of DateTime.now
+    end
+
+    it 'accepts a custom datetime' do
+      target_time = DateTime.now - 1
+
+      version = subject.create_version(datetime: target_time)
+      created = version.metagraph.query(subject:   version.to_uri, 
+                                        predicate: described_class::CREATED_URI)
+      datetime = created.first.object.object
+
+      expect(datetime).to eq target_time
+    end
+
+    context 'with an LDP-RS' do
+      let(:resource_class) do
+        Class.new(RDF::LDP::RDFSource) do
+          include RDF::LDP::Memento::Versionable
+        end
+      end
+
+      let(:triples) { RDF::Spec.triples }
+
+      before { subject.graph.insert(*triples) }
+
+      it 'returns a version with current resource contents' do
+        expect(subject.create_version.graph).to contain_exactly(*triples)
+      end
+    end
   end
-  
+
   describe '#timegate' do
     it 'defaults to self' do
       expect(subject.timegate).to equal subject

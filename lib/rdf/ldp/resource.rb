@@ -88,6 +88,7 @@ module RDF::LDP
     INVALIDATED_AT_URI = RDF::Vocab::PROV.invalidatedAtTime.freeze
     MODIFIED_URI       = RDF::Vocab::DC.modified.freeze
 
+    
     # @!attribute [r] subject_uri
     #   an rdf term identifying the `Resource`
     attr_reader :subject_uri
@@ -325,7 +326,7 @@ module RDF::LDP
     # @todo handle cases where there is more than one RDF::DC.modified.
     #    check for the most recent date
     def last_modified
-      results = @metagraph.query([subject_uri, RDF::Vocab::DC.modified, :time])
+      results = @metagraph.query([subject_uri, MODIFIED_URI, :time])
 
       if results.empty?
         return nil unless exists?
