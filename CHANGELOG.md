@@ -1,3 +1,8 @@
+0.9.2
+-----
+  - Reduce memory allocation for URIs by using `RDF::URI#intern`.
+  - Make interaction models pluggable via `InteractionModel#register`.
+  
 0.9.1
 -----
   - Add support for relative IRIs in SPARQL Update PATCH requests.
