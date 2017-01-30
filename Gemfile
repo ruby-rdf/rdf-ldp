@@ -2,7 +2,10 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'pry'
+unless ENV['CI']
+  gem 'pry'
+  gem 'guard' 
+end
 
 group :debug do
   gem 'psych', :platforms => [:mri, :rbx]
