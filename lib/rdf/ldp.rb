@@ -21,12 +21,6 @@ module RDF
   # @see RDF::LDP::Resource
   # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
   module LDP
-    InteractionModel.register(RDF::LDP::RDFSource, default: true)
-    InteractionModel.register(RDF::LDP::Container, for: RDF::Vocab::LDP.BasicContainer)
-    InteractionModel.register(RDF::LDP::DirectContainer)
-    InteractionModel.register(RDF::LDP::IndirectContainer)
-    InteractionModel.register(RDF::LDP::NonRDFSource)
-    
     CONTAINER_CLASSES = {
       basic:    RDF::Vocab::LDP.BasicContainer.freeze,
       direct:   RDF::LDP::DirectContainer.to_uri.freeze,
@@ -34,6 +28,18 @@ module RDF
     }.freeze
 
     CONSTRAINED_BY = RDF::Vocab::LDP.constrainedBy.freeze
+
+    def reset_interaction_models!
+      InteractionModel.register(RDF::LDP::RDFSource, default: true)
+      InteractionModel.register(RDF::LDP::Container,
+                                for: RDF::Vocab::LDP.BasicContainer)
+      InteractionModel.register(RDF::LDP::DirectContainer)
+      InteractionModel.register(RDF::LDP::IndirectContainer)
+      InteractionModel.register(RDF::LDP::NonRDFSource)
+    end
+    module_function :reset_interaction_models!
+
+    reset_interaction_models!
 
     ##
     # A base class for HTTP request errors.
@@ -45,10 +51,14 @@ module RDF
     class RequestError < RuntimeError
       STATUS = 500
 
+      ##
+      # @return [Integer]
       def status
         self.class::STATUS
       end
 
+      ##
+      # @return [Hash<String, String>] a headers hash
       def headers
         uri =
           'https://github.com/no-reply/rdf-ldp/blob/master/CONSTRAINED_BY.md'
