@@ -33,3 +33,11 @@ describe RDF::LDP::Memento do
     end
   end
 end
+
+describe RDF::LDP::Memento::VersionedSource do
+  subject { described_class.new(uri) }
+
+  let(:uri) { RDF::URI('http://example.org/moomin') }
+
+  it_behaves_like 'a versionable LDP-R'
+end
