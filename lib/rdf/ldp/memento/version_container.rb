@@ -13,6 +13,13 @@ module RDF::LDP::Memento
     REVISION_URI = RDF::Vocab::PROV.wasRevisionOf.freeze
 
     ##
+    # @return [RDF::URI]
+    # @todo Pick a more permanent VersionContainer uri
+    def self.to_uri
+      RDF::URI.intern('https://ruby-rdf.github.io/rdf-ldp/VersionContainer')
+    end
+
+    ##
     # @todo: spec this behavior more clearly
     # @see RDF::LDP::DirectContainer#add
     def add(version, transaction = nil, datetime = DateTime.now)

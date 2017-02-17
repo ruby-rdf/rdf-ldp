@@ -12,6 +12,7 @@ module RDF::LDP
     # @return [void]
     def use_memento!
       RDF::LDP::InteractionModel.register(VersionedSource, default: true)
+      RDF::LDP::InteractionModel.register(VersionContainer)
     end
     module_function :use_memento!
 
@@ -20,6 +21,28 @@ module RDF::LDP
     # support.
     class VersionedSource < RDF::LDP::RDFSource
       include RDF::LDP::Memento::Versionable
+      
+      ##
+      # Creates with a new version.
+      #
+      # @see RDF::LDP::RDFSource#create
+      def create(*args, &block)
+        super do |transaction|
+          create_version(transaction: transaction)
+          yield transaction if block_given?
+        end
+      end
+      
+      ##
+      # Updates with a new version.
+      #
+      # @see RDF::LDP::RDFSource#update
+      def update(*args, &block)
+        super do |transaction|
+          create_version(transaction: transaction)
+          yield transaction if block_given?
+        end
+      end
     end
   end
 end

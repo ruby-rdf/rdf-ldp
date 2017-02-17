@@ -74,4 +74,20 @@ describe RDF::LDP::Memento::VersionContainer do
       end
     end
   end
+
+  context 'when reloaded' do
+    subject do
+      data = RDF::Repository.new
+
+      sub = described_class.new(uri, data)
+      sub.memento_original = original
+      sub.memento_timegate = timegate
+
+      sub.create(StringIO.new, 'text/plain')
+
+      RDF::LDP::Resource.find(uri, data)
+    end
+
+    it_behaves_like 'a memento timemap'
+  end
 end

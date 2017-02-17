@@ -5,31 +5,31 @@ shared_examples 'a versionable LDP-R' do
         .to change { subject.versions.count }.by(1)
     end
 
-    xit 'returns a version of the resource' do
+    it 'returns a version of the resource' do
       version = subject.create_version
 
-      expect(version.graph)
+      expect(subject.timemap.graph)
         .to have_statement(
               RDF::Statement(version.to_uri,
                              RDF::Vocab::PROV.wasRevisionOf,
                              subject.to_uri,
-                             graph_name: version.graph.graph_name))
+                             graph_name: subject.timemap.graph.graph_name))
     end
 
-    xit 'returns a new version of the resource' do
+    it 'returns a new version of the resource' do
       version = subject.create_version
-      created = version.graph.query(subject:   version.to_uri,
-                                    predicate: RDF::Vocab::DC.created)
+      created = subject.timemap.graph.query(subject:   version.to_uri,
+                                            predicate: RDF::Vocab::DC.created)
       datetime = created.first.object.object
 
       expect(datetime).to be_within(0.00001).of DateTime.now
     end
 
-    xit 'accepts a custom datetime' do
+    it 'accepts a custom datetime' do
       target_time = DateTime.now - 1
       version = subject.create_version(datetime: target_time)
-      created = version.graph.query(subject:   version.to_uri,
-                                    predicate: RDF::Vocab::DC.created)
+      created = subject.timemap.graph.query(subject:   version.to_uri,
+                                            predicate: RDF::Vocab::DC.created)
       datetime = created.first.object.object
 
       expect(datetime).to eq target_time

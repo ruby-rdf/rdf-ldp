@@ -40,4 +40,7 @@ describe RDF::LDP::Memento::VersionedSource do
   let(:uri) { RDF::URI('http://example.org/moomin') }
 
   it_behaves_like 'a versionable LDP-R'
+
+  describe '#create' do
+  end
 end

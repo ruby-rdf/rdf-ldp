@@ -59,7 +59,7 @@ describe Rack::Memento do
     end
 
     context 'when the resource has a timegate' do
-      let(:uri_g)    { 'http://example.org/URI-G' }
+      let(:uri_g)    { RDF::URI('http://example.org/URI-G') }
       let(:response) { double('URI-R', timegate: uri_g, each: body) }
 
       it 'adds timegate Link header' do
