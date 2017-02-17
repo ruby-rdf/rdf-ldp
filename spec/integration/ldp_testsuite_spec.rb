@@ -6,6 +6,8 @@ require 'capybara_discoball'
 require 'ldp_testsuite_wrapper'
 require 'ldp_testsuite_wrapper/rspec'
 
+require 'lamprey'
+
 describe 'LDP Test Suite', integration: true do
   before(:all) do
     # use custom fork to work around https://github.com/w3c/ldp-testsuite/pull/227
