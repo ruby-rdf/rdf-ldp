@@ -15,6 +15,19 @@ module RDF::LDP::Memento
     TIMEMAP_CONTAINER_CLASS = RDF::LDP::Memento::VersionContainer
 
     ##
+    # Ensure the timemap exists before creation.
+    #
+    # @note The timemap container is created outside the creation transaction.
+    # @todo Make this atomic.
+    #
+    # @see RDF::Resource#create
+    def create(*args, &block)
+      timemap
+      super(*args, &block)
+      self
+    end
+    
+    ##
     # Creates a new version of this resource.
     #
     # @param datetime [DateTime] the timestamp to use for the version. 
@@ -34,8 +47,8 @@ module RDF::LDP::Memento
       raise(ArgumentError, 
             "Attempted to create a version at future time: #{datetime}") if
         datetime > DateTime.now
-
-      timemap # touch the timemap in case it doesn't exist
+      
+      timemap
 
       version = self.class.new(version_uri(datetime), @data)
 
@@ -52,6 +65,12 @@ module RDF::LDP::Memento
       tx.execute if local_transaction
       
       version
+    end
+
+    ##
+    # @return [String]
+    def to_s
+      to_uri.to_s
     end
 
     ##
@@ -82,7 +101,7 @@ module RDF::LDP::Memento
     end
 
     ##
-    # Build a version uri
+    # Build a version uri 
     #
     # @param uri [RDF::URI]
     def version_uri(datetime)

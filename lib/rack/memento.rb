@@ -43,7 +43,7 @@ module Rack
     def add_timegate_link(headers, response)
       return headers['Link'] unless response.respond_to?(:timegate)
 
-      ([headers['Link']] << link_header(response.timegate.to_s, TIMEGATE_REL))
+      ([headers['Link']] << link_header(response.timegate, TIMEGATE_REL))
         .compact.join(',')
     end
 
@@ -54,12 +54,12 @@ module Rack
     def add_timemap_link(headers, response)
       return headers['Link'] unless response.respond_to?(:timemap)
 
-      ([headers['Link']] << link_header(response.timemap.to_s, TIMEMAP_REL))
+      ([headers['Link']] << link_header(response.timemap, TIMEMAP_REL))
         .compact.join(',')
     end
 
     ##
-    # @param target [String]
+    # @param target [#to_s]
     # @param rel    [String]
     def link_header(target, rel)
       "<#{target}>;rel=\"#{rel}\""
