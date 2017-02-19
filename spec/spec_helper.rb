@@ -5,6 +5,8 @@ require 'rdf/ldp'
 require 'rdf/spec'
 require 'rdf/spec/matchers'
 
+require 'rdf/ldp/spec'
+
 Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 RSpec.configure do |config|

@@ -1,3 +1,5 @@
+require 'rdf/ldp/spec/rdf_source'
+
 shared_examples 'a Container' do
   it_behaves_like 'an RDFSource'
 
