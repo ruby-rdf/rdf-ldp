@@ -1,3 +1,5 @@
+require 'rdf/ldp/spec/container'
+
 # @todo: make this set of examples less opinionated about #add behavior.
 #   Break #add tests into another group shared between DirectContainer & 
 #   IndirectContainer. This way other implementations can use these specs

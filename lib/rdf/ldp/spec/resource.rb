@@ -1,3 +1,6 @@
+require 'rspec'
+require 'rdf/spec'
+require 'rdf/spec/matchers'
 require 'timecop'
 
 shared_examples 'a Resource' do

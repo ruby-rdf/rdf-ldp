@@ -1,3 +1,5 @@
+require 'rdf/ldp/spec/resource'
+
 shared_examples 'an RDFSource' do
   it_behaves_like 'a Resource'
   
