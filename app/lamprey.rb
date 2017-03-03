@@ -8,10 +8,12 @@ class RDF::Lamprey < Sinatra::Base
   use Rack::LDP::Responses
   use Rack::ConditionalGet
   use Rack::LDP::Requests
-  
+
   get '/*' do
-    RDF::LDP::Container.new(RDF::URI(request.url), settings.repository)
-      .create(StringIO.new, 'text/turtle') if settings.repository.empty?    
+    if settings.repository.empty?
+      RDF::LDP::Container.new(RDF::URI(request.url), settings.repository)
+                         .create(StringIO.new, 'text/turtle')
+    end
     RDF::LDP::Resource.find(RDF::URI(request.url), settings.repository)
   end
 
@@ -29,7 +31,7 @@ class RDF::Lamprey < Sinatra::Base
     rescue RDF::LDP::NotFound
       model = request.env.fetch('HTTP_LINK', '')
       RDF::LDP::Resource.interaction_model(model)
-        .new(RDF::URI(request.url), settings.repository)
+                        .new(RDF::URI(request.url), settings.repository)
     end
   end
 
@@ -56,12 +58,12 @@ class RDF::Lamprey < Sinatra::Base
     # @see #new
     # @see #configure!
     def self.configure!(**options)
-      self.new(**options).configure!
+      new(**options).configure!
     end
 
     ##
     # Registers a repository for use with the {#build_repository} method.
-    # 
+    #
     # @example Registering a custom repository
     #   MyRepository = Class.new(RDF::Repository)
     #
@@ -73,13 +75,13 @@ class RDF::Lamprey < Sinatra::Base
     def self.register_repository!(name, klass)
       @@repositories[name] = klass
     end
-    
+
     ##
     # @!attribute [rw] options
     attr_accessor :options
 
     @@repositories = { default: RDF::Repository }
-      
+
     ##
     # @param repository [RDF::Repository]
     def initialize(repository: :default)
@@ -92,13 +94,13 @@ class RDF::Lamprey < Sinatra::Base
     #
     # @return [RDF::Repository] a repository instance
     def build_repository
-      @@repositories.fetch(options[:repository]) {
+      @@repositories.fetch(options[:repository]) do
         warn "#{options[:repository]} is not a configured repository. Use "\
-             "`Lamprey::Config.register_repository!` to register it before "\
-             "configuration. Falling back on the default: " \
+             '`Lamprey::Config.register_repository!` to register it before '\
+             'configuration. Falling back on the default: ' \
              "#{@@repositories[:default]}."
         @@repositories[:default]
-      }.new
+      end.new
     end
 
     ##
@@ -107,8 +109,10 @@ class RDF::Lamprey < Sinatra::Base
     # @return [void]
     def configure!
       repository = build_repository
-      warn "#{repository} is not a persistent repository. "\
-           "Data will be lost on server shutdown." unless repository.persistent?
+      unless repository.persistent?
+        warn "#{repository} is not a persistent repository. "\
+             'Data will be lost on server shutdown.'
+      end
 
       RDF::Lamprey.configure { |config| config.set :repository, repository }
     end
@@ -117,6 +121,5 @@ class RDF::Lamprey < Sinatra::Base
   # Set defaults in case user does not configure values
   Config.configure!
 
-  run! if app_file == $0
+  run! if app_file == $PROGRAM_NAME
 end
-

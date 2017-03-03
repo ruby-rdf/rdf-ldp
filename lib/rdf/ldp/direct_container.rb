@@ -156,7 +156,7 @@ module RDF::LDP
       resource
     end
 
-    def process_membership_resource(resource, transaction = nil, member = nil)
+    def process_membership_resource(resource, _transaction = nil, member = nil)
       membership_triple = make_membership_triple((member || resource).to_uri)
 
       membership_triple.graph_name = subject_uri

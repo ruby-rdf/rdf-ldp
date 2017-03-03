@@ -26,7 +26,7 @@ module RDF
     InteractionModel.register(RDF::LDP::DirectContainer)
     InteractionModel.register(RDF::LDP::IndirectContainer)
     InteractionModel.register(RDF::LDP::NonRDFSource)
-    
+
     CONTAINER_CLASSES = {
       basic:    RDF::Vocab::LDP.BasicContainer.freeze,
       direct:   RDF::LDP::DirectContainer.to_uri.freeze,

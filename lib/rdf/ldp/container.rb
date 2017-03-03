@@ -204,14 +204,17 @@ module RDF::LDP
                                          predicate: CONTAINS_URI)
 
       tx_containment.each do |statement|
-        raise(Conflict, 'Attempted to write unacceptable LDP ' \
-                        "containment-triple: #{statement}") unless
-          existing_triples.include?(statement)
+        unless existing_triples.include?(statement)
+          raise(Conflict, 'Attempted to write unacceptable LDP ' \
+                          "containment-triple: #{statement}")
+        end
       end
 
       deletes = existing_triples.reject { |st| tx_containment.include?(st) }
-      raise(Conflict, 'Cannot remove containment triples in updates. ' \
-                      "Attepted to remove #{deletes}") unless deletes.empty?
+      unless deletes.empty?
+        raise(Conflict, 'Cannot remove containment triples in updates. ' \
+                        "Attepted to remove #{deletes}")
+      end
     end
 
     ##
@@ -224,9 +227,10 @@ module RDF::LDP
                           "containment-triple: #{st}")
         end
       end
-      raise(Conflict, 'Cannot remove containment triples in updates. ' \
-                      "Attepted to remove #{existing_triples}") unless
-                existing_triples.empty?
+      unless existing_triples.empty?
+        raise(Conflict, 'Cannot remove containment triples in updates. ' \
+                        "Attepted to remove #{existing_triples}")
+      end
     end
   end
 end

@@ -13,10 +13,10 @@ describe 'LDP Test Suite', integration: true do
     # use custom fork to work around https://github.com/w3c/ldp-testsuite/pull/227
     LdpTestsuiteWrapper.default_instance_options[:version] = '0.2.0-SNAPSHOT'
 
-    LdpTestsuiteWrapper.default_instance_options[:url] = 
+    LdpTestsuiteWrapper.default_instance_options[:url] =
       'https://github.com/cbeer/ldp-testsuite/archive/master.zip'
 
-    LdpTestsuiteWrapper.default_instance_options[:zip_root_directory] = 
+    LdpTestsuiteWrapper.default_instance_options[:zip_root_directory] =
       'ldp-testsuite-master'
 
     @server = Capybara::Discoball::Runner.new(RDF::Lamprey).boot

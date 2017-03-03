@@ -47,7 +47,7 @@ shared_examples 'a Resource' do
     end
 
     it 'includes the MUST methods' do
-      expect(subject.allowed_methods).to include(*[:GET, :OPTIONS, :HEAD])
+      expect(subject.allowed_methods).to include(:GET, :OPTIONS, :HEAD)
     end
   end
 
@@ -180,7 +180,7 @@ shared_examples 'a Resource' do
 
     it 'raises MethodNotAllowed when method is unimplemented' do
       allow(subject).to receive(:not_implemented)
-                         .and_raise NotImplementedError
+        .and_raise NotImplementedError
       expect { subject.request(:not_implemented, 200, {}, {}) }
         .to raise_error(RDF::LDP::MethodNotAllowed)
     end

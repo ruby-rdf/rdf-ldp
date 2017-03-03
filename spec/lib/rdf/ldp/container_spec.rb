@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RDF::LDP::Container do
   subject { described_class.new(RDF::URI('http://ex.org/moomin')) }
   it_behaves_like 'a Container'
-  
+
   describe 'CONTAINER_CLASSES' do
     it 'has basic, direct, and indirect' do
       expect(RDF::LDP::CONTAINER_CLASSES.keys)

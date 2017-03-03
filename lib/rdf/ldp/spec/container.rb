@@ -118,7 +118,7 @@ shared_examples 'a Container' do
         patch_statement.object = 'snorkmaiden'
         patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
                 "Add { #{statement.subject.to_base} " \
-                "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
+                "#{statement.predicate.to_base} #{statement.object.to_base} } ."
         env = { 'CONTENT_TYPE' => 'text/ldpatch',
                 'rack.input'   => StringIO.new(patch) }
 
@@ -126,21 +126,21 @@ shared_examples 'a Container' do
           .to raise_error RDF::LDP::Conflict
       end
     end
-            
+
     context 'with :PUT',
             if: described_class.private_method_defined?(:put) do
       context 'when PUTing containment triples' do
         it 'when creating a resource raises a Conflict error' do
           graph << statement
-          
-          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to raise_error RDF::LDP::Conflict
         end
 
         it 'when resource exists raises a Conflict error' do
           subject.create(StringIO.new, 'application/n-triples')
           graph << statement
-          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to raise_error RDF::LDP::Conflict
         end
 
@@ -148,7 +148,7 @@ shared_examples 'a Container' do
           subject.create(StringIO.new, 'application/n-triples')
           subject.graph << statement
           graph << statement
-          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
+          expect(subject.request(:PUT, 200, { 'abc' => 'def' }, env).first)
             .to eq 200
         end
 
@@ -156,25 +156,25 @@ shared_examples 'a Container' do
           subject.create(StringIO.new, 'application/n-triples')
           subject.graph << statement
           graph << statement
-          
-          new_st = RDF::Statement(RDF::URI('http://example.org/new_moomin'), 
-                                  RDF::Vocab::DC.title, 
+
+          new_st = RDF::Statement(RDF::URI('http://example.org/new_moomin'),
+                                  RDF::Vocab::DC.title,
                                   'moomin')
           graph << new_st
-          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).last.graph)
+          expect(subject.request(:PUT, 200, { 'abc' => 'def' }, env).last.graph)
             .to have_statement new_st
         end
 
         it 'raises conflict error when without existing containment triples' do
           subject.create(StringIO.new, 'application/n-triples')
           subject.graph << statement
-          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to raise_error RDF::LDP::Conflict
         end
       end
     end
 
-    context 'when POST is implemented', 
+    context 'when POST is implemented',
             if: described_class.private_method_defined?(:post) do
       let(:graph) { RDF::Graph.new }
       before { subject.create(StringIO.new, 'application/n-triples') }
@@ -183,7 +183,7 @@ shared_examples 'a Container' do
         { 'rack.input' => StringIO.new(graph.dump(:ntriples)),
           'CONTENT_TYPE' => 'application/n-triples' }
       end
-      
+
       it 'returns status 201' do
         expect(subject.request(:POST, 200, {}, env).first).to eq 201
       end
@@ -222,8 +222,8 @@ shared_examples 'a Container' do
 
         context 'BasicContainer' do
           it 'creates a basic container' do
-            env['HTTP_LINK'] = 
-              "<http://www.w3.org/ns/ldp#BasicContainer>;rel=\"type\""
+            env['HTTP_LINK'] =
+              '<http://www.w3.org/ns/ldp#BasicContainer>;rel="type"'
             expect(subject.request(:POST, 200, {}, env).last)
               .to be_a RDF::LDP::Container
           end
@@ -256,7 +256,7 @@ shared_examples 'a Container' do
         it 'mints a uri when empty Slug is given' do
           env['HTTP_SLUG'] = ''
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
-            .to be_starts_with (subject.subject_uri)
+            .to be_starts_with subject.subject_uri
         end
 
         it 'raises a 409 Conflict when slug is already taken' do
@@ -271,7 +271,7 @@ shared_examples 'a Container' do
           env['HTTP_SLUG'] = 'snork'
           created = subject.request(:POST, 200, {}, env).last
           allow(created).to receive(:destroyed?).and_return true
-          
+
           expect { subject.request(:POST, 200, {}, env) }
             .to raise_error RDF::LDP::Conflict
         end
@@ -289,7 +289,7 @@ shared_examples 'a Container' do
             .to eq (subject.subject_uri / 'snork%20maiden')
         end
       end
-      
+
       context 'with graph content' do
         before do
           graph << RDF::Statement(uri, RDF::Vocab::DC.title, 'moomin')
@@ -309,7 +309,7 @@ shared_examples 'a Container' do
 
         context 'with quads' do
           let(:graph) do
-            RDF::Graph.new(graph_name: subject.subject_uri, 
+            RDF::Graph.new(graph_name: subject.subject_uri,
                            data: RDF::Repository.new)
           end
 

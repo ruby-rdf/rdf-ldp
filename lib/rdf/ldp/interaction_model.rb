@@ -17,7 +17,7 @@ module RDF
           RDF::LDP::IndirectContainer.to_uri => nil,
           RDF::LDP::NonRDFSource.to_uri      => nil
         }
-        
+
         ##
         # Register a new interaction model for one or more Link header URIs. klass.to_uri
         # will automatically be registered.
@@ -26,22 +26,22 @@ module RDF
         # @param [Hash <Symbol, *>] opts   registration options:
         #   :default [true, false]  if true, klass will become the new default klass for
         #     unrecognized Link headers
-        #   :for [RDF::URI, Array<RDF::URI>]  additional URIs for which klass should become 
+        #   :for [RDF::URI, Array<RDF::URI>]  additional URIs for which klass should become
         #     the interaction model
         #
         # @return [RDF::LDP::Resource] klass
-        def register(klass, opts={})
+        def register(klass, opts = {})
           unless klass.ancestors.include?(RDF::LDP::Resource)
-            raise ArgumentError, "Interaction models must subclass `RDF::LDP::Resource`" 
+            raise ArgumentError, 'Interaction models must subclass `RDF::LDP::Resource`'
           end
-          @@default = klass if opts[:default] or @@default.nil?
+          @@default = klass if opts[:default] || @@default.nil?
           @@interaction_models[klass.to_uri] = klass
           Array(opts[:for]).each do |model|
             @@interaction_models[model] = klass
           end
           klass
         end
-        
+
         ##
         # Find the appropriate interaction model given a set of Link header URIs.
         #
@@ -50,10 +50,10 @@ module RDF
         # @return [Class] a subclass of {RDF::LDP::Resource} that most narrowly matches the
         #   supplied `uris`, or the default interaction model if nothing matches
         def find(uris)
-          match = @@interaction_models.keys.reverse.find { |u| uris.include? u } 
+          match = @@interaction_models.keys.reverse.find { |u| uris.include? u }
           self.for(match) || @@default
         end
-        
+
         ##
         # Find the interaction model registered for a given uri
         #
@@ -63,13 +63,13 @@ module RDF
         def for(uri)
           @@interaction_models[uri]
         end
-        
+
         ##
         # The default registered interaction model
         def default
           @@default
         end
-        
+
         ##
         # Test an array of URIs to see if their interaction models are compatible (e.g., all of the URIs
         # refer either to RDF models or non-RDF models, but not a combination of both).
@@ -78,8 +78,8 @@ module RDF
         # @return [TrueClass or FalseClass]  true if the models specified by `uris` are compatible
         def compatible?(uris)
           classes = uris.collect { |m| self.for(m) }
-          (rdf,non_rdf) = classes.compact.partition { |c| c.ancestors.include?(RDFSource) }
-          rdf.empty? or non_rdf.empty?
+          (rdf, non_rdf) = classes.compact.partition { |c| c.ancestors.include?(RDFSource) }
+          rdf.empty? || non_rdf.empty?
         end
       end
     end

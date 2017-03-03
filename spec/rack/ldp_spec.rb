@@ -16,15 +16,17 @@ describe 'middleware' do
     ##
     # Dummy response handler middleware
     class ToResponseHandler
-      def initialize(app); @app = app; end
-      
+      def initialize(app)
+        @app = app
+      end
+
       def call(env)
         status, headers, response = @app.call(env)
         response = response.to_response if response.respond_to? :to_response
         [status, headers, response]
       end
     end
-    
+
     allow(results).to receive(:to_response).and_return([])
   end
 
@@ -34,8 +36,8 @@ describe 'middleware' do
   let(:headers) { {} }
 
   let(:base_app) do
-    double("Target Rack Application", 
-           :call => [200, headers, results])
+    double('Target Rack Application',
+           call: [200, headers, results])
   end
 
   let(:app) { ToResponseHandler.new(subject) }
@@ -65,7 +67,7 @@ describe 'middleware' do
 
     let(:body) { 'new body' }
     let(:method) { :GET }
-    
+
     context 'when response is not an LDP::Resource' do
       it 'echo it back unaltered' do
         get '/'
@@ -113,7 +115,7 @@ describe 'middleware' do
     let(:app) { double('rack application') }
 
     it { is_expected.to be_a Rack::LinkedData::ContentNegotiation }
-    
+
     describe '.new' do
       it 'sets default content-type to text/turtle' do
         expect(subject.options[:default]).to eq 'text/turtle'
@@ -126,7 +128,7 @@ describe 'middleware' do
       end
 
       it 'sets prefixes' do
-        expect(subject.options[:prefixes]).to include({ rdf: RDF.to_uri })
+        expect(subject.options[:prefixes]).to include(rdf: RDF.to_uri)
       end
 
       it 'accepts overrides to default content type' do

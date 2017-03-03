@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RDF::LDP::Resource do
-  it_behaves_like 'a Resource' 
+  it_behaves_like 'a Resource'
 
   subject { described_class.new(uri) }
   let(:uri) { RDF::URI 'http://example.org/moomin' }
@@ -26,7 +26,7 @@ describe RDF::LDP::Resource do
           .to be_a RDF::LDP::RDFSource
         expect(described_class.find(uri, repository).subject_uri).to eq uri
       end
-      
+
       it 'finds the resource with container interaction model' do
         graph << RDF::Statement(uri, RDF.type, RDF::LDP::Container.to_uri)
 
@@ -85,18 +85,18 @@ describe RDF::LDP::Resource do
       expect { described_class.interaction_model(header) }
         .to raise_error RDF::LDP::NotAcceptable
     end
-    
+
     context 'custom implementation class' do
       let!(:custom_container) { Class.new(RDF::LDP::Container) }
 
       before do
         @original_class = RDF::LDP::InteractionModel.for(RDF::Vocab::LDP.BasicContainer)
       end
-      
+
       after do
         RDF::LDP::InteractionModel.register(@original_class, for: RDF::Vocab::LDP.BasicContainer)
       end
-      
+
       it 'matches header to class' do
         RDF::LDP::InteractionModel.register(custom_container, for: RDF::Vocab::LDP.BasicContainer)
         header = '<http://www.w3.org/ns/ldp#BasicContainer>;rel="type"'
@@ -121,21 +121,21 @@ describe RDF::LDP::Resource do
   describe '#request' do
     context 'with :GET' do
       it 'echos the request' do
-        expect(subject.request(:GET, 200, {'abc' => 'def'}, {}))
+        expect(subject.request(:GET, 200, { 'abc' => 'def' }, {}))
           .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
       end
     end
 
     context 'with :HEAD' do
       it 'gives empty response body' do
-        expect(subject.request(:HEAD, 200, {'abc' => 'def'}, {}))
+        expect(subject.request(:HEAD, 200, { 'abc' => 'def' }, {}))
           .to contain_exactly(200, a_hash_including('abc' => 'def'), [])
       end
     end
 
     context 'with :OPTIONS' do
       it 'gives empty response body' do
-        expect(subject.request(:OPTIONS, 200, {'abc' => 'def'}, {}))
+        expect(subject.request(:OPTIONS, 200, { 'abc' => 'def' }, {}))
           .to contain_exactly(200, a_hash_including('abc' => 'def'), [])
       end
     end

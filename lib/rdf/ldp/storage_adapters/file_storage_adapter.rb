@@ -63,7 +63,7 @@ module RDF::LDP
       #
       # @return [IO] an object conforming to the Ruby IO interface
       def io(&block)
-        FileUtils.mkdir_p(path_dir) unless Dir.exists?(path_dir)
+        FileUtils.mkdir_p(path_dir) unless Dir.exist?(path_dir)
         FileUtils.touch(path) unless file_exists?
 
         File.open(path, 'r+b', &block)
@@ -72,7 +72,7 @@ module RDF::LDP
       ##
       # @return [Boolean] 1 if the file has been deleted, otherwise false
       def delete
-        return false unless File.exists?(path)
+        return false unless File.exist?(path)
         File.delete(path)
       end
 
@@ -81,7 +81,7 @@ module RDF::LDP
       ##
       # @return [Boolean]
       def file_exists?
-        File.exists?(path)
+        File.exist?(path)
       end
 
       ##

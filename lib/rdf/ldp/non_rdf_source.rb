@@ -132,7 +132,7 @@ module RDF::LDP
     #
     # @raise [RDF::LDP::RequestError] when the request fails
     def to_response
-      (exists? && !destroyed?) ? storage.io : []
+      exists? && !destroyed? ? storage.io : []
     end
 
     private
