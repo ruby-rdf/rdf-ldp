@@ -1,3 +1,5 @@
+require 'rdf/ldp/spec/direct_container'
+
 shared_examples 'an IndirectContainer' do
   it_behaves_like 'a DirectContainer'  
 

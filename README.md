@@ -103,6 +103,40 @@ And run your server with:
 $ rackup
 ```
 
+Testing
+-------
+
+RSpec shared examples for the required behaviors of LDP resource and container
+types are included in `rdf/ldp/spec` for use in customized implementations.
+Running these example sets will help ensure LDP compliance for specialized
+resource behaviors.
+
+This test suite is provided provisionally and may be incomplete or overly
+strict. Please [report issues](https://github.com/ruby-rdf/rdf-ldp/issues)
+encountered during its use.
+
+```ruby
+require 'rdf/ldp/spec'
+
+describe MyResource do
+  it_behaves_like 'a Resource'
+end
+
+describe MyRDFSource do
+  it_behaves_like 'an RDFSource'
+end
+
+# ...
+
+describe MyIndirectContainer do
+  it_behaves_like 'an IndirectContainer'
+end
+```
+
+We recommend running the official
+[LDP testsuite](https://github.com/cbeer/ldp_testsuite_wrapper), as integration
+tests in addition to the above examples.
+
 Compliance
 ----------
 
