@@ -13,21 +13,21 @@ describe 'LDP Test Suite', integration: true do
     # use custom fork to work around https://github.com/w3c/ldp-testsuite/pull/227
     LdpTestsuiteWrapper.default_instance_options[:version] = '0.2.0-SNAPSHOT'
 
-    LdpTestsuiteWrapper.default_instance_options[:url] = 
+    LdpTestsuiteWrapper.default_instance_options[:url] =
       'https://github.com/cbeer/ldp-testsuite/archive/master.zip'
 
-    LdpTestsuiteWrapper.default_instance_options[:zip_root_directory] = 
+    LdpTestsuiteWrapper.default_instance_options[:zip_root_directory] =
       'ldp-testsuite-master'
 
     @server = Capybara::Discoball::Runner.new(RDF::Lamprey).boot
 
     @skipped_tests = [
-      'testContainsRdfType',          # rdf:type is left to the client and/or implementer.
-      'testTypeRdfSource',            # rdf:type is left to the client and/or implementer.
-      'testRdfTypeLdpContainer',      # rdf:type is left to the client and/or implementer.
+      'testContainsRdfType',          # rdf:type is left to the client.
+      'testTypeRdfSource',            # rdf:type is left to the client.
+      'testRdfTypeLdpContainer',      # rdf:type is left to the client.
       'testPreferContainmentTriples', # Client hints are unimplemented.
       'testPreferMembershipTriples',  # Client hints are unimplemented.
-      'testPutRequiresIfMatch',       # clients SHOULD use the HTTP If-Match header
+      'testPutRequiresIfMatch',       # clients SHOULD use HTTP If-Match header
       'testRestrictUriReUseSlug'      # https://github.com/w3c/ldp-testsuite/issues/225
     ]
   end

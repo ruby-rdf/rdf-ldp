@@ -40,7 +40,7 @@ describe RDF::LDP::DirectContainer do
       it 'adds membership triple to custom membership resource' do
         repo = RDF::Repository.new
         subject = described_class.new(uri, repo)
-        mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'), 
+        mem_rs = RDF::LDP::RDFSource.new(RDF::URI('http://ex.org/mymble'),
                                          repo)
 
         g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
@@ -62,8 +62,8 @@ describe RDF::LDP::DirectContainer do
 
         mem_rs = subject.subject_uri / '#membership'
         g = RDF::Graph.new << RDF::Statement(subject.subject_uri,
-                                        RDF::Vocab::LDP.membershipResource,
-                                        mem_rs)
+                                             RDF::Vocab::LDP.membershipResource,
+                                             mem_rs)
 
         subject.create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
         expect(subject.add(resource_uri).graph)

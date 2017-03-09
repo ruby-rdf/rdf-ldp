@@ -2,7 +2,7 @@ require 'rdf/ldp/spec/resource'
 
 shared_examples 'an RDFSource' do
   it_behaves_like 'a Resource'
-  
+
   let(:uri) { RDF::URI('http://ex.org/moomin') }
   subject { described_class.new('http://ex.org/moomin') }
   it { is_expected.to be_rdf_source }
@@ -16,8 +16,8 @@ shared_examples 'an RDFSource' do
 
     it 'raises BadRequest if graph cannot be parsed' do
       expect do
-        subject.send(:parse_graph, 
-                     StringIO.new('graph'), 
+        subject.send(:parse_graph,
+                     StringIO.new('graph'),
                      'application/n-triples')
       end.to raise_error RDF::LDP::BadRequest
     end
@@ -26,29 +26,29 @@ shared_examples 'an RDFSource' do
       let(:graph) { RDF::Repository.new }
 
       before do
-        graph << RDF::Statement(RDF::URI('http://ex.org/moomin'), 
-                                RDF.type, 
+        graph << RDF::Statement(RDF::URI('http://ex.org/moomin'),
+                                RDF.type,
                                 RDF::Vocab::FOAF.Person,
                                 graph_name: subject.subject_uri)
 
         10.times do
           graph << RDF::Statement(RDF::Node.new,
-                                  RDF::Vocab::DC.creator, 
+                                  RDF::Vocab::DC.creator,
                                   RDF::Node.new,
                                   graph_name: subject.subject_uri)
         end
       end
- 
+
       it 'parses turtle' do
-        expect(subject.send(:parse_graph, 
-                            StringIO.new(graph.dump(:ttl)), 
+        expect(subject.send(:parse_graph,
+                            StringIO.new(graph.dump(:ttl)),
                             'text/turtle'))
           .to be_isomorphic_with graph
       end
 
       it 'parses ntriples' do
-        expect(subject.send(:parse_graph, 
-                            StringIO.new(graph.dump(:ntriples)), 
+        expect(subject.send(:parse_graph,
+                            StringIO.new(graph.dump(:ntriples)),
                             'application/n-triples'))
           .to be_isomorphic_with graph
       end
@@ -64,7 +64,9 @@ shared_examples 'an RDFSource' do
     let(:other) { described_class.new(RDF::URI('http://ex.org/blah')) }
 
     let(:statement) do
-      RDF::Statement(RDF::URI('http://ex.org/m'), RDF::Vocab::DC.title, 'moomin')
+      RDF::Statement(RDF::URI('http://ex.org/m'),
+                     RDF::Vocab::DC.title,
+                     'moomin')
     end
 
     it 'is the same for equal graphs' do
@@ -72,7 +74,8 @@ shared_examples 'an RDFSource' do
     end
 
     xit 'is different for different graphs' do
-      subject.graph << RDF::Statement(RDF::Node.new, RDF::Vocab::DC.title, 'mymble')
+      subject.graph <<
+        RDF::Statement(RDF::Node.new, RDF::Vocab::DC.title, 'mymble')
       expect(subject.etag).not_to eq other.etag
     end
   end
@@ -80,7 +83,7 @@ shared_examples 'an RDFSource' do
   describe '#create' do
     let(:subject) { described_class.new(RDF::URI('http://ex.org/m')) }
     let(:graph) { RDF::Graph.new }
-    
+
     it 'does not create when graph fails to parse' do
       begin
         subject.create(StringIO.new(graph.dump(:ttl)), 'text/moomin')
@@ -88,14 +91,14 @@ shared_examples 'an RDFSource' do
 
       expect(subject).not_to exist
     end
-    
+
     it 'returns itself' do
       expect(subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle'))
         .to eq subject
     end
 
     it 'yields a transaction' do
-      expect do |b| 
+      expect do |b|
         subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle', &b)
       end.to yield_with_args(be_kind_of(RDF::Transaction))
     end
@@ -103,20 +106,26 @@ shared_examples 'an RDFSource' do
     it 'interprets NULL URI as this resource' do
       graph << RDF::Statement(RDF::URI(), RDF::Vocab::DC.title, 'moomin')
 
-      expect(subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph)
-        .to have_statement RDF::Statement(subject.subject_uri, 
-                                          RDF::Vocab::DC.title, 
+      created =
+        subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph
+
+      expect(created)
+        .to have_statement RDF::Statement(subject.subject_uri,
+                                          RDF::Vocab::DC.title,
                                           'moomin')
     end
 
     it 'interprets Relative URIs as this based on this resource' do
-      graph << RDF::Statement(subject.subject_uri, 
-                              RDF::Vocab::DC.isPartOf, 
+      graph << RDF::Statement(subject.subject_uri,
+                              RDF::Vocab::DC.isPartOf,
                               RDF::URI('#moomin'))
-      
-      expect(subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph)
+
+      created =
+        subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph
+
+      expect(created)
         .to have_statement RDF::Statement(subject.subject_uri,
-                                          RDF::Vocab::DC.isPartOf, 
+                                          RDF::Vocab::DC.isPartOf,
                                           subject.subject_uri / '#moomin')
     end
   end
@@ -128,7 +137,7 @@ shared_examples 'an RDFSource' do
 
     let(:graph) { RDF::Graph.new << statement }
     let(:content_type) { 'text/turtle' }
-    
+
     shared_examples 'updating rdf_sources' do
       it 'changes the response' do
         expect { subject.update(StringIO.new(graph.dump(:ttl)), content_type) }
@@ -141,19 +150,21 @@ shared_examples 'an RDFSource' do
       end
 
       it 'yields a transaction' do
-        expect do |b| 
+        expect do |b|
           subject.update(StringIO.new(graph.dump(:ttl)), content_type, &b)
         end.to yield_with_args(be_kind_of(RDF::Transaction))
       end
 
       context 'with bad media type' do
         it 'raises UnsupportedMediaType' do
-          expect { subject.update(StringIO.new(graph.dump(:ttl)), 'text/moomin') }
+          graph_io = StringIO.new(graph.dump(:ttl))
+
+          expect { subject.update(graph_io, 'text/moomin') }
             .to raise_error RDF::LDP::UnsupportedMediaType
         end
 
         it 'does not update #last_modified' do
-          modified = subject.last_modified 
+          modified = subject.last_modified
           begin
             subject.update(StringIO.new(graph.dump(:ttl)), 'text/moomin')
           rescue; end
@@ -163,12 +174,12 @@ shared_examples 'an RDFSource' do
       end
     end
 
-    include_examples 'updating rdf_sources' 
+    include_examples 'updating rdf_sources'
 
     context 'when it exists' do
       before { subject.create(StringIO.new, 'application/n-triples') }
 
-      include_examples 'updating rdf_sources' 
+      include_examples 'updating rdf_sources'
     end
   end
 
@@ -180,7 +191,7 @@ shared_examples 'an RDFSource' do
 
     it 'gives PreconditionFailed when trying to update with wrong Etag' do
       env = { 'HTTP_IF_MATCH' => 'not an Etag' }
-      expect { subject.request(:PATCH, 200, {'abc' => 'def'}, env) }
+      expect { subject.request(:PATCH, 200, { 'abc' => 'def' }, env) }
         .to raise_error RDF::LDP::PreconditionFailed
     end
 
@@ -193,24 +204,25 @@ shared_examples 'an RDFSource' do
       end
 
       it 'handles patch' do
-        statement = RDF::Statement(subject.subject_uri, RDF::Vocab::FOAF.name, 'Moomin')
-        patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
-                "Add { #{statement.subject.to_base} " \
-                "#{statement.predicate.to_base} #{statement.object.to_base} } ." 
+        statement =
+          RDF::Statement(subject.subject_uri, RDF::Vocab::FOAF.name, 'Moomin')
+        patch = '@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .' \
+                "\n\nAdd { #{statement.subject.to_base} " \
+                "#{statement.predicate.to_base} #{statement.object.to_base} } ."
         env = { 'CONTENT_TYPE' => 'text/ldpatch',
                 'rack.input'   => StringIO.new(patch) }
 
         expect { subject.request(:patch, 200, {}, env) }
           .to change { subject.graph.statements.to_a }
-               .to(contain_exactly(statement))
+          .to(contain_exactly(statement))
       end
     end
-    
+
     context 'sparql update' do
       it 'raises BadRequest when invalid document' do
         env = { 'CONTENT_TYPE' => 'application/sparql-update',
                 'rack.input'   => StringIO.new('---invalid---') }
-        
+
         expect { subject.request(:patch, 200, {}, env) }
           .to raise_error RDF::LDP::BadRequest
       end
@@ -255,18 +267,18 @@ shared_examples 'an RDFSource' do
   describe '#request' do
     context 'with :GET' do
       it 'gives the subject' do
-        expect(subject.request(:GET, 200, {'abc' => 'def'}, {}))
+        expect(subject.request(:GET, 200, { 'abc' => 'def' }, {}))
           .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
       end
 
       it 'does not call the graph' do
         expect(subject).not_to receive(:graph)
-        subject.request(:GET, 200, {'abc' => 'def'}, {})
+        subject.request(:GET, 200, { 'abc' => 'def' }, {})
       end
 
       it 'returns 410 GONE when destroyed' do
         allow(subject).to receive(:destroyed?).and_return true
-        expect { subject.request(:GET, 200, {'abc' => 'def'}, {}) }
+        expect { subject.request(:GET, 200, { 'abc' => 'def' }, {}) }
           .to raise_error RDF::LDP::Gone
       end
     end
@@ -288,7 +300,7 @@ shared_examples 'an RDFSource' do
           .to change { subject.destroyed? }.from(false).to(true)
       end
     end
-    
+
     context 'with :PUT',
             if: described_class.private_method_defined?(:put) do
       let(:graph) { RDF::Graph.new }
@@ -298,53 +310,56 @@ shared_examples 'an RDFSource' do
       end
 
       it 'creates the resource' do
-        expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+        expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
           .to change { subject.exists? }.from(false).to(true)
       end
 
       it 'responds 201' do
-        expect(subject.request(:PUT, 200, {'abc' => 'def'}, env).first)
+        expect(subject.request(:PUT, 200, { 'abc' => 'def' }, env).first)
           .to eq 201
       end
 
       it 'returns the etag' do
-        expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['ETag'])
+        expect(subject.request(:PUT, 200, { 'abc' => 'def' }, env)[1]['ETag'])
           .to eq subject.etag
       end
 
       context 'when subject exists' do
         before { subject.create(StringIO.new, 'application/n-triples') }
-        
+
         it 'responds 200' do
-          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env))
+          expect(subject.request(:PUT, 200, { 'abc' => 'def' }, env))
             .to contain_exactly(200, a_hash_including('abc' => 'def'), subject)
         end
 
         it 'replaces the graph with the input' do
-          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
-          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+          graph <<
+            RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.graph.statements.count }.to(1)
         end
 
         it 'updates the etag' do
-          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
-          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+          graph <<
+            RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.etag }
         end
 
         it 'returns the etag' do
-          expect(subject.request(:PUT, 200, {'abc' => 'def'}, env)[1]['ETag'])
+          expect(subject.request(:PUT, 200, { 'abc' => 'def' }, env)[1]['ETag'])
             .to eq subject.etag
         end
 
         it 'gives PreconditionFailed when trying to update with wrong Etag' do
           env['HTTP_IF_MATCH'] = 'not an Etag'
-          expect { subject.request(:PUT, 200, {'abc' => 'def'}, env) }
+          expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to raise_error RDF::LDP::PreconditionFailed
         end
 
         it 'succeeds when giving correct Etag' do
-          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
+          graph <<
+            RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           env['HTTP_IF_MATCH'] = subject.etag
           expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.graph.statements.count }

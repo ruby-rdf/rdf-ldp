@@ -87,9 +87,11 @@ module RDF::LDP
       predicate = inserted_content_relation
       return resource.to_uri if predicate == MEMBER_SUBJECT_URI
 
-      raise(NotAcceptable, "#{resource.to_uri} is an LDP-NR; cannot add " \
-                           'it to an IndirectContainer with a content '   \
-                           'relation.') if resource.non_rdf_source?
+      if resource.non_rdf_source?
+        raise(NotAcceptable, "#{resource.to_uri} is an LDP-NR; cannot add " \
+                             'it to an IndirectContainer with a content '   \
+                             'relation.')
+      end
 
       target = transaction || resource.graph
       statements = target.query([resource.subject_uri, predicate, :o])

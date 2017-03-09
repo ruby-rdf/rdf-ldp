@@ -1,4 +1,11 @@
 module RDF::LDP
+  ##
+  # Version Number
+  #
+  # @example getting a version string
+  #   RDF::LDP::VERSION # or
+  #   "#{RDF::LDP::VERSION}"
+  #
   module VERSION
     FILE = File.expand_path('../../../../VERSION', __FILE__)
     MAJOR, MINOR, TINY, EXTRA = File.read(FILE).chomp.split('.')
@@ -6,14 +13,20 @@ module RDF::LDP
 
     ##
     # @return [String]
-    def self.to_s() STRING end
+    def self.to_s
+      STRING
+    end
 
     ##
     # @return [String]
-    def self.to_str() STRING end
+    def self.to_str
+      STRING
+    end
 
     ##
     # @return [Array(Integer, Integer, Integer)]
-    def self.to_a() [MAJOR, MINOR, TINY] end
+    def self.to_a
+      [MAJOR, MINOR, TINY]
+    end
   end
 end

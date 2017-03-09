@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'app')))
+$LOAD_PATH
+  .unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'app')))
 require 'lamprey'
 require 'optparse'
 
@@ -8,8 +9,8 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = 'Usage: lamprey [options]'
 
-  opts.on("-rREPO", "--repository=REPO", 'Set the repository') do |repo|
-    options[:repository] = repo.to_sym 
+  opts.on('-rREPO', '--repository=REPO', 'Set the repository') do |repo|
+    options[:repository] = repo.to_sym
   end
 end.parse!
 

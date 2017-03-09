@@ -1,0 +1,33 @@
+# Fix to use nested class/module style
+Style/ClassAndModuleChildren:
+  Exclude: 
+    - 'lib/**/*'
+
+# Consider extract-method and/or deploying conditional polymorphism here
+Metrics/AbcSize:
+  Exclude:
+    - 'lib/rdf/ldp/resource.rb'
+    - 'lib/rdf/ldp/container.rb'
+    - 'lib/rdf/ldp/indirect_container.rb'
+
+# Consider extract-class refactors for these
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/rdf/ldp/resource.rb'
+    - 'lib/rdf/ldp/container.rb'
+
+# Extract Method for transaction || resource.graph
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/rdf/ldp/container.rb'
+    - 'lib/rdf/ldp/indirect_container.rb'
+
+# Deprecate old method names and fix
+Style/AccessorMethodName:
+  Exclude:
+    - 'lib/rdf/ldp/resource.rb'
+
+# Deprecate old method names and fix
+Style/PredicateName:
+  Exclude:
+    - 'lib/rdf/ldp/container.rb'

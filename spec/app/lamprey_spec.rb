@@ -35,20 +35,20 @@ describe 'lamprey' do
 
         it 'can get the resource' do
           get @uri
-          returned = RDF::Reader.for(:ttl).new(last_response.body).statements.to_a
 
-          graph.statements.each do |s|
-            expect(returned).to include s
-          end
+          returned =
+            RDF::Reader.for(:ttl).new(last_response.body).statements.to_a
+
+          graph.statements.each { |s| expect(returned).to include s }
         end
 
         it 'gets json-ld' do
           get @uri, '', 'HTTP_ACCEPT' => 'application/ld+json'
-          returned = RDF::Reader.for(:jsonld).new(last_response.body).statements.to_a
 
-          graph.statements.each do |s|
-            expect(returned).to include s
-          end
+          returned =
+            RDF::Reader.for(:jsonld).new(last_response.body).statements.to_a
+
+          graph.statements.each { |s| expect(returned).to include s }
         end
 
         it 'is not a container' do
@@ -101,7 +101,10 @@ describe 'lamprey' do
 
       context 'existing resource' do
         before do
-          post '/', '', 'CONTENT_TYPE' => 'application/n-triples', 'HTTP_SLUG' => 'moomin'
+          post '/',
+               '',
+               'CONTENT_TYPE' => 'application/n-triples',
+               'HTTP_SLUG' => 'moomin'
         end
 
         it 'has Allow for resource type' do
@@ -141,14 +144,20 @@ describe 'lamprey' do
       end
 
       it 'properly handles null relative IRIs' do
-        post '/', '<> <http://example.org/ns#foo> "foo" .', 'CONTENT_TYPE' => 'text/turtle'
+        post '/',
+             '<> <http://example.org/ns#foo> "foo" .',
+             'CONTENT_TYPE' => 'text/turtle'
         resource_path = URI.parse(last_response['Location']).path
 
         update = 'DELETE { <> <http://example.org/ns#foo> ?change . } ' \
                  ' WHERE { <> <http://example.org/ns#foo> ?change . } ; ' \
                  'INSERT { <> <http://example.org/ns#foo> "bar" . } ' \
                  ' WHERE { }'
-        patch resource_path, update, 'CONTENT_TYPE' => 'application/sparql-update'
+
+        patch resource_path,
+              update,
+              'CONTENT_TYPE' => 'application/sparql-update'
+
         expect(last_response.status).to eq 200
       end
     end
@@ -252,12 +261,15 @@ describe 'lamprey' do
           expect(links.map(&:href))
             .to contain_exactly(RDF::Vocab::LDP.Resource.to_s,
                                 RDF::Vocab::LDP.RDFSource.to_s)
-
         end
 
         it 'creates an BasicContainer when using Container model' do
-          put '/put_container', '', 'CONTENT_TYPE' => 'text/turtle',
-              'HTTP_LINK' => "#{RDF::Vocab::LDP.Container.to_base};rel=\"type\""
+          link_header = "#{RDF::Vocab::LDP.Container.to_base};rel=\"type\""
+
+          put '/put_container',
+              '',
+              'CONTENT_TYPE' => 'text/turtle',
+              'HTTP_LINK' => link_header
 
           links = LinkHeader.parse(last_response.header['Link']).links
           expect(links.map(&:href))
@@ -267,8 +279,11 @@ describe 'lamprey' do
         end
 
         it 'creates an BasicContainer when using BasicContainer model' do
-          put '/put_container', '', 'CONTENT_TYPE' => 'text/turtle',
-              'HTTP_LINK' => "#{RDF::Vocab::LDP.BasicContainer.to_base};rel=\"type\""
+          link_header = "#{RDF::Vocab::LDP.Container.to_base};rel=\"type\""
+          put '/put_container',
+              '',
+              'CONTENT_TYPE' => 'text/turtle',
+              'HTTP_LINK' => link_header
 
           links = LinkHeader.parse(last_response.header['Link']).links
           expect(links.map(&:href))
@@ -280,7 +295,9 @@ describe 'lamprey' do
         it 'creates an DirectContainer' do
           uri = RDF::Vocab::LDP.DirectContainer.to_base
 
-          put '/put_direct_container', '', 'CONTENT_TYPE' => 'text/turtle',
+          put '/put_direct_container',
+              '',
+              'CONTENT_TYPE' => 'text/turtle',
               'HTTP_LINK' => "#{uri};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
@@ -293,7 +310,9 @@ describe 'lamprey' do
         it 'creates an IndirectContainer' do
           uri = RDF::Vocab::LDP.IndirectContainer.to_base
 
-          put '/put_indirect_container', '', 'CONTENT_TYPE' => 'text/turtle',
+          put '/put_indirect_container',
+              '',
+              'CONTENT_TYPE' => 'text/turtle',
               'HTTP_LINK' => "#{uri};rel=\"type\""
 
           links = LinkHeader.parse(last_response.header['Link']).links
@@ -306,14 +325,15 @@ describe 'lamprey' do
         it 'creates a NonRDFSource' do
           uri = RDF::Vocab::LDP.NonRDFSource.to_base
           put '/put_nonrdf_source', '', 'CONTENT_TYPE' => 'text/turtle',
-              'HTTP_LINK' => "#{uri};rel=\"type\""
+                                        'HTTP_LINK' => "#{uri};rel=\"type\""
 
-          links = LinkHeader.parse(last_response.header['Link']).links
-            .select { |link| link.attr_pairs.first.include? 'type' }
+          links = LinkHeader
+                  .parse(last_response.header['Link']).links
+                  .select { |link| link.attr_pairs.first.include? 'type' }
+
           expect(links.map(&:href))
             .to contain_exactly(RDF::Vocab::LDP.Resource.to_s,
                                 RDF::Vocab::LDP.NonRDFSource.to_s)
-
         end
       end
     end
@@ -386,7 +406,7 @@ describe RDF::Lamprey::Config do
     it 'changes RDF::Lamprey.repository' do
       expect { subject.configure! }.to change { RDF::Lamprey.repository }
     end
-    
+
     context 'with a registered repository' do
       include_context 'with a registered repository'
 

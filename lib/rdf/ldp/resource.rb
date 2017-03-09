@@ -38,14 +38,15 @@ module RDF::LDP
   #   resource.exists? # => true
   #   resource.metagraph.dump :ttl
   #   # => "<http://example.org/moomin> a <http://www.w3.org/ns/ldp#Resource>;
-  #           <http://purl.org/dc/terms/modified> "2015-10-25T14:24:56-07:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ."
+  #   #       <http://purl.org/dc/terms/modified>
+  #   #         "2015-10-25T14:24:56-07:00"^^xsd:dateTime ."
   #
   # @example updating a Resource updates the `#last_modified` date
   #   resource.last_modified
-  #   # => #<DateTime: 2015-10-25T14:32:01-07:00 ((2457321j,77521s,571858283n),-25200s,2299161j)>
+  #   # => #<DateTime: 2015-10-25T14:32:01-07:00...>
   #   resource.update('blah', 'text/plain')
   #   resource.last_modified
-  #   # => #<DateTime: 2015-10-25T14:32:04-07:00 ((2457321j,77524s,330658065n),-25200s,2299161j)>
+  #   # => #<DateTime: 2015-10-25T14:32:04-07:00...>
   #
   # @example destroying a Resource
   #   resource.exists? # => true
@@ -75,8 +76,8 @@ module RDF::LDP
   #         #<RDF::LDP::Resource:0x00564f4a646028
   #           @data=#<RDF::Repository:0x2b27a5391708()>,
   #           @exists=true,
-  #           @metagraph=#<RDF::Graph:0x2b27a5322538(http://example.org/moomin#meta)>,
-  #           @subject_uri=#<RDF::URI:0x2b27a5322fec URI:http://example.org/moomin>>]
+  #           @metagraph=#<RDF::Graph:0xea7(http://example.org/moomin#meta)>,
+  #           @subject_uri=#<RDF::URI:0xea8 URI:http://example.org/moomin>>]
   #
   #   resource.request(:put, 200, {}, {}) # RDF::LDP::MethodNotAllowed: put
   #
@@ -161,7 +162,7 @@ module RDF::LDP
                     .map { |link| RDF::URI.intern(link.href) }
 
         return InteractionModel.default if models.empty?
-        
+
         raise NotAcceptable unless InteractionModel.compatible?(models)
 
         InteractionModel.find(models)
@@ -302,9 +303,9 @@ module RDF::LDP
     #
     # @return [String] an HTTP Etag
     #
-    # @note these etags are weak, but we allow clients to use them in 
+    # @note these etags are weak, but we allow clients to use them in
     #   `If-Match` headers, and use weak comparison. This is in conflict with
-    #   https://tools.ietf.org/html/rfc7232#section-3.1. See: 
+    #   https://tools.ietf.org/html/rfc7232#section-3.1. See:
     #   https://github.com/ruby-rdf/rdf-ldp/issues/68
     #
     # @see http://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
@@ -558,24 +559,25 @@ module RDF::LDP
     ##
     # Sets the last modified date/time to now
     #
-    # @param transaction [RDF::Transaction] the transaction scope in which to 
+    # @param transaction [RDF::Transaction] the transaction scope in which to
     #   apply changes. If none (or `nil`) is given, the change is made outside
     #   any transaction scope.
     def set_last_modified(transaction = nil)
-      if transaction
-        # transactions do not support updates or pattern deletes, so we must
-        # ask the Repository for the current last_modified to delete the statement
-        # transactionally
+      return metagraph.update([subject_uri, MODIFIED_URI, DateTime.now]) unless
+        transaction
+
+      # transactions do not support updates or pattern deletes, so we must
+      # ask the Repository for the current last_modified to delete the
+      # statement transactionally
+      if last_modified
         transaction
           .delete RDF::Statement(subject_uri, MODIFIED_URI, last_modified,
-                                 graph_name: metagraph_name) if last_modified
-
-        transaction
-          .insert RDF::Statement(subject_uri, MODIFIED_URI, DateTime.now,
                                  graph_name: metagraph_name)
-      else
-        metagraph.update([subject_uri, MODIFIED_URI, DateTime.now])
       end
+
+      transaction
+        .insert RDF::Statement(subject_uri, MODIFIED_URI, DateTime.now,
+                               graph_name: metagraph_name)
     end
 
     ##

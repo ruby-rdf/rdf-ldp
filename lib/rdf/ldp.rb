@@ -22,11 +22,12 @@ module RDF
   # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
   module LDP
     InteractionModel.register(RDF::LDP::RDFSource, default: true)
-    InteractionModel.register(RDF::LDP::Container, for: RDF::Vocab::LDP.BasicContainer)
+    InteractionModel.register(RDF::LDP::Container,
+                              for: RDF::Vocab::LDP.BasicContainer)
     InteractionModel.register(RDF::LDP::DirectContainer)
     InteractionModel.register(RDF::LDP::IndirectContainer)
     InteractionModel.register(RDF::LDP::NonRDFSource)
-    
+
     CONTAINER_CLASSES = {
       basic:    RDF::Vocab::LDP.BasicContainer.freeze,
       direct:   RDF::LDP::DirectContainer.to_uri.freeze,

@@ -9,17 +9,18 @@ Gem::Specification.new do |gem|
   gem.homepage           = 'http://ruby-rdf.github.com/'
   gem.license            = 'Unlicense'
   gem.summary            = 'A suite of LDP software and middleware for RDF.rb.'
-  gem.description        = 'Implements a Linked Data Platform domain model, Rack ' \
-                           'middleware for server implementers, and a simple ' \
-                           'Sinatra-based server for RDF.rb'
+  gem.description        = 'Implements a Linked Data Platform domain model, ' \
+                           'Rack middleware for server implementers, and a ' \
+                           'simple Sinatra-based server for RDF.rb'
 
   gem.authors            = ['Tom Johnson']
   gem.email              = 'public-rdf-ruby@w3.org'
 
   gem.platform           = Gem::Platform::RUBY
-  gem.files              = %w(AUTHORS CREDITS CHANGELOG.md README.md IMPLEMENTATION.md UNLICENSE VERSION) + 
+  gem.files              = %w(AUTHORS CREDITS CHANGELOG.md README.md
+                              IMPLEMENTATION.md UNLICENSE VERSION) +
                            Dir.glob('lib/**/*.rb') + Dir.glob('app/**/*.rb')
-  gem.bindir             = %q(bin)
+  gem.bindir             = 'bin'
   gem.executables        = %w(lamprey)
   gem.default_executable = gem.executables.first
   gem.require_paths      = %w(lib app)
@@ -47,6 +48,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rdf-xsd',               '~> 2.0'
   gem.add_development_dependency 'rest-client',           '~> 1.7'
   gem.add_development_dependency 'rspec',                 '~> 3.0'
+  gem.add_development_dependency 'rubocop',               '~> 0.47'
+  gem.add_development_dependency 'rubocop-rspec',         '~> 1.10'
   gem.add_development_dependency 'rack-test',             '~> 0.6'
   gem.add_development_dependency 'rspec-its',             '~> 1.0'
   gem.add_development_dependency 'timecop',               '~> 0.8'
@@ -57,5 +60,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'capybara_discoball'
   gem.add_development_dependency 'ldp_testsuite_wrapper', '~> 0.0.4'
 
-  gem.post_install_message       = nil
+  gem.post_install_message = nil
 end

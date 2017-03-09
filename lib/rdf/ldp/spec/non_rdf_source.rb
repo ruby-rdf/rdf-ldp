@@ -54,14 +54,14 @@ shared_examples 'a NonRDFSource' do
       new_contents = StringIO.new('snorkmaiden')
       expect { subject.update(new_contents, 'text/plain') }
         .to change { subject.to_response.to_a }
-             .from(a_collection_containing_exactly('mummi'))
-             .to(a_collection_containing_exactly('snorkmaiden'))
+        .from(a_collection_containing_exactly('mummi'))
+        .to(a_collection_containing_exactly('snorkmaiden'))
     end
 
     it 'updates #content_type' do
       expect { subject.update(contents, 'text/prs.moomin') }
         .to change { subject.content_type }
-             .from('text/plain').to('text/prs.moomin')
+        .from('text/plain').to('text/prs.moomin')
     end
   end
 
@@ -120,7 +120,7 @@ shared_examples 'a NonRDFSource' do
     it 'deletes the content' do
       expect { subject.destroy }
         .to change { subject.to_response.to_a }
-             .from(a_collection_containing_exactly('mummi')).to([])
+        .from(a_collection_containing_exactly('mummi')).to([])
     end
 
     it 'marks resource as destroyed' do
