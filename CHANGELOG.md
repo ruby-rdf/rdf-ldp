@@ -1,3 +1,8 @@
+0.9.3
+-----
+  - Expose shared examples for LDP interaction models in
+  `lib/rdf/ldp/spec`.
+
 0.9.2
 -----
   - Reduce memory allocation for URIs by using `RDF::URI#intern`.
