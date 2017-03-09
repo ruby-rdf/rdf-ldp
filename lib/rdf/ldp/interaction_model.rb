@@ -1,14 +1,16 @@
 module RDF
   module LDP
+    ##
+    # Provides an interaction model registry.
     class InteractionModel
       class << self
         ##
         # Interaction models are in reverse order of preference for POST/PUT
-        # requests; e.g. if a client sends a request with Resource, RDFSource, and
-        # BasicContainer headers, the server gives a basic container.
+        # requests; e.g. if a client sends a request with Resource, RDFSource,
+        # oand BasicContainer headers, the server gives a basic container.
         #
-        # Interaction models are initialized in the correct order, but with no classed
-        # registered to handle them.
+        # Interaction models are initialized in the correct order, but with no
+        # class registered to handle them.
         @@interaction_models = {
           RDF::LDP::RDFSource.to_uri         => nil,
           RDF::LDP::Container.to_uri         => nil,
@@ -19,20 +21,22 @@ module RDF
         }
 
         ##
-        # Register a new interaction model for one or more Link header URIs. klass.to_uri
-        # will automatically be registered.
+        # Register a new interaction model for one or more Link header URIs.
+        # klass.to_uri will automatically be registered.
         #
-        # @param [RDF::LDP::Resource] klass  the implementation class to register
+        # @param [RDF::LDP::Resource] klass  the implementation class to
+        #   register
         # @param [Hash <Symbol, *>] opts   registration options:
-        #   :default [true, false]  if true, klass will become the new default klass for
-        #     unrecognized Link headers
-        #   :for [RDF::URI, Array<RDF::URI>]  additional URIs for which klass should become
-        #     the interaction model
+        #   :default [true, false]  if true, klass will become the new default
+        #     klass for unrecognized Link headers
+        #   :for [RDF::URI, Array<RDF::URI>]  additional URIs for which klass
+        #     should become the interaction model
         #
         # @return [RDF::LDP::Resource] klass
         def register(klass, opts = {})
           unless klass.ancestors.include?(RDF::LDP::Resource)
-            raise ArgumentError, 'Interaction models must subclass `RDF::LDP::Resource`'
+            raise ArgumentError,
+                  'Interaction models must subclass `RDF::LDP::Resource`'
           end
           @@default = klass if opts[:default] || @@default.nil?
           @@interaction_models[klass.to_uri] = klass
@@ -43,12 +47,14 @@ module RDF
         end
 
         ##
-        # Find the appropriate interaction model given a set of Link header URIs.
+        # Find the appropriate interaction model given a set of Link header
+        # URIs.
         #
         # @param [Array<RDF::URI>] uris
         #
-        # @return [Class] a subclass of {RDF::LDP::Resource} that most narrowly matches the
-        #   supplied `uris`, or the default interaction model if nothing matches
+        # @return [Class] a subclass of {RDF::LDP::Resource} that most narrowly
+        #   matches the supplied `uris`, or the default interaction model if
+        #   nothing matches
         def find(uris)
           match = @@interaction_models.keys.reverse.find { |u| uris.include? u }
           self.for(match) || @@default
@@ -71,14 +77,18 @@ module RDF
         end
 
         ##
-        # Test an array of URIs to see if their interaction models are compatible (e.g., all of the URIs
-        # refer either to RDF models or non-RDF models, but not a combination of both).
+        # Test an array of URIs to see if their interaction models are
+        # compatible (e.g., all of the URIs refer either to RDF models or
+        # non-RDF models, but not a combination of both).
         #
         # @param [Array<RDF::URI>] uris
-        # @return [TrueClass or FalseClass]  true if the models specified by `uris` are compatible
+        # @return [TrueClass or FalseClass]  true if the models specified by
+        #   `uris` are compatible
         def compatible?(uris)
-          classes = uris.collect { |m| self.for(m) }
-          (rdf, non_rdf) = classes.compact.partition { |c| c.ancestors.include?(RDFSource) }
+          classes        = uris.collect { |m| self.for(m) }
+          (rdf, non_rdf) =
+            classes.compact.partition { |c| c.ancestors.include?(RDFSource) }
+
           rdf.empty? || non_rdf.empty?
         end
       end

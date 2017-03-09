@@ -1,4 +1,11 @@
 module RDF::LDP
+  ##
+  # Version Number
+  #
+  # @example getting a version string
+  #   RDF::LDP::VERSION # or
+  #   "#{RDF::LDP::VERSION}"
+  #
   module VERSION
     FILE = File.expand_path('../../../../VERSION', __FILE__)
     MAJOR, MINOR, TINY, EXTRA = File.read(FILE).chomp.split('.')

@@ -82,8 +82,8 @@ module RDF::LDP
     # membership triples as appropriate for the container type.
     #
     # If a transaction is passed as the second argument, the removal of the
-    # containment triple is completed when the transaction closes; otherwise it is
-    # handled atomically.
+    # containment triple is completed when the transaction closes; otherwise it
+    # is handled atomically.
     #
     # @param [RDF::Term] a new member for this container
     # @param transaction [RDF::Transaction] an active transaction as context for
@@ -157,7 +157,7 @@ module RDF::LDP
 
       raise UnsupportedMediaType unless method
 
-      temp_data = RDF::Repository.new << graph.statements
+      temp_data  = RDF::Repository.new << graph.statements
       temp_graph = RDF::Graph.new(graph_name: graph.name, data: temp_data)
       send(method, env['rack.input'], temp_graph)
 
@@ -211,10 +211,11 @@ module RDF::LDP
       end
 
       deletes = existing_triples.reject { |st| tx_containment.include?(st) }
-      unless deletes.empty?
-        raise(Conflict, 'Cannot remove containment triples in updates. ' \
-                        "Attepted to remove #{deletes}")
-      end
+
+      return if deletes.empty?
+
+      raise(Conflict, 'Cannot remove containment triples in updates. ' \
+                      "Attepted to remove #{deletes}")
     end
 
     ##
@@ -227,10 +228,11 @@ module RDF::LDP
                           "containment-triple: #{st}")
         end
       end
-      unless existing_triples.empty?
-        raise(Conflict, 'Cannot remove containment triples in updates. ' \
-                        "Attepted to remove #{existing_triples}")
-      end
+
+      return if existing_triples.empty?
+
+      raise(Conflict, 'Cannot remove containment triples in updates. ' \
+                      "Attepted to remove #{existing_triples}")
     end
   end
 end

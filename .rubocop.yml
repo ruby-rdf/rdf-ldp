@@ -1,2 +1,22 @@
 inherit_from:
   - .rubocop-todo.yml
+
+# Display names in failures for easier management of todos
+AllCops:
+  DisplayCopNames: true
+
+# Long blocks are allowed is specs and gemspec
+Metrics/BlockLength:
+  Exclude:
+    - '*.gemspec'
+    - 'spec/**/*'
+    - 'lib/rdf/ldp/spec/**/*'
+
+# We can trust ourselves to use class vars judiciously
+Style/ClassVars:
+  Enabled: false
+
+# Specs can eat exceptions if they want
+Lint/HandleExceptions:
+  Exclude:
+    - 'lib/rdf/ldp/spec/**/*'

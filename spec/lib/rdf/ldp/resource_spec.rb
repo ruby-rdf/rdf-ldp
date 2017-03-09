@@ -90,16 +90,20 @@ describe RDF::LDP::Resource do
       let!(:custom_container) { Class.new(RDF::LDP::Container) }
 
       before do
-        @original_class = RDF::LDP::InteractionModel.for(RDF::Vocab::LDP.BasicContainer)
+        @original_class =
+          RDF::LDP::InteractionModel.for(RDF::Vocab::LDP.BasicContainer)
       end
 
       after do
-        RDF::LDP::InteractionModel.register(@original_class, for: RDF::Vocab::LDP.BasicContainer)
+        RDF::LDP::InteractionModel
+          .register(@original_class, for: RDF::Vocab::LDP.BasicContainer)
       end
 
       it 'matches header to class' do
-        RDF::LDP::InteractionModel.register(custom_container, for: RDF::Vocab::LDP.BasicContainer)
+        RDF::LDP::InteractionModel
+          .register(custom_container, for: RDF::Vocab::LDP.BasicContainer)
         header = '<http://www.w3.org/ns/ldp#BasicContainer>;rel="type"'
+
         expect(described_class.interaction_model(header))
           .to eq custom_container
       end

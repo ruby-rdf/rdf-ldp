@@ -9,15 +9,16 @@ Gem::Specification.new do |gem|
   gem.homepage           = 'http://ruby-rdf.github.com/'
   gem.license            = 'Unlicense'
   gem.summary            = 'A suite of LDP software and middleware for RDF.rb.'
-  gem.description        = 'Implements a Linked Data Platform domain model, Rack ' \
-                           'middleware for server implementers, and a simple ' \
-                           'Sinatra-based server for RDF.rb'
+  gem.description        = 'Implements a Linked Data Platform domain model, ' \
+                           'Rack middleware for server implementers, and a ' \
+                           'simple Sinatra-based server for RDF.rb'
 
   gem.authors            = ['Tom Johnson']
   gem.email              = 'public-rdf-ruby@w3.org'
 
   gem.platform           = Gem::Platform::RUBY
-  gem.files              = %w(AUTHORS CREDITS CHANGELOG.md README.md IMPLEMENTATION.md UNLICENSE VERSION) +
+  gem.files              = %w(AUTHORS CREDITS CHANGELOG.md README.md
+                              IMPLEMENTATION.md UNLICENSE VERSION) +
                            Dir.glob('lib/**/*.rb') + Dir.glob('app/**/*.rb')
   gem.bindir             = 'bin'
   gem.executables        = %w(lamprey)

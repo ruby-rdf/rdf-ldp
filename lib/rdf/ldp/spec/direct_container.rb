@@ -37,7 +37,9 @@ shared_examples 'a DirectContainer' do
                                             membership_resource_uri)
       end
 
-      let(:membership_resource_uri) { RDF::URI('http://example.com/moomin_resource') }
+      let(:membership_resource_uri) do
+        RDF::URI('http://example.com/moomin_resource')
+      end
 
       it 'adds membership triple to the container' do
         expect { subject.add(added) }
@@ -109,7 +111,9 @@ shared_examples 'a DirectContainer' do
                                              RDF::Vocab::LDP.membershipResource,
                                              nr.to_uri)
 
-        container.create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
+        container
+          .create(StringIO.new(g.dump(:ntriples)), 'application/n-triples')
+
         nr.create(StringIO.new, 'application/n-triples')
 
         container.add(added)

@@ -116,8 +116,8 @@ shared_examples 'a Container' do
       it 'raises conflict error when editing containment triples' do
         patch_statement = statement.clone
         patch_statement.object = 'snorkmaiden'
-        patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
-                "Add { #{statement.subject.to_base} " \
+        patch = '@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .' \
+                "\n\nAdd { #{statement.subject.to_base} " \
                 "#{statement.predicate.to_base} #{statement.object.to_base} } ."
         env = { 'CONTENT_TYPE' => 'text/ldpatch',
                 'rack.input'   => StringIO.new(patch) }
@@ -231,7 +231,9 @@ shared_examples 'a Container' do
 
         context 'DirectContainer' do
           it 'creates a direct container' do
-            env['HTTP_LINK'] = "<#{RDF::LDP::DirectContainer.to_uri}>;rel=\"type\""
+            env['HTTP_LINK'] =
+              "<#{RDF::LDP::DirectContainer.to_uri}>;rel=\"type\""
+
             expect(subject.request(:POST, 200, {}, env).last)
               .to be_a RDF::LDP::DirectContainer
           end
@@ -239,7 +241,9 @@ shared_examples 'a Container' do
 
         context 'IndirectContainer' do
           it 'creates a indirect container' do
-            env['HTTP_LINK'] = "<#{RDF::LDP::IndirectContainer.to_uri}>;rel=\"type\""
+            env['HTTP_LINK'] =
+              "<#{RDF::LDP::IndirectContainer.to_uri}>;rel=\"type\""
+
             expect(subject.request(:POST, 200, {}, env).last)
               .to be_a RDF::LDP::IndirectContainer
           end
@@ -250,7 +254,7 @@ shared_examples 'a Container' do
         it 'creates resource with Slug' do
           env['HTTP_SLUG'] = 'snork'
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
-            .to eq (subject.subject_uri / env['HTTP_SLUG'])
+            .to eq subject.subject_uri / env['HTTP_SLUG']
         end
 
         it 'mints a uri when empty Slug is given' do
@@ -286,15 +290,16 @@ shared_examples 'a Container' do
         it 'url-encodes Slug' do
           env['HTTP_SLUG'] = 'snork maiden'
           expect(subject.request(:POST, 200, {}, env).last.subject_uri)
-            .to eq (subject.subject_uri / 'snork%20maiden')
+            .to eq subject.subject_uri / 'snork%20maiden'
         end
       end
 
       context 'with graph content' do
         before do
           graph << RDF::Statement(uri, RDF::Vocab::DC.title, 'moomin')
-          graph << RDF::Statement(RDF::Node.new, RDF.type, RDF::Vocab::FOAF.Person)
           graph << RDF::Statement(RDF::Node.new, RDF::Vocab::DC.creator, 'tove')
+          graph <<
+            RDF::Statement(RDF::Node.new, RDF.type, RDF::Vocab::FOAF.Person)
         end
 
         it 'parses graph into created resource' do

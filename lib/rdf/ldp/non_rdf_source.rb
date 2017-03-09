@@ -30,7 +30,9 @@ module RDF::LDP
     # @param [storage_adapter] a class implementing the StorageAdapter interface
     #
     # @see RDF::LDP::Resource#initialize
-    def initialize(subject_uri, data = RDF::Repository.new, storage_adapter = DEFAULT_ADAPTER)
+    def initialize(subject_uri,
+                   data            = RDF::Repository.new,
+                   storage_adapter = DEFAULT_ADAPTER)
       data ||= RDF::Repository.new # allows explict `nil` pass
       @storage = storage_adapter.new(self)
       super(subject_uri, data)

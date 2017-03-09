@@ -22,12 +22,12 @@ describe 'LDP Test Suite', integration: true do
     @server = Capybara::Discoball::Runner.new(RDF::Lamprey).boot
 
     @skipped_tests = [
-      'testContainsRdfType',          # rdf:type is left to the client and/or implementer.
-      'testTypeRdfSource',            # rdf:type is left to the client and/or implementer.
-      'testRdfTypeLdpContainer',      # rdf:type is left to the client and/or implementer.
+      'testContainsRdfType',          # rdf:type is left to the client.
+      'testTypeRdfSource',            # rdf:type is left to the client.
+      'testRdfTypeLdpContainer',      # rdf:type is left to the client.
       'testPreferContainmentTriples', # Client hints are unimplemented.
       'testPreferMembershipTriples',  # Client hints are unimplemented.
-      'testPutRequiresIfMatch',       # clients SHOULD use the HTTP If-Match header
+      'testPutRequiresIfMatch',       # clients SHOULD use HTTP If-Match header
       'testRestrictUriReUseSlug'      # https://github.com/w3c/ldp-testsuite/issues/225
     ]
   end

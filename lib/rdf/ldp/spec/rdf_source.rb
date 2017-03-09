@@ -64,7 +64,9 @@ shared_examples 'an RDFSource' do
     let(:other) { described_class.new(RDF::URI('http://ex.org/blah')) }
 
     let(:statement) do
-      RDF::Statement(RDF::URI('http://ex.org/m'), RDF::Vocab::DC.title, 'moomin')
+      RDF::Statement(RDF::URI('http://ex.org/m'),
+                     RDF::Vocab::DC.title,
+                     'moomin')
     end
 
     it 'is the same for equal graphs' do
@@ -72,7 +74,8 @@ shared_examples 'an RDFSource' do
     end
 
     xit 'is different for different graphs' do
-      subject.graph << RDF::Statement(RDF::Node.new, RDF::Vocab::DC.title, 'mymble')
+      subject.graph <<
+        RDF::Statement(RDF::Node.new, RDF::Vocab::DC.title, 'mymble')
       expect(subject.etag).not_to eq other.etag
     end
   end
@@ -103,7 +106,10 @@ shared_examples 'an RDFSource' do
     it 'interprets NULL URI as this resource' do
       graph << RDF::Statement(RDF::URI(), RDF::Vocab::DC.title, 'moomin')
 
-      expect(subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph)
+      created =
+        subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph
+
+      expect(created)
         .to have_statement RDF::Statement(subject.subject_uri,
                                           RDF::Vocab::DC.title,
                                           'moomin')
@@ -114,7 +120,10 @@ shared_examples 'an RDFSource' do
                               RDF::Vocab::DC.isPartOf,
                               RDF::URI('#moomin'))
 
-      expect(subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph)
+      created =
+        subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph
+
+      expect(created)
         .to have_statement RDF::Statement(subject.subject_uri,
                                           RDF::Vocab::DC.isPartOf,
                                           subject.subject_uri / '#moomin')
@@ -148,7 +157,9 @@ shared_examples 'an RDFSource' do
 
       context 'with bad media type' do
         it 'raises UnsupportedMediaType' do
-          expect { subject.update(StringIO.new(graph.dump(:ttl)), 'text/moomin') }
+          graph_io = StringIO.new(graph.dump(:ttl))
+
+          expect { subject.update(graph_io, 'text/moomin') }
             .to raise_error RDF::LDP::UnsupportedMediaType
         end
 
@@ -193,9 +204,10 @@ shared_examples 'an RDFSource' do
       end
 
       it 'handles patch' do
-        statement = RDF::Statement(subject.subject_uri, RDF::Vocab::FOAF.name, 'Moomin')
-        patch = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\n" \
-                "Add { #{statement.subject.to_base} " \
+        statement =
+          RDF::Statement(subject.subject_uri, RDF::Vocab::FOAF.name, 'Moomin')
+        patch = '@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .' \
+                "\n\nAdd { #{statement.subject.to_base} " \
                 "#{statement.predicate.to_base} #{statement.object.to_base} } ."
         env = { 'CONTENT_TYPE' => 'text/ldpatch',
                 'rack.input'   => StringIO.new(patch) }
@@ -321,13 +333,15 @@ shared_examples 'an RDFSource' do
         end
 
         it 'replaces the graph with the input' do
-          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
+          graph <<
+            RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.graph.statements.count }.to(1)
         end
 
         it 'updates the etag' do
-          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
+          graph <<
+            RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.etag }
         end
@@ -344,7 +358,8 @@ shared_examples 'an RDFSource' do
         end
 
         it 'succeeds when giving correct Etag' do
-          graph << RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
+          graph <<
+            RDF::Statement(subject.subject_uri, RDF::Vocab::DC.title, 'moomin')
           env['HTTP_IF_MATCH'] = subject.etag
           expect { subject.request(:PUT, 200, { 'abc' => 'def' }, env) }
             .to change { subject.graph.statements.count }
