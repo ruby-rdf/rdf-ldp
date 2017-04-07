@@ -13,6 +13,8 @@ RSpec.configure do |config|
   config.include(RDF::Spec::Matchers)
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
+
+  c.filter_run_excluding skip_rbx: true if RUBY_VERSION.include? 'rbx'
 end
 
 def fixture_path(filename)
