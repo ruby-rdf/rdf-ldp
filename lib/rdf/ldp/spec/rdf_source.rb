@@ -104,7 +104,7 @@ shared_examples 'an RDFSource' do
     end
 
     it 'interprets NULL URI as this resource' do
-      graph << RDF::Statement(RDF::URI(), RDF::Vocab::DC.title, 'moomin')
+      graph << RDF::Statement(RDF::URI.new, RDF::Vocab::DC.title, 'moomin')
 
       created =
         subject.create(StringIO.new(graph.dump(:ttl)), 'text/turtle').graph
