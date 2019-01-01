@@ -22,11 +22,6 @@ group :test do
   gem 'rake'
 end
 
-platforms :rbx do
-  gem 'rubinius', '~> 2.0'
-  gem 'rubysl', '~> 2.0'
-end
-
 case ENV['RACK_VERSION']
 when /^1.6/
   gem 'rack', '~> 1.6'
