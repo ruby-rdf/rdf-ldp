@@ -27,21 +27,22 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 2.2.2'
   gem.requirements               = []
 
-  gem.add_runtime_dependency     'rack',            '>= 1.6', '< 3.0'
+  gem.add_runtime_dependency     'rack',            '~> 2.0'
   gem.add_runtime_dependency     'rdf',             '~> 3.0'
   gem.add_runtime_dependency     'rdf-turtle',      '~> 3.0'
   gem.add_runtime_dependency     'ld-patch',        '~> 0.3'
   gem.add_runtime_dependency     'rdf-vocab',       '~> 3.0'
   gem.add_runtime_dependency     'rack-linkeddata', '~> 3.0'
+  gem.add_runtime_dependency     'i18n',            '<= 1.5.1' if RUBY_VERSION < "2.3"
 
   gem.add_runtime_dependency     'json-ld',         '~> 3.0'
 
-  gem.add_runtime_dependency     'sinatra', '>= 1.4', '< 3.0'
+  gem.add_runtime_dependency     'sinatra',         '~> 2.0'
 
   gem.add_runtime_dependency     'link_header', '~> 0.0', '>= 0.0.8'
 
   gem.add_development_dependency 'rdf-spec',              '~> 3.0'
-  gem.add_development_dependency 'rdf-rdfxml',            '>= 2.2.1', '< 4.0'
+  gem.add_development_dependency 'rdf-rdfxml',            '~> 2.2'
   gem.add_development_dependency 'rdf-rdfa',              '~> 3.0'
   gem.add_development_dependency 'rdf-xsd',               '~> 3.0'
   gem.add_development_dependency 'rest-client',           '>= 1.7', '< 3.0'
