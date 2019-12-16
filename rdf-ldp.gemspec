@@ -32,7 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency     'rdf-turtle',      '~> 3.1'
   gem.add_runtime_dependency     'ld-patch',        '~> 3.1'
   gem.add_runtime_dependency     'rdf-vocab',       '~> 3.1'
-  gem.add_runtime_dependency     'rack-linkeddata', '~> 3.0'
+  gem.add_runtime_dependency     'rack-linkeddata', '~> 3.1'
 
   gem.add_runtime_dependency     'json-ld',         '~> 3.1'
 
