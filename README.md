@@ -148,10 +148,7 @@ gem to run the suite and generate the tests.
 RDF.rb Compatibility
 --------------------------
 
-As of version 1.0, this software depends on RDF.rb 2.2 or greater. Support for
-Ruby RDF version 2.2 will be maintained to the degree possible on the 1.0.x
-release series. Users are encouraged to upgrade their projects to 3.0 to take
-advantage of the latest development.
+As of version 2.0, this software depends on RDF.rb 3.1 or greater.
 
 
 License

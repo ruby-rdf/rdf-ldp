@@ -24,36 +24,35 @@ Gem::Specification.new do |gem|
   gem.executables        = %w(lamprey)
   gem.require_paths      = %w(lib app)
 
-  gem.required_ruby_version      = '>= 2.2.2'
+  gem.required_ruby_version      = '>= 2.4'
   gem.requirements               = []
 
   gem.add_runtime_dependency     'rack',            '~> 2.0'
-  gem.add_runtime_dependency     'rdf',             '~> 3.0'
-  gem.add_runtime_dependency     'rdf-turtle',      '~> 3.0'
-  gem.add_runtime_dependency     'ld-patch',        '~> 0.3'
-  gem.add_runtime_dependency     'rdf-vocab',       '~> 3.0'
+  gem.add_runtime_dependency     'rdf',             '~> 3.1'
+  gem.add_runtime_dependency     'rdf-turtle',      '~> 3.1'
+  gem.add_runtime_dependency     'ld-patch',        '~> 3.1'
+  gem.add_runtime_dependency     'rdf-vocab',       '~> 3.1'
   gem.add_runtime_dependency     'rack-linkeddata', '~> 3.0'
-  gem.add_runtime_dependency     'i18n',            '<= 1.5.1' if RUBY_VERSION < "2.3"
 
-  gem.add_runtime_dependency     'json-ld',         '~> 3.0'
+  gem.add_runtime_dependency     'json-ld',         '~> 3.1'
 
   gem.add_runtime_dependency     'sinatra',         '~> 2.0'
 
   gem.add_runtime_dependency     'link_header', '~> 0.0', '>= 0.0.8'
 
-  gem.add_development_dependency 'rdf-spec',              '~> 3.0'
-  gem.add_development_dependency 'rdf-rdfxml',            '~> 2.2'
-  gem.add_development_dependency 'rdf-rdfa',              '~> 3.0'
-  gem.add_development_dependency 'rdf-xsd',               '~> 3.0'
-  gem.add_development_dependency 'rest-client',           '>= 1.7', '< 3.0'
-  gem.add_development_dependency 'rspec',                 '~> 3.7'
-  gem.add_development_dependency 'rubocop',               '~> 0.47'
-  gem.add_development_dependency 'rubocop-rspec',         '~> 1.10'
-  gem.add_development_dependency 'rack-test',             '~> 0.8'
-  gem.add_development_dependency 'rspec-its',             '~> 1.2'
-  gem.add_development_dependency 'timecop',               '~> 0.8'
-  gem.add_development_dependency 'webmock',               '~> 3.1'
-  gem.add_development_dependency 'yard',                  '~> 0.9.12'
+  gem.add_development_dependency 'rdf-spec',              '~> 3.1'
+  gem.add_development_dependency 'rdf-rdfxml',            '~> 3.1'
+  gem.add_development_dependency 'rdf-rdfa',              '~> 3.1'
+  gem.add_development_dependency 'rdf-xsd',               '~> 3.1'
+  gem.add_development_dependency 'rest-client',           '~> 2.1'
+  gem.add_development_dependency 'rspec',                 '~> 3.9'
+  gem.add_development_dependency 'rubocop',               '~> 0.77'
+  gem.add_development_dependency 'rubocop-rspec',         '~> 1.37'
+  gem.add_development_dependency 'rack-test',             '~> 1.1'
+  gem.add_development_dependency 'rspec-its',             '~> 1.3'
+  gem.add_development_dependency 'timecop',               '~> 0.9'
+  gem.add_development_dependency 'webmock',               '~> 3.7'
+  gem.add_development_dependency 'yard',                  '~> 0.9.20'
 
   gem.add_development_dependency 'faraday'
   gem.add_development_dependency 'capybara_discoball'
