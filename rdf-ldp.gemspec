@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 2.4'
   gem.requirements               = []
 
-  gem.add_runtime_dependency     'rack',            '~> 2.0'
+  gem.add_runtime_dependency     'rack',            '~> 2.2'
   gem.add_runtime_dependency     'rdf',             '~> 3.1'
   gem.add_runtime_dependency     'rdf-turtle',      '~> 3.1'
   gem.add_runtime_dependency     'ld-patch',        '~> 3.1'
@@ -46,16 +46,16 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rdf-xsd',               '~> 3.1'
   gem.add_development_dependency 'rest-client',           '~> 2.1'
   gem.add_development_dependency 'rspec',                 '~> 3.9'
-  gem.add_development_dependency 'rubocop',               '~> 0.77'
-  gem.add_development_dependency 'rubocop-rspec',         '~> 1.37'
+  gem.add_development_dependency 'rubocop',               '~> 0.79'
+  gem.add_development_dependency 'rubocop-rspec',         '~> 1.38'
   gem.add_development_dependency 'rack-test',             '~> 1.1'
   gem.add_development_dependency 'rspec-its',             '~> 1.3'
   gem.add_development_dependency 'timecop',               '~> 0.9'
-  gem.add_development_dependency 'webmock',               '~> 3.7'
-  gem.add_development_dependency 'yard',                  '~> 0.9.20'
+  gem.add_development_dependency 'webmock',               '~> 3.8'
+  gem.add_development_dependency 'yard',                  '~> 0.9.24'
 
-  gem.add_development_dependency 'faraday'
-  gem.add_development_dependency 'capybara_discoball'
+  gem.add_development_dependency 'faraday',               '~> 1.0'
+  gem.add_development_dependency 'capybara_discoball',    '~> 0.1.0'
   gem.add_development_dependency 'ldp_testsuite_wrapper', '~> 0.0.4'
 
   gem.post_install_message = nil
