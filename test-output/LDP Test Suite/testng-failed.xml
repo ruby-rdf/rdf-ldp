@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [LDP Test Suite]">
-  <parameter name="indirectContainer" value="http://127.0.0.1:49262/8df2b3910ac267810ad4ed3957f53d40"/>
+  <parameter name="indirectContainer" value="http://127.0.0.1:64910/8445f580d8608641d69d68293258fc42"/>
   <parameter name="output" value="report"/>
   <test name="W3C Linked Data Platform Tests(failed)">
     <groups>
@@ -47,6 +47,27 @@
           <include name="testTypeRdfSource"/>
         </methods>
       </class> <!-- org.w3.ldp.testsuite.test.IndirectContainerTest -->
+      <class name="org.w3.ldp.testsuite.test.MemberResourceTest">
+        <methods>
+          <include name="testRestrictClientInference"/>
+          <include name="testPutPropertiesNotPersisted"/>
+          <include name="testPutRequiresIfMatch"/>
+          <include name="testIsHttp11Manual"/>
+          <include name="testPublishConstraintsUnknownProp"/>
+          <include name="test4xxErrorHasResponseBody" invocation-numbers="0"/>
+          <include name="addFailureToHttpLog"/>
+          <include name="createTestResource"/>
+          <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
+          <include name="deleteTestResource"/>
+          <include name="testConformsRdfSourceLdpResource"/>
+          <include name="testUseStandardVocabularies"/>
+          <include name="determineOptions"/>
+          <include name="testPreconditionRequiredStatusCode"/>
+          <include name="testReUseVocabularies"/>
+          <include name="testPutReadOnlyProperties4xxStatus" invocation-numbers="0"/>
+          <include name="testResponsePropertiesNotPersisted"/>
+        </methods>
+      </class> <!-- org.w3.ldp.testsuite.test.MemberResourceTest -->
       <class name="org.w3.ldp.testsuite.test.NonRDFSourceTest">
         <methods>
           <include name="testOptionsAllowHeader"/>
@@ -77,27 +98,6 @@
           <include name="testETagHeadersGet"/>
         </methods>
       </class> <!-- org.w3.ldp.testsuite.test.NonRDFSourceTest -->
-      <class name="org.w3.ldp.testsuite.test.MemberResourceTest">
-        <methods>
-          <include name="testRestrictClientInference"/>
-          <include name="testPutPropertiesNotPersisted"/>
-          <include name="testPutRequiresIfMatch"/>
-          <include name="testIsHttp11Manual"/>
-          <include name="testPublishConstraintsUnknownProp"/>
-          <include name="test4xxErrorHasResponseBody" invocation-numbers="0"/>
-          <include name="addFailureToHttpLog"/>
-          <include name="createTestResource"/>
-          <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
-          <include name="deleteTestResource"/>
-          <include name="testConformsRdfSourceLdpResource"/>
-          <include name="testUseStandardVocabularies"/>
-          <include name="determineOptions"/>
-          <include name="testPreconditionRequiredStatusCode"/>
-          <include name="testReUseVocabularies"/>
-          <include name="testPutReadOnlyProperties4xxStatus" invocation-numbers="0"/>
-          <include name="testResponsePropertiesNotPersisted"/>
-        </methods>
-      </class> <!-- org.w3.ldp.testsuite.test.MemberResourceTest -->
     </classes>
   </test> <!-- W3C Linked Data Platform Tests(failed) -->
 </suite> <!-- Failed suite [LDP Test Suite] -->
