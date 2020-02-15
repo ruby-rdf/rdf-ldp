@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [LDP Test Suite]">
-  <parameter name="indirectContainer" value="http://127.0.0.1:49262/8df2b3910ac267810ad4ed3957f53d40"/>
+  <parameter name="indirectContainer" value="http://127.0.0.1:50587/a896b4dedb3178d5646549753de052eb"/>
   <parameter name="output" value="report"/>
   <test name="W3C Linked Data Platform Tests(failed)">
     <groups>
@@ -13,40 +13,29 @@
       </run>
     </groups>
     <classes>
-      <class name="org.w3.ldp.testsuite.test.IndirectContainerTest">
+      <class name="org.w3.ldp.testsuite.test.MemberResourceTest">
         <methods>
-          <include name="testRdfTypeLdpContainer"/>
           <include name="testRestrictClientInference"/>
-          <include name="testConformsContainerRdfResource"/>
-          <include name="testRequestedInteractionModelCreateNotAllowed" invocation-numbers="0"/>
-          <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
-          <include name="testRequestedInteractionModelHeaders" invocation-numbers="0"/>
-          <include name="testConformsRdfSourceLdpResource"/>
-          <include name="testUseStandardVocabularies"/>
-          <include name="determineOptions"/>
-          <include name="testReUseVocabularies"/>
-          <include name="testRestrictUriReUseSlug"/>
-          <include name="testPutSimpleUpdate"/>
-          <include name="testRelativeUriResolutionPut" invocation-numbers="0"/>
           <include name="testPutPropertiesNotPersisted"/>
           <include name="testPutRequiresIfMatch"/>
-          <include name="testPreferContainmentTriples"/>
-          <include name="testPostResource"/>
           <include name="commonTearDown"/>
           <include name="testIsHttp11Manual"/>
           <include name="testPublishConstraintsUnknownProp"/>
           <include name="test4xxErrorHasResponseBody" invocation-numbers="0"/>
           <include name="addFailureToHttpLog"/>
-          <include name="testContainsRdfType"/>
-          <include name="hasIndirectContainer"/>
+          <include name="createTestResource"/>
+          <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
+          <include name="deleteTestResource"/>
+          <include name="testConformsRdfSourceLdpResource"/>
+          <include name="testUseStandardVocabularies"/>
+          <include name="determineOptions"/>
           <include name="testPreconditionRequiredStatusCode"/>
-          <include name="testPutReadOnlyProperties4xxStatus" invocation-numbers="0"/>
+          <include name="testReUseVocabularies"/>
           <include name="testResponsePropertiesNotPersisted"/>
+          <include name="testPutReadOnlyProperties4xxStatus" invocation-numbers="0"/>
           <include name="commonSetup"/>
-          <include name="testPutReplacesResource"/>
-          <include name="testTypeRdfSource"/>
         </methods>
-      </class> <!-- org.w3.ldp.testsuite.test.IndirectContainerTest -->
+      </class> <!-- org.w3.ldp.testsuite.test.MemberResourceTest -->
       <class name="org.w3.ldp.testsuite.test.NonRDFSourceTest">
         <methods>
           <include name="testOptionsAllowHeader"/>
@@ -67,8 +56,8 @@
           <include name="testPostResourceAndCheckAssociatedResource"/>
           <include name="testIsHttp11Manual"/>
           <include name="testDeleteNonRDFSourceDeletesAssociatedResource"/>
-          <include name="testLdpLinkHeader"/>
           <include name="testConditionFailedStatusCode"/>
+          <include name="testLdpLinkHeader"/>
           <include name="createTestResource"/>
           <include name="addFailureToHttpLog"/>
           <include name="testETagHeadersHead"/>
@@ -77,27 +66,38 @@
           <include name="testETagHeadersGet"/>
         </methods>
       </class> <!-- org.w3.ldp.testsuite.test.NonRDFSourceTest -->
-      <class name="org.w3.ldp.testsuite.test.MemberResourceTest">
+      <class name="org.w3.ldp.testsuite.test.IndirectContainerTest">
         <methods>
+          <include name="testRdfTypeLdpContainer"/>
           <include name="testRestrictClientInference"/>
+          <include name="testConformsContainerRdfResource"/>
+          <include name="testRequestedInteractionModelCreateNotAllowed" invocation-numbers="0"/>
+          <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
+          <include name="testConformsRdfSourceLdpResource"/>
+          <include name="testRequestedInteractionModelHeaders" invocation-numbers="0"/>
+          <include name="testUseStandardVocabularies"/>
+          <include name="determineOptions"/>
+          <include name="testReUseVocabularies"/>
+          <include name="testRestrictUriReUseSlug"/>
+          <include name="testPutSimpleUpdate"/>
+          <include name="testRelativeUriResolutionPut" invocation-numbers="0"/>
           <include name="testPutPropertiesNotPersisted"/>
           <include name="testPutRequiresIfMatch"/>
+          <include name="testPreferContainmentTriples"/>
+          <include name="testPostResource"/>
           <include name="testIsHttp11Manual"/>
           <include name="testPublishConstraintsUnknownProp"/>
           <include name="test4xxErrorHasResponseBody" invocation-numbers="0"/>
           <include name="addFailureToHttpLog"/>
-          <include name="createTestResource"/>
-          <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
-          <include name="deleteTestResource"/>
-          <include name="testConformsRdfSourceLdpResource"/>
-          <include name="testUseStandardVocabularies"/>
-          <include name="determineOptions"/>
+          <include name="testContainsRdfType"/>
+          <include name="hasIndirectContainer"/>
           <include name="testPreconditionRequiredStatusCode"/>
-          <include name="testReUseVocabularies"/>
           <include name="testPutReadOnlyProperties4xxStatus" invocation-numbers="0"/>
           <include name="testResponsePropertiesNotPersisted"/>
+          <include name="testPutReplacesResource"/>
+          <include name="testTypeRdfSource"/>
         </methods>
-      </class> <!-- org.w3.ldp.testsuite.test.MemberResourceTest -->
+      </class> <!-- org.w3.ldp.testsuite.test.IndirectContainerTest -->
     </classes>
   </test> <!-- W3C Linked Data Platform Tests(failed) -->
 </suite> <!-- Failed suite [LDP Test Suite] -->

@@ -53,7 +53,7 @@ module Rack
       # @return [Array]  a rack env array with added headers
       def call(env)
         @app.call(env)
-      rescue RDF::LDP::RequestError => err
+      rescue ::RDF::LDP::RequestError => err
         return [err.status, err.headers, [err.message]]
       end
     end
@@ -72,7 +72,7 @@ module Rack
       def call(env)
         status, headers, response = @app.call(env)
 
-        if response.is_a? RDF::LDP::Resource
+        if response.is_a? ::RDF::LDP::Resource
           new_response = response.to_response
           response.close if response.respond_to? :close
           response = new_response
@@ -100,7 +100,7 @@ module Rack
       def call(env)
         status, headers, response = @app.call(env)
         return [status, headers, response] unless
-          response.is_a? RDF::LDP::Resource
+          response.is_a? ::RDF::LDP::Resource
 
         response
           .send(:request, env['REQUEST_METHOD'].to_sym, status, headers, env)
@@ -114,7 +114,7 @@ module Rack
     # @see Rack::LinkedData::ContentNegotiation}, making
     class ContentNegotiation < Rack::LinkedData::ContentNegotiation
       DEFAULT_PREFIXES =
-        Hash[*RDF::Vocabulary.map { |v| [v.__prefix__, v.to_uri] }.flatten]
+        Hash[*::RDF::Vocabulary.map { |v| [v.__prefix__, v.to_uri] }.flatten]
         .freeze
 
       def initialize(app, options = {})
@@ -130,7 +130,7 @@ module Rack
       #
       # @see Rack::LinkedData::ContentNegotiation#find_writer_for_content_type
       def find_writer_for_content_type(content_type)
-        return [RDF::Writer.for(:ttl), 'text/turtle'] if
+        return [::RDF::Writer.for(:ttl), 'text/turtle'] if
           content_type == 'text/*'
         super
       end
