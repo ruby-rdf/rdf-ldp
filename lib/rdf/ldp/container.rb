@@ -69,9 +69,10 @@ module RDF::LDP
     # containment triple is completed when the transaction closes; otherwise it
     # is handled atomically.
     #
-    # @param [RDF::Term] a new member for this container
-    # @param transaction [RDF::Transaction] an active transaction as context for
-    #   the addition
+    # @param [RDF::Term] resource
+    #   a new member for this container
+    # @param transaction [RDF::Transaction] transaction
+    #   an active transaction as context for the addition
     # @return [Container] self
     def add(resource, transaction = nil)
       add_containment_triple(resource.to_uri, transaction)
@@ -85,9 +86,10 @@ module RDF::LDP
     # containment triple is completed when the transaction closes; otherwise it
     # is handled atomically.
     #
-    # @param [RDF::Term] a new member for this container
-    # @param transaction [RDF::Transaction] an active transaction as context for
-    #   the removal
+    # @param [RDF::Term] resource
+    #   a new member for this container
+    # @param transaction [RDF::Transaction] transaction
+    #   an active transaction as context for the removal
     # @return [Container] self
     def remove(resource, transaction = nil)
       remove_containment_triple(resource.to_uri, transaction)
@@ -140,9 +142,11 @@ module RDF::LDP
     end
 
     ##
-    # @param [RDF::Term] a member to be represented in the containment triple
+    # @param [RDF::Term] resource
+    #   a member to be represented in the containment triple
     #
-    # @return [RDF::URI] the containment triple, with a graph_name pointing
+    # @return [RDF::URI]
+    #   the containment triple, with a graph_name pointing
     #   to `#graph`
     def make_containment_triple(resource)
       RDF::Statement(subject_uri, CONTAINS_URI, resource,

@@ -110,7 +110,7 @@ module RDF::LDP
       ##
       # Creates an unique id (URI Slug) for a resource.
       #
-      # @note the current implementation uses {SecureRandom#uuid}.
+      # @note the current implementation uses `SecureRandom#uuid`.
       #
       # @return [String] a unique ID
       def gen_id
@@ -203,9 +203,9 @@ module RDF::LDP
     ##
     # @abstract creates the resource
     #
-    # @param [IO, File] input  input (usually from a Rack env's
+    # @param [IO, File] _input  input (usually from a Rack env's
     #   `rack.input` key) used to determine the Resource's initial state.
-    # @param [#to_s] content_type  a MIME content_type used to interpret the
+    # @param [#to_s] _content_type  a MIME content_type used to interpret the
     #   input. This MAY be used as a content type for the created Resource
     #   (especially for `LDP::NonRDFSource`s).
     #

@@ -27,7 +27,9 @@ module RDF::LDP
     FORMAT_TERM = RDF::Vocab::DC11.format.freeze
 
     ##
-    # @param [storage_adapter] a class implementing the StorageAdapter interface
+    # @param [RDF::URI] subject_uri
+    # @param [RDF::Queryable] data
+    # @param [StorageAdapter] storage_adapter a class implementing the StorageAdapter interface
     #
     # @see RDF::LDP::Resource#initialize
     def initialize(subject_uri,
@@ -111,7 +113,7 @@ module RDF::LDP
     ##
     # Sets the MIME type for the resource in `metagraph`.
     #
-    # @param [String] a string representing the content type for this LDP-NR.
+    # @param [String] content_type a string representing the content type for this LDP-NR.
     #   This SHOULD be a regisered MIME type.
     #
     # @return [StorageAdapter] the content type
