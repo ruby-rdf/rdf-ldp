@@ -15,7 +15,7 @@ module RDF::LDP
   # the resource itself is returned by `#description`.
   #
   # @see RDF::LDP::Resource
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source for
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source for
   #   a definition of NonRDFSource in LDP
   class NonRDFSource < Resource
     attr_reader :storage
@@ -44,7 +44,7 @@ module RDF::LDP
     # @return [RDF::URI] uri with lexical representation
     #   'http://www.w3.org/ns/ldp#NonRDFSource'
     #
-    # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source
+    # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source
     def self.to_uri
       RDF::Vocab::LDP.NonRDFSource
     end

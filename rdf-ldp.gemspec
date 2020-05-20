@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = 'rdf-ldp'
-  gem.homepage           = 'http://ruby-rdf.github.com/'
+  gem.homepage           = 'https://ruby-rdf.github.com/'
   gem.license            = 'Unlicense'
   gem.summary            = 'A suite of LDP software and middleware for RDF.rb.'
   gem.description        = 'Implements a Linked Data Platform domain model, ' \

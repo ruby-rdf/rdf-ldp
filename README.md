@@ -89,7 +89,7 @@ app = proc do |env|
   # The `Rack::LDP` middleware marhsalls the request to the resource, builds the response,
   # and handles conneg for RDF serializations (when the body is an `RDF::LDP::RDFSource`).
   #
-  # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Response
+  # @see https://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Response
   
   [200, {}, RDF::LDP::Resource.find(RDF::URI(env['REQUEST_URI']), repository)]
 end

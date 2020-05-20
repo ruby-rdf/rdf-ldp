@@ -11,12 +11,12 @@ module RDF::LDP
   # Containers will throw errors when attempting to edit them in conflict with
   # LDP's restrictions on changing containment triples.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-container definition
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-container definition
   #   of LDP Container
   class Container < RDFSource
     ##
     # @return [RDF::URI] uri with lexical representation
-    #   'http://www.w3.org/ns/ldp#Container'
+    #   'https://www.w3.org/ns/ldp#Container'
     def self.to_uri
       RDF::Vocab::LDP.Container
     end

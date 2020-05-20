@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [LDP Test Suite]">
-  <parameter name="indirectContainer" value="http://127.0.0.1:50587/a896b4dedb3178d5646549753de052eb"/>
+  <parameter name="indirectContainer" value="http://127.0.0.1:62394/52d7d962fe313ed9c257a7acdb359595"/>
   <parameter name="output" value="report"/>
   <test name="W3C Linked Data Platform Tests(failed)">
     <groups>
@@ -36,45 +36,15 @@
           <include name="commonSetup"/>
         </methods>
       </class> <!-- org.w3.ldp.testsuite.test.MemberResourceTest -->
-      <class name="org.w3.ldp.testsuite.test.NonRDFSourceTest">
-        <methods>
-          <include name="testOptionsAllowHeader"/>
-          <include name="testGetResponseHeaders"/>
-          <include name="deleteTestResource"/>
-          <include name="testPostResourceGetBinary"/>
-          <include name="testGetResource"/>
-          <include name="determineOptions"/>
-          <include name="testOptionsHasSameLinkHeader"/>
-          <include name="testPutBadETag"/>
-          <include name="testPostResourceAndCheckLink"/>
-          <include name="testOptions"/>
-          <include name="testPostNonRDFSource"/>
-          <include name="testPutRequiresIfMatch"/>
-          <include name="testPostResourceAndGetFromContainer"/>
-          <include name="testPostResourceGetMetadataAndBinary"/>
-          <include name="testHead"/>
-          <include name="testPostResourceAndCheckAssociatedResource"/>
-          <include name="testIsHttp11Manual"/>
-          <include name="testDeleteNonRDFSourceDeletesAssociatedResource"/>
-          <include name="testConditionFailedStatusCode"/>
-          <include name="testLdpLinkHeader"/>
-          <include name="createTestResource"/>
-          <include name="addFailureToHttpLog"/>
-          <include name="testETagHeadersHead"/>
-          <include name="testAcceptPatchHeader"/>
-          <include name="testPreconditionRequiredStatusCode"/>
-          <include name="testETagHeadersGet"/>
-        </methods>
-      </class> <!-- org.w3.ldp.testsuite.test.NonRDFSourceTest -->
       <class name="org.w3.ldp.testsuite.test.IndirectContainerTest">
         <methods>
-          <include name="testRdfTypeLdpContainer"/>
           <include name="testRestrictClientInference"/>
+          <include name="testRdfTypeLdpContainer"/>
           <include name="testConformsContainerRdfResource"/>
           <include name="testRequestedInteractionModelCreateNotAllowed" invocation-numbers="0"/>
           <include name="testPublishConstraintsReadOnlyProp" invocation-numbers="0"/>
-          <include name="testConformsRdfSourceLdpResource"/>
           <include name="testRequestedInteractionModelHeaders" invocation-numbers="0"/>
+          <include name="testConformsRdfSourceLdpResource"/>
           <include name="testUseStandardVocabularies"/>
           <include name="determineOptions"/>
           <include name="testReUseVocabularies"/>
@@ -98,6 +68,36 @@
           <include name="testTypeRdfSource"/>
         </methods>
       </class> <!-- org.w3.ldp.testsuite.test.IndirectContainerTest -->
+      <class name="org.w3.ldp.testsuite.test.NonRDFSourceTest">
+        <methods>
+          <include name="testOptionsAllowHeader"/>
+          <include name="testGetResponseHeaders"/>
+          <include name="deleteTestResource"/>
+          <include name="testPostResourceGetBinary"/>
+          <include name="testGetResource"/>
+          <include name="determineOptions"/>
+          <include name="testOptionsHasSameLinkHeader"/>
+          <include name="testPutBadETag"/>
+          <include name="testPostResourceAndCheckLink"/>
+          <include name="testOptions"/>
+          <include name="testPostNonRDFSource"/>
+          <include name="testPutRequiresIfMatch"/>
+          <include name="testPostResourceAndGetFromContainer"/>
+          <include name="testPostResourceGetMetadataAndBinary"/>
+          <include name="testHead"/>
+          <include name="testPostResourceAndCheckAssociatedResource"/>
+          <include name="testIsHttp11Manual"/>
+          <include name="testDeleteNonRDFSourceDeletesAssociatedResource"/>
+          <include name="testLdpLinkHeader"/>
+          <include name="testConditionFailedStatusCode"/>
+          <include name="createTestResource"/>
+          <include name="addFailureToHttpLog"/>
+          <include name="testETagHeadersHead"/>
+          <include name="testAcceptPatchHeader"/>
+          <include name="testPreconditionRequiredStatusCode"/>
+          <include name="testETagHeadersGet"/>
+        </methods>
+      </class> <!-- org.w3.ldp.testsuite.test.NonRDFSourceTest -->
     </classes>
   </test> <!-- W3C Linked Data Platform Tests(failed) -->
 </suite> <!-- Failed suite [LDP Test Suite] -->

@@ -15,7 +15,7 @@ module RDF::LDP
   # If more than one of either is given, all `#add/#remove` (POST/DELETE)
   # requests will fail.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-direct-container
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-direct-container
   #   definition of LDP Direct Container
   class DirectContainer < Container
     MEMBER_URI              = RDF::Vocab::LDP.member.freeze
@@ -98,7 +98,7 @@ module RDF::LDP
     # @raise [RDF::LDP::NotAcceptable] if multiple membership constant uris
     #   exist
     #
-    # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
+    # @see https://www.w3.org/TR/ldp/#dfn-membership-triples
     def membership_constant_uri
       statements = membership_resource_statements
       return statements.first.object if statements.count == 1
@@ -115,7 +115,7 @@ module RDF::LDP
     #
     # @raise [RDF::LDP::NotAcceptable] if multiple membership predicates exist
     #
-    # @see http://www.w3.org/TR/ldp/#dfn-membership-predicate
+    # @see https://www.w3.org/TR/ldp/#dfn-membership-predicate
     def membership_predicate
       statements = member_relation_statements
       return statements.first.object if statements.count == 1
@@ -130,7 +130,7 @@ module RDF::LDP
     # @return [RDF::URI] the membership triple representing membership of the
     #   `resource` parameter in this container
     #
-    # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
+    # @see https://www.w3.org/TR/ldp/#dfn-membership-triples
     def make_membership_triple(resource)
       predicate = membership_predicate
       return RDF::Statement(membership_constant_uri, predicate, resource) if

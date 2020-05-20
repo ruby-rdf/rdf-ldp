@@ -34,7 +34,7 @@ module Rack
   #     # ...
   #   end
   #
-  # @see http://www.w3.org/TR/ldp/ the LDP specification
+  # @see https://www.w3.org/TR/ldp/ the LDP specification
   module LDP
     ##
     # Catches and handles RequestErrors thrown by RDF::LDP
