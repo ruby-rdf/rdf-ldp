@@ -9,7 +9,7 @@
 <rdf-ldp> a doap:Project ;
   doap:name          "RDF::LDP" ;
   doap:homepage      <https://github.com/ruby-rdf/rdf-ldp> ;
-  doap:license       <https://unlicense.org/> ;
+  doap:license       <https://unlicense.org/1.0/> ;
   doap:shortdesc     "A suite of LDP software and middleware for RDF.rb" ;
   doap:description   "Implements a Linked Data Platform domain model, Rack middleware for server implementers, and a simple Sinatra-based server for RDF.rb" ;
   doap:created       "2015-07-17"^^xsd:date ;
@@ -29,7 +29,7 @@
 <lamprey> a doap:Project ;
   doap:name          "Lamprey" ;
   doap:homepage      <https://rubygems.org/gems/rdf-ldp> ;
-  doap:license       <https://unlicense.org/> ;
+  doap:license       <https://unlicense.org/1.0/> ;
   doap:shortdesc     "A Ruby LDP server based on RDF.rb, RDF::LDP, and Sinatra." ;
   doap:created       "2015-07-17"^^xsd:date ;
   doap:programming-language "Ruby" ;
