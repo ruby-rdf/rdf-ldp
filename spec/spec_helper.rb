@@ -9,6 +9,19 @@ require 'rdf/ldp/spec'
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }
 
+begin
+  require 'simplecov'
+  require 'coveralls'
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter
+  ])
+  SimpleCov.start do
+    add_filter "/spec/"
+  end
+rescue LoadError
+end
+
 RSpec.configure do |config|
   config.include(RDF::Spec::Matchers)
   config.filter_run focus: true

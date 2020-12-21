@@ -55,4 +55,4 @@ describe 'LDP Test Suite', integration: true do
       let(:skipped_tests) { @skipped_tests }
     end
   end
-end
+end unless ENV['CI']

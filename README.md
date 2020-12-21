@@ -1,7 +1,9 @@
 RDF::LDP
 ========
-
-[![Build Status](https://travis-ci.org/ruby-rdf/rdf-ldp.svg?branch=develop)](https://travis-ci.org/ruby-rdf/rdf-ldp)
+[![Gem Version](https://badge.fury.io/rb/rdf-ldp.png)](https://badge.fury.io/rb/rdf-ldp)
+[![Build Status](https://github.com/ruby-rdf/rdf-ldp/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/rdf-ldp/actions?query=workflow%3ACI)
+[![Coverage Status](https://coveralls.io/repos/ruby-rdf/rdf-ldp/badge.svg)](https://coveralls.io/github/ruby-rdf/rdf-ldp)
+[![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
 
 Server-side support for Linked Data Platform (LDP) with RDF.rb. To get started
 with LDP, see the [LDP Primer](https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-primer/ldp-primer.html).
