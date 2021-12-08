@@ -24,11 +24,11 @@ Gem::Specification.new do |gem|
   gem.executables        = %w(lamprey)
   gem.require_paths      = %w(lib app)
 
-  gem.required_ruby_version      = '>= 2.4'
+  gem.required_ruby_version      = '>= 2.6'
   gem.requirements               = []
 
   gem.add_runtime_dependency     'rack',            '~> 2.2'
-  gem.add_runtime_dependency     'rdf',             '~> 3.1'
+  gem.add_runtime_dependency     'rdf',             '~> 3.2'
   gem.add_runtime_dependency     'rdf-turtle',      '~> 3.1'
   gem.add_runtime_dependency     'ld-patch',        '~> 3.1'
   gem.add_runtime_dependency     'rdf-vocab',       '~> 3.1'
@@ -36,22 +36,22 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency     'json-ld',         '~> 3.1'
 
-  gem.add_runtime_dependency     'sinatra',         '~> 2.0'
+  gem.add_runtime_dependency     'sinatra',         '~> 2.1'
 
   gem.add_runtime_dependency     'link_header', '~> 0.0', '>= 0.0.8'
 
-  gem.add_development_dependency 'rdf-spec',              '~> 3.1'
+  gem.add_development_dependency 'rdf-spec',              '~> 3.2'
   gem.add_development_dependency 'rdf-rdfxml',            '~> 3.1'
   gem.add_development_dependency 'rdf-rdfa',              '~> 3.1'
   gem.add_development_dependency 'rdf-xsd',               '~> 3.1'
   gem.add_development_dependency 'rest-client',           '~> 2.1'
-  gem.add_development_dependency 'rspec',                 '~> 3.9'
-  gem.add_development_dependency 'rubocop',               '~> 0.93'
-  gem.add_development_dependency 'rubocop-rspec',         '~> 1.44'
+  gem.add_development_dependency 'rspec',                 '~> 3.10'
+  gem.add_development_dependency 'rubocop',               '~> 1.23'
+  gem.add_development_dependency 'rubocop-rspec',         '~> 2.6'
   gem.add_development_dependency 'rack-test',             '~> 1.1'
   gem.add_development_dependency 'rspec-its',             '~> 1.3'
   gem.add_development_dependency 'timecop',               '~> 0.9'
-  gem.add_development_dependency 'webmock',               '~> 3.1'
+  gem.add_development_dependency 'webmock',               '~> 3.14'
   gem.add_development_dependency 'yard',                  '~> 0.9'
 
   gem.add_development_dependency 'faraday',               '~> 1.1'

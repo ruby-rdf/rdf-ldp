@@ -204,8 +204,8 @@ module RDF::LDP
     def validate_triples!(transaction)
       existing_triples = containment_triples.to_a
 
-      tx_containment = transaction.query(subject: subject_uri,
-                                         predicate: CONTAINS_URI)
+      tx_containment = transaction.query({subject: subject_uri,
+                                         predicate: CONTAINS_URI})
 
       tx_containment.each do |statement|
         unless existing_triples.include?(statement)
@@ -226,7 +226,7 @@ module RDF::LDP
     # supports Patch.
     def validate_statements!(statements)
       existing_triples = containment_triples.to_a
-      statements.query(subject: subject_uri, predicate: CONTAINS_URI) do |st|
+      statements.query({subject: subject_uri, predicate: CONTAINS_URI}) do |st|
         existing_triples.delete(st) do
           raise(Conflict, 'Attempted to write unacceptable LDP ' \
                           "containment-triple: #{st}")

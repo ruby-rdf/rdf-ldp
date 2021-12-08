@@ -150,7 +150,7 @@ gem to run the suite and generate the tests.
 RDF.rb Compatibility
 --------------------------
 
-As of version 2.0, this software depends on RDF.rb 3.1 or greater.
+As of version 2.1, this software depends on RDF.rb 3.2 or greater.
 
 ## Contributing
 
