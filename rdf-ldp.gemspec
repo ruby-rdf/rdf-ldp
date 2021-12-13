@@ -29,21 +29,21 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency     'rack',            '~> 2.2'
   gem.add_runtime_dependency     'rdf',             '~> 3.2'
-  gem.add_runtime_dependency     'rdf-turtle',      '~> 3.1'
-  gem.add_runtime_dependency     'ld-patch',        '~> 3.1'
-  gem.add_runtime_dependency     'rdf-vocab',       '~> 3.1'
+  gem.add_runtime_dependency     'rdf-turtle',      '~> 3.2'
+  gem.add_runtime_dependency     'ld-patch',        '~> 3.2'
+  gem.add_runtime_dependency     'rdf-vocab',       '~> 3.2'
   gem.add_runtime_dependency     'rack-linkeddata', '~> 3.1'
 
-  gem.add_runtime_dependency     'json-ld',         '~> 3.1'
+  gem.add_runtime_dependency     'json-ld',         '~> 3.2'
 
   gem.add_runtime_dependency     'sinatra',         '~> 2.1'
 
   gem.add_runtime_dependency     'link_header', '~> 0.0', '>= 0.0.8'
 
   gem.add_development_dependency 'rdf-spec',              '~> 3.2'
-  gem.add_development_dependency 'rdf-rdfxml',            '~> 3.1'
-  gem.add_development_dependency 'rdf-rdfa',              '~> 3.1'
-  gem.add_development_dependency 'rdf-xsd',               '~> 3.1'
+  gem.add_development_dependency 'rdf-rdfxml',            '~> 3.2'
+  gem.add_development_dependency 'rdf-rdfa',              '~> 3.2'
+  gem.add_development_dependency 'rdf-xsd',               '~> 3.2'
   gem.add_development_dependency 'rest-client',           '~> 2.1'
   gem.add_development_dependency 'rspec',                 '~> 3.10'
   gem.add_development_dependency 'rubocop',               '~> 1.23'
