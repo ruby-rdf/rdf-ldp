@@ -81,8 +81,8 @@ module RDF::LDP
   #
   #   resource.request(:put, 200, {}, {}) # RDF::LDP::MethodNotAllowed: put
   #
-  # @see http://www.w3.org/TR/ldp/ Linked Data platform Specification
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource Definition
+  # @see https://www.w3.org/TR/ldp/ Linked Data platform Specification
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource Definition
   #   of 'Resource' in LDP
   class Resource
     CONTAINS_URI       = RDF::Vocab::LDP.contains.freeze
@@ -102,7 +102,7 @@ module RDF::LDP
       # @return [RDF::URI] uri with lexical representation
       #   'http://www.w3.org/ns/ldp#Resource'
       #
-      # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource
+      # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-resource
       def to_uri
         RDF::Vocab::LDP.Resource
       end
@@ -110,7 +110,7 @@ module RDF::LDP
       ##
       # Creates an unique id (URI Slug) for a resource.
       #
-      # @note the current implementation uses {SecureRandom#uuid}.
+      # @note the current implementation uses `SecureRandom#uuid`.
       #
       # @return [String] a unique ID
       def gen_id
@@ -203,9 +203,9 @@ module RDF::LDP
     ##
     # @abstract creates the resource
     #
-    # @param [IO, File] input  input (usually from a Rack env's
+    # @param [IO, File] _input  input (usually from a Rack env's
     #   `rack.input` key) used to determine the Resource's initial state.
-    # @param [#to_s] content_type  a MIME content_type used to interpret the
+    # @param [#to_s] _content_type  a MIME content_type used to interpret the
     #   input. This MAY be used as a content type for the created Resource
     #   (especially for `LDP::NonRDFSource`s).
     #
@@ -308,8 +308,8 @@ module RDF::LDP
     #   https://tools.ietf.org/html/rfc7232#section-3.1. See:
     #   https://github.com/ruby-rdf/rdf-ldp/issues/68
     #
-    # @see http://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
-    # @see http://www.w3.org/TR/ldp#h-ldpr-put-precond  LDP ETag clause for PUT
+    # @see https://www.w3.org/TR/ldp#h-ldpr-gen-etags  LDP ETag clause for GET
+    # @see https://www.w3.org/TR/ldp#h-ldpr-put-precond  LDP ETag clause for PUT
     # @see https://tools.ietf.org/html/rfc7232#section-2.1
     #   Weak vs. strong validators
     def etag
@@ -393,7 +393,7 @@ module RDF::LDP
     # Runs the request and returns the object's desired HTTP response body,
     # conforming to the Rack interfare.
     #
-    # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body
+    # @see https://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Body
     #   Rack body documentation
     def to_response
       []
@@ -536,10 +536,10 @@ module RDF::LDP
     # @return [Array<String>] an array of link headers to add to the
     #   existing ones
     #
-    # @see http://www.w3.org/TR/ldp/#h-ldpr-gen-linktypehdr
-    # @see http://www.w3.org/TR/ldp/#h-ldprs-are-ldpr
-    # @see http://www.w3.org/TR/ldp/#h-ldpnr-type
-    # @see http://www.w3.org/TR/ldp/#h-ldpc-linktypehdr
+    # @see https://www.w3.org/TR/ldp/#h-ldpr-gen-linktypehdr
+    # @see https://www.w3.org/TR/ldp/#h-ldprs-are-ldpr
+    # @see https://www.w3.org/TR/ldp/#h-ldpnr-type
+    # @see https://www.w3.org/TR/ldp/#h-ldpc-linktypehdr
     def link_headers
       return [] unless is_a? RDF::LDP::Resource
       headers = [link_type_header(RDF::LDP::Resource.to_uri)]

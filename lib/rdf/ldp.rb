@@ -19,7 +19,7 @@ module RDF
   # Rack servers.
   #
   # @see RDF::LDP::Resource
-  # @see http://www.w3.org/TR/ldp/ for the Linked Data platform specification
+  # @see https://www.w3.org/TR/ldp/ for the Linked Data platform specification
   module LDP
     InteractionModel.register(RDF::LDP::RDFSource, default: true)
     InteractionModel.register(RDF::LDP::Container,

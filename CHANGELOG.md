@@ -82,3 +82,8 @@
    - Ships with a limited server "Lamprey"
    - Note: 0.1.0 was a gem containing only an `RDF::Vocabulary`, this
      has been moved to `rdf-vocab`
+ 
+0.2.1 
+------
+ - Deprecates Ruby < 2.6, supports Ruby 3.
+ - Updated dependencies.

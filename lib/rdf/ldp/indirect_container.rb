@@ -13,9 +13,9 @@ module RDF::LDP
   # Acceptable`. LDP-NR's cannot be added since indirect membership is not well
   # defined for them, per _LDP 5.5.1.2_.
   #
-  # @see http://www.w3.org/TR/ldp/#h-ldpic-indirectmbr for an explanation if
+  # @see https://www.w3.org/TR/ldp/#h-ldpic-indirectmbr for an explanation if
   #   indirect membership and limitiations surrounding LDP-NRs.
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-indirect-container
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-indirect-container
   #   definition of LDP Indirect Container
   class IndirectContainer < DirectContainer
     INSERTED_CONTENT_REL_URI = RDF::Vocab::LDP.insertedContentRelation.freeze
@@ -61,7 +61,7 @@ module RDF::LDP
     # @raise [RDF::LDP::NotAcceptable] if multiple inserted content relations
     #   exist.
     #
-    # @see http://www.w3.org/TR/ldp/#dfn-membership-triples
+    # @see https://www.w3.org/TR/ldp/#dfn-membership-triples
     def inserted_content_relation
       statements = inserted_content_statements
       return statements.first.object if statements.count == 1

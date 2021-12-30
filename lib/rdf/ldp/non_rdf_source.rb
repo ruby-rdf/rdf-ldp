@@ -15,7 +15,7 @@ module RDF::LDP
   # the resource itself is returned by `#description`.
   #
   # @see RDF::LDP::Resource
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source for
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source for
   #   a definition of NonRDFSource in LDP
   class NonRDFSource < Resource
     attr_reader :storage
@@ -27,7 +27,9 @@ module RDF::LDP
     FORMAT_TERM = RDF::Vocab::DC11.format.freeze
 
     ##
-    # @param [storage_adapter] a class implementing the StorageAdapter interface
+    # @param [RDF::URI] subject_uri
+    # @param [RDF::Queryable] data
+    # @param [StorageAdapter] storage_adapter a class implementing the StorageAdapter interface
     #
     # @see RDF::LDP::Resource#initialize
     def initialize(subject_uri,
@@ -42,7 +44,7 @@ module RDF::LDP
     # @return [RDF::URI] uri with lexical representation
     #   'http://www.w3.org/ns/ldp#NonRDFSource'
     #
-    # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source
+    # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-non-rdf-source
     def self.to_uri
       RDF::Vocab::LDP.NonRDFSource
     end
@@ -111,7 +113,7 @@ module RDF::LDP
     ##
     # Sets the MIME type for the resource in `metagraph`.
     #
-    # @param [String] a string representing the content type for this LDP-NR.
+    # @param [String] content_type a string representing the content type for this LDP-NR.
     #   This SHOULD be a regisered MIME type.
     #
     # @return [StorageAdapter] the content type

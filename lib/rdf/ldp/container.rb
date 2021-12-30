@@ -11,12 +11,12 @@ module RDF::LDP
   # Containers will throw errors when attempting to edit them in conflict with
   # LDP's restrictions on changing containment triples.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-container definition
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-container definition
   #   of LDP Container
   class Container < RDFSource
     ##
     # @return [RDF::URI] uri with lexical representation
-    #   'http://www.w3.org/ns/ldp#Container'
+    #   'https://www.w3.org/ns/ldp#Container'
     def self.to_uri
       RDF::Vocab::LDP.Container
     end
@@ -69,9 +69,10 @@ module RDF::LDP
     # containment triple is completed when the transaction closes; otherwise it
     # is handled atomically.
     #
-    # @param [RDF::Term] a new member for this container
-    # @param transaction [RDF::Transaction] an active transaction as context for
-    #   the addition
+    # @param [RDF::Term] resource
+    #   a new member for this container
+    # @param transaction [RDF::Transaction] transaction
+    #   an active transaction as context for the addition
     # @return [Container] self
     def add(resource, transaction = nil)
       add_containment_triple(resource.to_uri, transaction)
@@ -85,9 +86,10 @@ module RDF::LDP
     # containment triple is completed when the transaction closes; otherwise it
     # is handled atomically.
     #
-    # @param [RDF::Term] a new member for this container
-    # @param transaction [RDF::Transaction] an active transaction as context for
-    #   the removal
+    # @param [RDF::Term] resource
+    #   a new member for this container
+    # @param transaction [RDF::Transaction] transaction
+    #   an active transaction as context for the removal
     # @return [Container] self
     def remove(resource, transaction = nil)
       remove_containment_triple(resource.to_uri, transaction)
@@ -140,9 +142,11 @@ module RDF::LDP
     end
 
     ##
-    # @param [RDF::Term] a member to be represented in the containment triple
+    # @param [RDF::Term] resource
+    #   a member to be represented in the containment triple
     #
-    # @return [RDF::URI] the containment triple, with a graph_name pointing
+    # @return [RDF::URI]
+    #   the containment triple, with a graph_name pointing
     #   to `#graph`
     def make_containment_triple(resource)
       RDF::Statement(subject_uri, CONTAINS_URI, resource,
@@ -200,8 +204,8 @@ module RDF::LDP
     def validate_triples!(transaction)
       existing_triples = containment_triples.to_a
 
-      tx_containment = transaction.query(subject: subject_uri,
-                                         predicate: CONTAINS_URI)
+      tx_containment = transaction.query({subject: subject_uri,
+                                         predicate: CONTAINS_URI})
 
       tx_containment.each do |statement|
         unless existing_triples.include?(statement)
@@ -222,7 +226,7 @@ module RDF::LDP
     # supports Patch.
     def validate_statements!(statements)
       existing_triples = containment_triples.to_a
-      statements.query(subject: subject_uri, predicate: CONTAINS_URI) do |st|
+      statements.query({subject: subject_uri, predicate: CONTAINS_URI}) do |st|
         existing_triples.delete(st) do
           raise(Conflict, 'Attempted to write unacceptable LDP ' \
                           "containment-triple: #{st}")

@@ -25,7 +25,7 @@ module RDF::LDP
   #   but MAY be absent from (or in conflict with) the representation of its
   #   state in `#graph`.
   #
-  # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
+  # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
   #   Definition of ldp:RDFSource in the LDP specification
   class RDFSource < Resource
     class << self
@@ -33,7 +33,7 @@ module RDF::LDP
       # @return [RDF::URI] uri with lexical representation
       #   'http://www.w3.org/ns/ldp#RDFSource'
       #
-      # @see http://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
+      # @see https://www.w3.org/TR/ldp/#dfn-linked-data-platform-rdf-source
       def to_uri
         RDF::Vocab::LDP.RDFSource
       end
@@ -241,7 +241,7 @@ module RDF::LDP
     #
     # @raise [RDF::LDP::UnsupportedMediaType] if no appropriate reader is found
     #
-    # @see http://www.rubydoc.info/github/rack/rack/file/SPEC#The_Input_Stream
+    # @see https://www.rubydoc.info/github/rack/rack/file/SPEC#The_Input_Stream
     #   Documentation on input streams in the Rack SPEC
     def parse_graph(input, content_type)
       reader = RDF::Reader.for(content_type: content_type.to_s)

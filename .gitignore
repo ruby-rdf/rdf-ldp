@@ -12,3 +12,6 @@ Gemfile.lock
 benchmark/
 
 .storage
+coverage
+test-output
+report

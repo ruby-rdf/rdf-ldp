@@ -34,7 +34,7 @@ module Rack
   #     # ...
   #   end
   #
-  # @see http://www.w3.org/TR/ldp/ the LDP specification
+  # @see https://www.w3.org/TR/ldp/ the LDP specification
   module LDP
     ##
     # Catches and handles RequestErrors thrown by RDF::LDP
@@ -108,10 +108,10 @@ module Rack
     end
 
     ##
-    # Specializes {Rack::LinkedData::ContentNegotiation}, making the default
+    # Specializes `Rack::LinkedData::ContentNegotiation`, making the default
     # return type 'text/turtle'.
     #
-    # @see Rack::LinkedData::ContentNegotiation}, making
+    # @see Rack::LinkedData::ContentNegotiation, making
     class ContentNegotiation < Rack::LinkedData::ContentNegotiation
       DEFAULT_PREFIXES =
         Hash[*::RDF::Vocabulary.map { |v| [v.__prefix__, v.to_uri] }.flatten]

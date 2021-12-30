@@ -1,7 +1,9 @@
 RDF::LDP
 ========
-
-[![Build Status](https://travis-ci.org/ruby-rdf/rdf-ldp.svg?branch=develop)](https://travis-ci.org/ruby-rdf/rdf-ldp)
+[![Gem Version](https://badge.fury.io/rb/rdf-ldp.png)](https://badge.fury.io/rb/rdf-ldp)
+[![Build Status](https://github.com/ruby-rdf/rdf-ldp/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/rdf-ldp/actions?query=workflow%3ACI)
+[![Coverage Status](https://coveralls.io/repos/ruby-rdf/rdf-ldp/badge.svg)](https://coveralls.io/github/ruby-rdf/rdf-ldp)
+[![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
 
 Server-side support for Linked Data Platform (LDP) with RDF.rb. To get started
 with LDP, see the [LDP Primer](https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-primer/ldp-primer.html).
@@ -89,7 +91,7 @@ app = proc do |env|
   # The `Rack::LDP` middleware marhsalls the request to the resource, builds the response,
   # and handles conneg for RDF serializations (when the body is an `RDF::LDP::RDFSource`).
   #
-  # @see http://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Response
+  # @see https://www.rubydoc.info/github/rack/rack/master/file/SPEC#The_Response
   
   [200, {}, RDF::LDP::Resource.find(RDF::URI(env['REQUEST_URI']), repository)]
 end
@@ -148,10 +150,33 @@ gem to run the suite and generate the tests.
 RDF.rb Compatibility
 --------------------------
 
-As of version 2.0, this software depends on RDF.rb 3.1 or greater.
+As of version 2.1, this software depends on RDF.rb 3.2 or greater.
 
+## Contributing
 
-License
-========
+This repository uses [Git Flow](https://github.com/nvie/gitflow) to mange development and release activity. All submissions _must_ be on a feature branch based on the _develop_ branch to ease staging and integration.
+
+* Do your best to adhere to the existing coding conventions and idioms.
+* Don't use hard tabs, and don't leave trailing whitespace on any line.
+  Before committing, run `git diff --check` to make sure of this.
+* Do document every method you add using [YARD][] annotations. Read the
+  [tutorial][YARD-GS] or just look at the existing code for examples.
+* Don't touch the `.gemspec` or `VERSION` files. If you need to change them,
+  do so on your private branch only.
+* Do feel free to add yourself to the `CREDITS` file and the
+  corresponding list in the the `README`. Alphabetical order applies.
+* Don't touch the `AUTHORS` file. If your contributions are significant
+  enough, be assured we will eventually add you in there.
+* Do note that in order for us to merge any non-trivial changes (as a rule
+  of thumb, additions larger than about 15 lines of code), we need an
+  explicit [public domain dedication][PDD] on record from you,
+  which you will be asked to agree to on the first commit to a repo within the organization.
+  Note that the agreement applies to all repos in the [Ruby RDF](https://github.com/ruby-rdf/) organization.
+
+## License
 
 This software is released under a public domain waiver (Unlicense).
+
+[YARD]:             https://yardoc.org/
+[YARD-GS]:          https://rubydoc.info/docs/yard/file/docs/GettingStarted.md
+[PDD]:              https://unlicense.org/#unlicensing-contributions
