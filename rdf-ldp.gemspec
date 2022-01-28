@@ -6,12 +6,19 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = 'rdf-ldp'
-  gem.homepage           = 'https://ruby-rdf.github.com/'
+  gem.homepage           = 'https://github.com/ruby-rdf/rdf-ldp'
   gem.license            = 'Unlicense'
   gem.summary            = 'A suite of LDP software and middleware for RDF.rb.'
   gem.description        = 'Implements a Linked Data Platform domain model, ' \
                            'Rack middleware for server implementers, and a ' \
                            'simple Sinatra-based server for RDF.rb'
+  gem.metadata           = {
+    "documentation_uri" => "https://ruby-rdf.github.io/rdf-ldp",
+    "bug_tracker_uri"   => "https://github.com/ruby-rdf/rdf-ldp/issues",
+    "homepage_uri"      => "https://github.com/ruby-rdf/rdf-ldp",
+    "mailing_list_uri"  => "https://lists.w3.org/Archives/Public/public-rdf-ruby/",
+    "source_code_uri"   => "https://github.com/ruby-rdf/rdf-ldp",
+  }
 
   gem.authors            = ['Tom Johnson']
   gem.email              = 'public-rdf-ruby@w3.org'
