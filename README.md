@@ -1,6 +1,6 @@
 RDF::LDP
 ========
-[![Gem Version](https://badge.fury.io/rb/rdf-ldp.png)](https://badge.fury.io/rb/rdf-ldp)
+[![Gem Version](https://badge.fury.io/rb/rdf-ldp.svg)](https://badge.fury.io/rb/rdf-ldp)
 [![Build Status](https://github.com/ruby-rdf/rdf-ldp/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/rdf-ldp/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/ruby-rdf/rdf-ldp/badge.svg)](https://coveralls.io/github/ruby-rdf/rdf-ldp)
 [![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
